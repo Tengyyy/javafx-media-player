@@ -7,10 +7,9 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.media.MediaView?>
 
-
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
-      <MediaView fx:id="mediaView" fitHeight="474.0" fitWidth="1000.0" StackPane.alignment="BOTTOM_CENTER">
+      <MediaView fx:id="mediaView" StackPane.alignment="CENTER">
          <viewport>
             <Rectangle2D />
          </viewport>
