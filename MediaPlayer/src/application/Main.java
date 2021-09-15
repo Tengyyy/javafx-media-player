@@ -14,7 +14,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("Scene.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("Scene2.fxml"));
 			
 			Parent root = loader.load();
 			
@@ -29,7 +29,7 @@ public class Main extends Application {
 				public void handle(KeyEvent event) {
 					
 					switch(event.getCode()) {
-						case SPACE: controller.playOrPause();
+						case SPACE:	controller.playOrPause();
 						break;
 						
 						default: System.out.println(event.getCode());

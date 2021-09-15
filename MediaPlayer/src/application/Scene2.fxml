@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.media.MediaView?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+   <children>
+      <MediaView fx:id="mediaView" StackPane.alignment="CENTER">
+         <viewport>
+            <Rectangle2D />
+         </viewport>
+      </MediaView>
+      <HBox fx:id="controlBar" alignment="CENTER" maxHeight="-Infinity" opacity="0.7" prefHeight="50.0" prefWidth="600.0" style="-fx-background-color: #333333;" StackPane.alignment="BOTTOM_CENTER">
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Button maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="Button" visible="false" />
+                  <Button layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="Button" visible="false" />
+               </children></HBox>
+            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Button maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="Button" visible="false" />
+               </children></HBox>
+         </children>
+      </HBox>
+   </children>
+</StackPane>
