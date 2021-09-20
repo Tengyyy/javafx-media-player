@@ -38,10 +38,10 @@ public class Controller implements Initializable{
 	VBox controlBar;
 	
 	@FXML
-	Button fullScreenButton, playButton;
+	Button fullScreenButton, playButton, volumeButton;
 	
 	@FXML
-	ImageView playLogo, fullScreenIcon;
+	ImageView playLogo, fullScreenIcon, volumeIcon;
 	
 	@FXML
 	StackPane pane;
@@ -57,15 +57,16 @@ public class Controller implements Initializable{
 	private DoubleProperty mediaViewWidth;
 	private DoubleProperty mediaViewHeight;
 	
-	static Image maximize;
+	Image maximize, minimize, volumeUp, volumeDown, volumeMute;
 
-	static Image minimize;
 
 	private Image start;
 	
-	private File maximizeFile, minimizeFile, playFile, pauseFile, startFile;
+	private File maximizeFile, minimizeFile, playFile, pauseFile, startFile, volumeUpFile, volumeDownFile, volumeMuteFile;
 	
 	final Timeline timeline = new Timeline();
+	
+	boolean muted = false;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -82,9 +83,19 @@ public class Controller implements Initializable{
 		pauseFile = new File("src/application/pause.gif");
 		startFile = new File("src/application/play.png");
 		
+		volumeUpFile = new File("src/application/volumeUp.png");
+		volumeDownFile = new File("src/application/volumeDown.png");
+		volumeMuteFile = new File("src/application/volumeMute.png");
+		
+		
+		
 		maximize = new Image(maximizeFile.toURI().toString());
 		minimize = new Image(minimizeFile.toURI().toString());
 		start = new Image(startFile.toURI().toString());
+		
+		volumeUp = new Image(volumeUpFile.toURI().toString());
+		volumeDown = new Image(volumeDownFile.toURI().toString());
+		volumeMute = new Image(volumeMuteFile.toURI().toString());
 		
 		// Make mediaView adjust to frame size
 		mediaViewWidth = mediaView.fitWidthProperty();
@@ -104,6 +115,9 @@ public class Controller implements Initializable{
 		
 		fullScreenIcon.setImage(maximize);
 		fullScreenButton.setBackground(Background.EMPTY);
+		
+		volumeButton.setBackground(Background.EMPTY);
+		volumeIcon.setImage(volumeUp);
 		
 		
 	}
@@ -181,6 +195,22 @@ public class Controller implements Initializable{
 		
 		fullScreenIcon.scaleXProperty().set(1);
 		fullScreenIcon.scaleYProperty().set(1);
+	}
+	
+	public void mute() {
+	
+		if(!muted) {
+			
+			muted = true;
+			volumeIcon.setImage(volumeMute);
+			mediaPlayer.setMute(muted);
+		}
+		else {
+			muted = false;
+			volumeIcon.setImage(volumeUp);
+			mediaPlayer.setMute(muted);
+		}
+		
 	}
 	
 	

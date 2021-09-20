@@ -58,7 +58,7 @@ public class Main extends Application {
 	            	controller.fullScreen();
 	            }
 	            else if(KeyCode.ESCAPE.equals(event.getCode())) {
-	            	controller.fullScreenIcon.setImage(Controller.maximize);
+	            	controller.fullScreenIcon.setImage(controller.maximize);
 	            }
 	        });
 			
