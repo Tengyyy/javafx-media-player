@@ -4,6 +4,10 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.ScaleTransition;
+import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
@@ -37,7 +41,7 @@ public class Controller implements Initializable{
 	Button fullScreenButton, playButton;
 	
 	@FXML
-	ImageView playLogo;
+	ImageView playLogo, fullScreenIcon;
 	
 	@FXML
 	StackPane pane;
@@ -53,7 +57,15 @@ public class Controller implements Initializable{
 	private DoubleProperty mediaViewWidth;
 	private DoubleProperty mediaViewHeight;
 	
-	private SVGPath path;
+	static Image maximize;
+
+	static Image minimize;
+
+	private Image start;
+	
+	private File maximizeFile, minimizeFile, playFile, pauseFile, startFile;
+	
+	final Timeline timeline = new Timeline();
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -61,6 +73,18 @@ public class Controller implements Initializable{
 		file = new File("hey.mp4");
 		media = new Media(file.toURI().toString());
 		mediaPlayer = new MediaPlayer(media);
+		
+		
+		// declaring media control images
+		maximizeFile = new File("src/application/maximize.png");
+		minimizeFile = new File("src/application/minimize.png");
+		playFile = new File("src/application/play.gif");
+		pauseFile = new File("src/application/pause.gif");
+		startFile = new File("src/application/play.png");
+		
+		maximize = new Image(maximizeFile.toURI().toString());
+		minimize = new Image(minimizeFile.toURI().toString());
+		start = new Image(startFile.toURI().toString());
 		
 		// Make mediaView adjust to frame size
 		mediaViewWidth = mediaView.fitWidthProperty();
@@ -75,8 +99,11 @@ public class Controller implements Initializable{
 		
 		pane.setStyle("-fx-background-color: rgb(24,24,24)");
 		
-		playLogo.setImage(new Image(new File("src/application/play.png").toURI().toString()));
+		playLogo.setImage(start);
 		playButton.setBackground(Background.EMPTY);
+		
+		fullScreenIcon.setImage(maximize);
+		fullScreenButton.setBackground(Background.EMPTY);
 		
 		
 	}
@@ -88,12 +115,12 @@ public class Controller implements Initializable{
 		if(!playing) {
 			mediaPlayer.play();
 			playing = true;
-			playLogo.setImage(new Image(new File("src/application/play.gif").toURI().toString()));
+			playLogo.setImage(new Image(playFile.toURI().toString()));
 		}
 		else {
 			mediaPlayer.pause();
 			playing = false;
-			playLogo.setImage(new Image(new File("src/application/pause.gif").toURI().toString()));
+			playLogo.setImage(new Image(pauseFile.toURI().toString()));
 		}
 	}
 	
@@ -127,6 +154,34 @@ public class Controller implements Initializable{
 	
 	public void fullScreen() {
 		Main.stage.setFullScreen(!Main.stage.isFullScreen());
+		
+		if(Main.stage.isFullScreen()) {
+			fullScreenIcon.setImage(minimize);
+		}
+		else {
+			fullScreenIcon.setImage(maximize);
+		}
 	}
+	
+	public void fullScreenEnter() {
+	     
+	     timeline.setCycleCount(2);
+	     timeline.setAutoReverse(true);
+	     timeline.getKeyFrames().add(new KeyFrame(Duration.millis(200),
+	    		 new KeyValue(fullScreenIcon.scaleYProperty(), 1.3)));
+	     timeline.getKeyFrames().add(new KeyFrame(Duration.millis(200),
+	    		 new KeyValue(fullScreenIcon.scaleXProperty(), 1.3)));
+	     
+	     timeline.play();
+	}
+	
+	public void fullSreenExit() {
+		
+		timeline.stop();
+		
+		fullScreenIcon.scaleXProperty().set(1);
+		fullScreenIcon.scaleYProperty().set(1);
+	}
+	
 	
 }

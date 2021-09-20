@@ -44,10 +44,13 @@
                   </HBox>
                   <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <Button fx:id="fullScreenButton" focusTraversable="false" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#fullScreen" text="FullScreen">
+                        <Button fx:id="fullScreenButton" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#fullScreen" onMouseEntered="#fullScreenEnter" onMouseExited="#fullSreenExit" prefHeight="36.0" prefWidth="46.0" style="-fx-padding: 0;">
                            <cursor>
                               <Cursor fx:constant="HAND" />
-                           </cursor></Button>
+                           </cursor>
+                           <graphic>
+                              <ImageView fx:id="fullScreenIcon" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" />
+                           </graphic></Button>
                      </children>
                   </HBox>
                </children>

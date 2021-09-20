@@ -54,8 +54,11 @@ public class Main extends Application {
 			
 			//press F11 to set full screen
 			primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-	            if (KeyCode.F11.equals(event.getCode())) {
-	                primaryStage.setFullScreen(!primaryStage.isFullScreen());
+	            if (KeyCode.F11.equals(event.getCode()) || KeyCode.F.equals(event.getCode())) {
+	            	controller.fullScreen();
+	            }
+	            else if(KeyCode.ESCAPE.equals(event.getCode())) {
+	            	controller.fullScreenIcon.setImage(Controller.maximize);
 	            }
 	        });
 			
