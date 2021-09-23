@@ -17,6 +17,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -38,7 +39,7 @@ import javafx.util.Duration;
 public class Controller implements Initializable{
 
 	@FXML
-	MediaView mediaView;
+	public MediaView mediaView;
 	
 	@FXML
 	VBox controlBar;
@@ -61,9 +62,13 @@ public class Controller implements Initializable{
 	@FXML
 	FlowPane volumeSliderPane;
 	
+	@FXML
+	Label durationLabel;
+	
 	private File file;
 	private Media media;
 	private MediaPlayer mediaPlayer;
+	
 	private boolean playing;
 	
 	private DoubleProperty mediaViewWidth;
@@ -84,12 +89,20 @@ public class Controller implements Initializable{
 	
 	boolean muted = false;
 	
+	boolean isExited = false;
+	
+	boolean sliderFocus = false;
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		
 		volumeSliderPane.setClip(new Rectangle(60, 36));
 		
 		volumeSlider.setTranslateX(-60);
+		
+		durationLabel.setTranslateX(-60);
+		
+		volumeSlider.setFocusTraversable(false);
 		
 		file = new File("hey.mp4");
 		media = new Media(file.toURI().toString());
@@ -162,8 +175,25 @@ public class Controller implements Initializable{
 			
 		});
 		
+		volumeSlider.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+			
+			sliderFocus = newValue;
+			
+			if(!newValue) {
+				volumeSliderExit();
+			}
+			
+		});
+		
 		//volumeSlider.setVisible(false);
 		
+		//mediaView.requestFocus();
+		
+	}
+	
+	public void mediaClick() {
+		playOrPause();
+		mediaView.requestFocus();
 	}
 	
 	public void playOrPause() {
@@ -262,7 +292,8 @@ public class Controller implements Initializable{
 		
 		volume.getKeyFrames().add(new KeyFrame(Duration.millis(50),
 				new KeyValue(volumeSlider.translateXProperty(), 0, Interpolator.EASE_OUT)));
-
+		volume.getKeyFrames().add(new KeyFrame(Duration.millis(50),
+				new KeyValue(durationLabel.translateXProperty(), 0, Interpolator.EASE_OUT)));
 		
 	    volume.play();
 	    
@@ -270,20 +301,41 @@ public class Controller implements Initializable{
 	    	volume.stop();
 	    	volume.getKeyFrames().clear();
 	    });
+	    
+	    volumeSlider.setFocusTraversable(true);
 
+	}
+	
+	public void enterArea() {
+		
+		isExited = false;
+		
+		volumeSliderEnter();
+	}
+	
+	public void exitArea() {
+		
+		isExited = true;
+		
+		volumeSliderExit();
 	}
 	
 	public void volumeSliderExit() {
 		// hide volume slider
 		
-		volume.stop();
+		if(isExited && !sliderFocus) {
+		
+		//volume.stop();
 		
 		volume = new Timeline();
 		
-		volume.getKeyFrames().clear();
+		//volume.getKeyFrames().clear();
 		
 		volume.getKeyFrames().add(new KeyFrame(Duration.millis(100),
 				new KeyValue(volumeSlider.translateXProperty(), -60, Interpolator.EASE_OUT)));
+		
+		volume.getKeyFrames().add(new KeyFrame(Duration.millis(100),
+				new KeyValue(durationLabel.translateXProperty(), -60, Interpolator.EASE_OUT)));
 		
 	    volume.play();
 	    
@@ -292,6 +344,10 @@ public class Controller implements Initializable{
 			volume.getKeyFrames().clear();
 
 	    });
+	    
+	    volumeSlider.setFocusTraversable(false);
+	    
+		}
 		
 	}
 	

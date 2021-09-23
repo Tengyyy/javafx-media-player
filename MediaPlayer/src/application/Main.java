@@ -65,6 +65,7 @@ public class Main extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Media Player");
 			primaryStage.show();
+
 			
 		} catch(Exception e) {
 			e.printStackTrace();
