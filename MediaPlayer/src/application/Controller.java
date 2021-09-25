@@ -3,6 +3,8 @@ package application;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -10,6 +12,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
@@ -57,7 +60,7 @@ public class Controller implements Initializable{
 	Pane playPane;
 	
 	@FXML
-	Slider volumeSlider;
+	Slider volumeSlider, durationSlider;
 	
 	@FXML
 	FlowPane volumeSliderPane;
@@ -93,6 +96,16 @@ public class Controller implements Initializable{
 	
 	boolean sliderFocus = false;
 	
+	boolean running = false; // media running status
+	
+	int videoLength;
+	int currLength = 0;
+	
+	Timer durationTimer;
+	TimerTask durationTimerTask;
+	
+	String durationString;
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		
@@ -102,11 +115,16 @@ public class Controller implements Initializable{
 		
 		durationLabel.setTranslateX(-60);
 		
+		
 		volumeSlider.setFocusTraversable(false);
 		
 		file = new File("hey.mp4");
 		media = new Media(file.toURI().toString());
+		
+		
 		mediaPlayer = new MediaPlayer(media);
+		
+		//mediaPlayer.get
 		
 		
 		// declaring media control images
@@ -189,6 +207,23 @@ public class Controller implements Initializable{
 		
 		//mediaView.requestFocus();
 		
+		mediaPlayer.setOnReady(new Runnable() {
+
+			@Override
+			public void run() {
+				
+				videoLength = (int) Math.round(media.getDuration().toSeconds());
+				
+				
+				durationString = String.format("%02d:%02d/%02d:%02d", currLength/60, currLength%60, videoLength/60, videoLength%60);
+				
+				durationLabel.setText(durationString);
+				
+				durationSlider.setMax(videoLength);
+			}
+			
+		});
+		
 	}
 	
 	public void mediaClick() {
@@ -204,12 +239,61 @@ public class Controller implements Initializable{
 			mediaPlayer.play();
 			playing = true;
 			playLogo.setImage(new Image(playFile.toURI().toString()));
+			startTimer();
 		}
 		else {
 			mediaPlayer.pause();
 			playing = false;
 			playLogo.setImage(new Image(pauseFile.toURI().toString()));
+			endTimer();
 		}
+	}
+	
+	// timer to update video duration label and progress bar
+	public void startTimer() {
+		durationTimer = new Timer();
+		
+		durationTimerTask = new TimerTask() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				running = true;
+				currLength = (int) Math.round(mediaPlayer.getCurrentTime().toSeconds());
+				videoLength = (int) Math.round(media.getDuration().toSeconds());
+				
+				durationString = String.format("%02d:%02d/%02d:%02d", currLength/60, currLength%60, videoLength/60, videoLength%60);
+				
+				
+				
+				// Timer thread can't directly access GUI elements created by the main fx thread so this method sends a request to update the duration label to the main thread
+				Platform.runLater(new Runnable(){
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						
+						durationLabel.setText(durationString);
+						
+						durationSlider.setValue(currLength);
+						
+					}
+					});
+
+				
+				if(mediaPlayer.getCurrentTime().toSeconds()/media.getDuration().toSeconds() >= 1) { // can maybe change this to currLength/videoLength (not sure)
+					endTimer();
+				}
+			}
+			
+		};
+		
+		durationTimer.scheduleAtFixedRate(durationTimerTask, 0, 1000);
+	}
+	
+	public void endTimer() {
+		running = false;
+		durationTimer.cancel();
 	}
 	
 	public void displayControls() {
