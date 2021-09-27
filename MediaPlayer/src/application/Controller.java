@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
 
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -15,6 +16,7 @@ import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.Property;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -73,6 +75,9 @@ public class Controller implements Initializable{
 	private MediaPlayer mediaPlayer;
 	
 	private boolean playing;
+	private boolean wasPlaying;
+	
+	private boolean atEnd = false;
 	
 	private DoubleProperty mediaViewWidth;
 	private DoubleProperty mediaViewHeight;
@@ -103,8 +108,7 @@ public class Controller implements Initializable{
 	
 	Timer durationTimer;
 	TimerTask durationTimerTask;
-	
-	String durationString;
+
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -164,6 +168,8 @@ public class Controller implements Initializable{
 		playLogo.setImage(start);
 		playButton.setBackground(Background.EMPTY);
 		
+		playButton.setOnAction((e) -> playOrPause());
+		
 		fullScreenIcon.setImage(maximize);
 		fullScreenButton.setBackground(Background.EMPTY);
 		
@@ -188,10 +194,59 @@ public class Controller implements Initializable{
 				else {
 					volumeIcon.setImage(volumeUp);
 				}
+			}
+			
+		});
+		
+		durationSlider.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				
+				bindCurrentTimeLabel();
+				
+				if(Math.abs(mediaPlayer.getCurrentTime().toSeconds() - newValue.doubleValue()) > 0.5)	{
+					mediaPlayer.seek(Duration.seconds(newValue.doubleValue()));
+					
+				
+				}
+			}
+			
+		});
+		
+		durationSlider.valueChangingProperty().addListener(new ChangeListener<Boolean>() { // vaja ära fixida see jama
+
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				
+				bindCurrentTimeLabel();
+				
+				if(wasPlaying) {
+					
+					if(newValue) {
+						mediaPlayer.pause();
+						playing = false;
+						playLogo.setImage(new Image(pauseFile.toURI().toString()));
+						endTimer();
+						mediaPlayer.seek(Duration.seconds(durationSlider.getValue()));
+					}
+					else if(!newValue) {
+						mediaPlayer.play();
+						playing = true;
+						playLogo.setImage(new Image(playFile.toURI().toString()));
+						startTimer();
+					}
+				}
+				else {
+					if(!newValue) {
+						mediaPlayer.seek(Duration.seconds(durationSlider.getValue()));
+					}
+				}
 				
 			}
 			
 		});
+		
 		
 		volumeSlider.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 			
@@ -212,17 +267,33 @@ public class Controller implements Initializable{
 			@Override
 			public void run() {
 				
-				videoLength = (int) Math.round(media.getDuration().toSeconds());
+				durationSlider.setMax(media.getDuration().toSeconds());
 				
+				bindCurrentTimeLabel();
 				
-				durationString = String.format("%02d:%02d/%02d:%02d", currLength/60, currLength%60, videoLength/60, videoLength%60);
-				
-				durationLabel.setText(durationString);
-				
-				durationSlider.setMax(videoLength);
 			}
 			
 		});
+		
+		mediaPlayer.setOnEndOfMedia(new Runnable() {
+
+			@Override
+			public void run() {
+				atEnd = true;
+				
+				playing = false;
+				
+				endTimer();
+				
+				playLogo.setImage(new Image());
+				
+				playButton.setOnAction((e) -> replayMedia());
+				
+			}
+			
+		});
+		
+		
 		
 	}
 	
@@ -240,14 +311,31 @@ public class Controller implements Initializable{
 			playing = true;
 			playLogo.setImage(new Image(playFile.toURI().toString()));
 			startTimer();
+			
+			wasPlaying = playing;
 		}
 		else {
 			mediaPlayer.pause();
 			playing = false;
 			playLogo.setImage(new Image(pauseFile.toURI().toString()));
 			endTimer();
+			
+			wasPlaying = playing;
 		}
 	}
+	
+	
+	// TODO: Create method to replay media, which will run when clicking on play-pause-reset button after the current media has reached the end
+	public void replayMedia() {
+		mediaPlayer.seek(Duration.ZERO);
+		mediaPlayer.play();
+		playing = true;
+		atEnd = false;
+		
+		playButton.setOnAction((e) -> playOrPause());
+		
+	}
+	
 	
 	// timer to update video duration label and progress bar
 	public void startTimer() {
@@ -259,12 +347,6 @@ public class Controller implements Initializable{
 			public void run() {
 				// TODO Auto-generated method stub
 				running = true;
-				currLength = (int) Math.round(mediaPlayer.getCurrentTime().toSeconds());
-				videoLength = (int) Math.round(media.getDuration().toSeconds());
-				
-				durationString = String.format("%02d:%02d/%02d:%02d", currLength/60, currLength%60, videoLength/60, videoLength%60);
-				
-				
 				
 				// Timer thread can't directly access GUI elements created by the main fx thread so this method sends a request to update the duration label to the main thread
 				Platform.runLater(new Runnable(){
@@ -273,17 +355,14 @@ public class Controller implements Initializable{
 					public void run() {
 						// TODO Auto-generated method stub
 						
-						durationLabel.setText(durationString);
+						Duration currentTime = mediaPlayer.getCurrentTime();
+
 						
-						durationSlider.setValue(currLength);
+						
+						durationSlider.setValue(currentTime.toSeconds());
 						
 					}
 					});
-
-				
-				if(mediaPlayer.getCurrentTime().toSeconds()/media.getDuration().toSeconds() >= 1) { // can maybe change this to currLength/videoLength (not sure)
-					endTimer();
-				}
 			}
 			
 		};
@@ -456,6 +535,39 @@ public class Controller implements Initializable{
 		}
 		
 	}
+	
+	public String getTime(Duration time) { // this has to be finished before moving on to binding the duration label
+
+        int hours = (int) time.toHours();
+        int minutes = (int) time.toMinutes();
+        int seconds = (int) time.toSeconds();
+
+        // Fix the issue with the timer going to 61 and above for seconds, minutes, and hours.
+        if (seconds > 59) seconds = seconds % 60;
+        if (minutes > 59) minutes = minutes % 60;
+        if (hours > 59) hours = hours % 60;
+
+        // Don't show the hours unless the video has been playing for an hour or longer.
+        if (hours > 0) return String.format("%d:%02d:%02d",
+                hours,
+                minutes,
+                seconds);
+        else return String.format("%02d:%02d",
+                minutes,
+                seconds);
+    }
+	
+	public void bindCurrentTimeLabel() {
+	        
+	        durationLabel.textProperty().bind(Bindings.createStringBinding(new Callable<String>() {
+	            @Override
+	        	public String call() throws Exception {
+	           
+	                return getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration());
+	            }
+	        }, mediaPlayer.currentTimeProperty()));
+	    }
+
 	
 	
 }

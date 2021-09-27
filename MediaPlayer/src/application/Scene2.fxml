@@ -32,7 +32,7 @@
                <children>
                   <HBox fx:id="settingsBox1" alignment="CENTER_LEFT" onMouseExited="#exitArea" prefHeight="100.0" prefWidth="350.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <Button fx:id="playButton" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#playOrPause" prefHeight="36.0" prefWidth="52.0" style="-fx-padding: 0;">
+                        <Button fx:id="playButton" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="36.0" prefWidth="52.0" style="-fx-padding: 0;">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>

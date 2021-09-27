@@ -1,9 +1,11 @@
 package application;
 	
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -65,6 +67,19 @@ public class Main extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Media Player");
 			primaryStage.show();
+			
+			primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>(){
+
+				@Override
+				public void handle(WindowEvent event) {
+					// TODO Auto-generated method stub
+					
+					Platform.exit();
+					System.exit(0);
+					
+				}
+				
+			});
 
 			
 		} catch(Exception e) {
