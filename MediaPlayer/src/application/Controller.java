@@ -26,6 +26,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -76,6 +77,8 @@ public class Controller implements Initializable{
 	
 	private boolean playing;
 	private boolean wasPlaying;
+	private boolean randomBool;
+	
 	
 	private boolean atEnd = false;
 	
@@ -89,7 +92,7 @@ public class Controller implements Initializable{
 
 	private Image start;
 	
-	private File maximizeFile, minimizeFile, playFile, pauseFile, startFile, volumeUpFile, volumeDownFile, volumeMuteFile;
+	private File maximizeFile, minimizeFile, playFile, pauseFile, startFile, volumeUpFile, volumeDownFile, volumeMuteFile, replayFile, pauseImageFile;
 	
 	Timeline fullscreenTimeline;
 	
@@ -141,6 +144,9 @@ public class Controller implements Initializable{
 		volumeUpFile = new File("src/application/volumeUp.png");
 		volumeDownFile = new File("src/application/volumeDown.png");
 		volumeMuteFile = new File("src/application/volumeMute.png");
+		
+		replayFile = new File("src/application/replay.png");
+		pauseImageFile = new File("src/application/pause.png");
 		
 		
 		
@@ -198,6 +204,10 @@ public class Controller implements Initializable{
 			
 		});
 		
+		durationSlider.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> durationSlider.setValueChanging(true));
+		durationSlider.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> durationSlider.setValueChanging(false));
+		
+		
 		durationSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
@@ -205,11 +215,26 @@ public class Controller implements Initializable{
 				
 				bindCurrentTimeLabel();
 				
+				if(atEnd) {
+					atEnd = false;
+					playLogo.setImage(new Image(pauseImageFile.toURI().toString()));
+					//playing = true;
+					
+					playButton.setOnAction((e) -> {
+						playOrPause();
+					});
+				}
+				if(randomBool) {
+					
+				}
+				
 				if(Math.abs(mediaPlayer.getCurrentTime().toSeconds() - newValue.doubleValue()) > 0.5)	{
 					mediaPlayer.seek(Duration.seconds(newValue.doubleValue()));
 					
 				
 				}
+				
+				
 			}
 			
 		});
@@ -222,26 +247,57 @@ public class Controller implements Initializable{
 				bindCurrentTimeLabel();
 				
 				if(wasPlaying) {
+					if(randomBool) {
+						if(newValue) {
+							//mediaPlayer.play();
+							Platform.runLater(new Runnable() {
+
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+									mediaPlayer.pause();
+								}
+								
+							});
+							
+							playing = false;
+							playLogo.setImage(new Image(pauseFile.toURI().toString()));
+							//endTimer();
+							mediaPlayer.seek(Duration.seconds(durationSlider.getValue()));
+							System.out.println(newValue);
+							//randomBool = false;
+						}
+						else if(!newValue) {
+							mediaPlayer.play();
+							playing = true;
+							playLogo.setImage(new Image(pauseImageFile.toURI().toString()));
+						}
+					}
 					
-					if(newValue) {
-						mediaPlayer.pause();
-						playing = false;
-						playLogo.setImage(new Image(pauseFile.toURI().toString()));
-						endTimer();
+					else {
+						if(newValue) {
+						
+							mediaPlayer.pause();
+							playing = false;
+							playLogo.setImage(new Image(pauseFile.toURI().toString()));
+							//endTimer();
+							mediaPlayer.seek(Duration.seconds(durationSlider.getValue()));
+						}
+						else if(!newValue) {
+							mediaPlayer.play();
+							playing = true;
+							playLogo.setImage(new Image(playFile.toURI().toString()));
+							//startTimer();
+							}
+						}
+					}
+					else {
 						mediaPlayer.seek(Duration.seconds(durationSlider.getValue()));
+						if(!newValue) {
+							mediaPlayer.play();
+						}
+				
 					}
-					else if(!newValue) {
-						mediaPlayer.play();
-						playing = true;
-						playLogo.setImage(new Image(playFile.toURI().toString()));
-						startTimer();
-					}
-				}
-				else {
-					if(!newValue) {
-						mediaPlayer.seek(Duration.seconds(durationSlider.getValue()));
-					}
-				}
 				
 			}
 			
@@ -257,10 +313,7 @@ public class Controller implements Initializable{
 			}
 			
 		});
-		
-		//volumeSlider.setVisible(false);
-		
-		//mediaView.requestFocus();
+
 		
 		mediaPlayer.setOnReady(new Runnable() {
 
@@ -271,29 +324,43 @@ public class Controller implements Initializable{
 				
 				bindCurrentTimeLabel();
 				
+				mediaPlayer.play();
+				mediaPlayer.pause();
+				
+				//startTimer();
+				
 			}
 			
 		});
+		
+	    mediaPlayer.currentTimeProperty().addListener(new ChangeListener<Duration>() {
+            @Override
+            public void changed(ObservableValue<? extends Duration> observableValue, Duration oldTime, Duration newTime) {
+                bindCurrentTimeLabel();
+                if (!durationSlider.isValueChanging()) {
+                    durationSlider.setValue(newTime.toSeconds());
+                }
+            }
+        });
 		
 		mediaPlayer.setOnEndOfMedia(new Runnable() {
 
 			@Override
 			public void run() {
 				atEnd = true;
+				randomBool = true;
 				
-				playing = false;
+				//playing = false;
 				
-				endTimer();
+				//endTimer();
 				
-				playLogo.setImage(new Image());
+				playLogo.setImage(new Image(replayFile.toURI().toString()));
 				
 				playButton.setOnAction((e) -> replayMedia());
 				
 			}
 			
 		});
-		
-		
 		
 	}
 	
@@ -309,8 +376,8 @@ public class Controller implements Initializable{
 		if(!playing) {
 			mediaPlayer.play();
 			playing = true;
+			//startTimer();
 			playLogo.setImage(new Image(playFile.toURI().toString()));
-			startTimer();
 			
 			wasPlaying = playing;
 		}
@@ -318,19 +385,22 @@ public class Controller implements Initializable{
 			mediaPlayer.pause();
 			playing = false;
 			playLogo.setImage(new Image(pauseFile.toURI().toString()));
-			endTimer();
+			//endTimer();
 			
 			wasPlaying = playing;
 		}
 	}
 	
 	
-	// TODO: Create method to replay media, which will run when clicking on play-pause-reset button after the current media has reached the end
+	// TODO: Fix bug when using duration slider to scroll back in the video after the video has already ended. 
 	public void replayMedia() {
 		mediaPlayer.seek(Duration.ZERO);
 		mediaPlayer.play();
 		playing = true;
 		atEnd = false;
+		playLogo.setImage(new Image(pauseImageFile.toURI().toString()));
+		
+		//startTimer();
 		
 		playButton.setOnAction((e) -> playOrPause());
 		
@@ -338,7 +408,7 @@ public class Controller implements Initializable{
 	
 	
 	// timer to update video duration label and progress bar
-	public void startTimer() {
+	/*public void startTimer() {
 		durationTimer = new Timer();
 		
 		durationTimerTask = new TimerTask() {
@@ -356,9 +426,6 @@ public class Controller implements Initializable{
 						// TODO Auto-generated method stub
 						
 						Duration currentTime = mediaPlayer.getCurrentTime();
-
-						
-						
 						durationSlider.setValue(currentTime.toSeconds());
 						
 					}
@@ -367,13 +434,13 @@ public class Controller implements Initializable{
 			
 		};
 		
-		durationTimer.scheduleAtFixedRate(durationTimerTask, 0, 1000);
-	}
+		durationTimer.scheduleAtFixedRate(durationTimerTask, 0, 100);
+	}*/
 	
-	public void endTimer() {
+	/*public void endTimer() {
 		running = false;
 		durationTimer.cancel();
-	}
+	}*/
 	
 	public void displayControls() {
 		
@@ -385,7 +452,7 @@ public class Controller implements Initializable{
 			slide.setNode(controlBar);
 										
 			slide.setToY(0);
-			System.out.println(mediaView.getFitHeight());
+			
 			slide.play();
 			controlBar.setTranslateY(-50);
 		}
@@ -396,7 +463,6 @@ public class Controller implements Initializable{
 			slide.setNode(controlBar);
 					
 			slide.setToY(50);
-			System.out.println(mediaView.getFitHeight());
 			slide.play();
 			controlBar.setTranslateY(0);
 		}
