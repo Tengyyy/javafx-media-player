@@ -51,10 +51,10 @@ public class Controller implements Initializable{
 	VBox controlBar;
 	
 	@FXML
-	Button fullScreenButton, playButton, volumeButton;
+	Button fullScreenButton, playButton, volumeButton, settingsButton;
 	
 	@FXML
-	ImageView playLogo, fullScreenIcon, volumeIcon;
+	ImageView playLogo, fullScreenIcon, volumeIcon, settingsIcon;
 	
 	@FXML
 	StackPane pane;
@@ -73,14 +73,14 @@ public class Controller implements Initializable{
 	
 	private File file;
 	private Media media;
-	private MediaPlayer mediaPlayer;
+	MediaPlayer mediaPlayer;
 	
 	private boolean playing;
 	private boolean wasPlaying;
 	private boolean randomBool;
 	
 	
-	private boolean atEnd = false;
+	boolean atEnd = false;
 	
 	private DoubleProperty mediaViewWidth;
 	private DoubleProperty mediaViewHeight;
@@ -101,6 +101,8 @@ public class Controller implements Initializable{
 	boolean muted = false;
 	
 	boolean isExited = false;
+	
+	boolean settingsOpen = false;
 	
 	boolean sliderFocus = false;
 	
@@ -179,6 +181,8 @@ public class Controller implements Initializable{
 		fullScreenIcon.setImage(maximize);
 		fullScreenButton.setBackground(Background.EMPTY);
 		
+		settingsButton.setBackground(Background.EMPTY);
+		
 		volumeButton.setBackground(Background.EMPTY);
 		volumeIcon.setImage(volumeUp);
 		
@@ -215,6 +219,8 @@ public class Controller implements Initializable{
 				
 				bindCurrentTimeLabel();
 				
+				
+				
 				if(atEnd) {
 					atEnd = false;
 					playLogo.setImage(new Image(pauseImageFile.toURI().toString()));
@@ -223,6 +229,19 @@ public class Controller implements Initializable{
 					playButton.setOnAction((e) -> {
 						playOrPause();
 					});
+				}
+				else if(newValue.doubleValue() >= durationSlider.getMax()) {
+					durationSlider.setValue(newValue.doubleValue());
+					atEnd = true;
+					randomBool = true;
+					
+					//playing = false;
+					
+					//endTimer();
+					
+					playLogo.setImage(new Image(replayFile.toURI().toString()));
+					
+					playButton.setOnAction((e) -> replayMedia());
 				}
 				if(randomBool) {
 					
@@ -240,18 +259,14 @@ public class Controller implements Initializable{
 		});
 		
 		durationSlider.valueChangingProperty().addListener(new ChangeListener<Boolean>() { // vaja ära fixida see jama
-
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				
 				bindCurrentTimeLabel();
-				
 				if(wasPlaying) {
 					if(randomBool) {
 						if(newValue) {
 							//mediaPlayer.play();
 							Platform.runLater(new Runnable() {
-
 								@Override
 								public void run() {
 									// TODO Auto-generated method stub
@@ -365,7 +380,15 @@ public class Controller implements Initializable{
 	}
 	
 	public void mediaClick() {
+		
+		if(atEnd) {
+			replayMedia();
+		}
+		else {
 		playOrPause();
+		}
+		
+		
 		mediaView.requestFocus();
 	}
 	
@@ -405,42 +428,7 @@ public class Controller implements Initializable{
 		playButton.setOnAction((e) -> playOrPause());
 		
 	}
-	
-	
-	// timer to update video duration label and progress bar
-	/*public void startTimer() {
-		durationTimer = new Timer();
-		
-		durationTimerTask = new TimerTask() {
 
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				running = true;
-				
-				// Timer thread can't directly access GUI elements created by the main fx thread so this method sends a request to update the duration label to the main thread
-				Platform.runLater(new Runnable(){
-
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						
-						Duration currentTime = mediaPlayer.getCurrentTime();
-						durationSlider.setValue(currentTime.toSeconds());
-						
-					}
-					});
-			}
-			
-		};
-		
-		durationTimer.scheduleAtFixedRate(durationTimerTask, 0, 100);
-	}*/
-	
-	/*public void endTimer() {
-		running = false;
-		durationTimer.cancel();
-	}*/
 	
 	public void displayControls() {
 		
@@ -509,6 +497,17 @@ public class Controller implements Initializable{
 		
 		fullScreenIcon.scaleXProperty().set(1);
 		fullScreenIcon.scaleYProperty().set(1);
+	}
+	
+	public void openCloseSettings() {
+		if(settingsOpen) {
+			System.out.println("Closing settings menu");
+			settingsOpen = false;
+		}
+		else {
+			System.out.println("Opening settings menu");
+			settingsOpen = true;
+		}
 	}
 	
 	public void volumeSliderEnter() {

@@ -24,7 +24,7 @@
       </MediaView>
       <VBox fx:id="controlBar" alignment="BOTTOM_CENTER" maxHeight="50.0" prefHeight="50.0" prefWidth="600.0" style="-fx-background-color: transparent;" StackPane.alignment="BOTTOM_CENTER">
          <children>
-            <Slider fx:id="durationSlider" prefWidth="600.0">
+            <Slider fx:id="durationSlider" blockIncrement="5.0" prefWidth="600.0">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Slider>
@@ -56,7 +56,7 @@
                         </Button>
                         <FlowPane fx:id="volumeSliderPane" alignment="CENTER" prefHeight="36.0" prefWidth="60.0">
                            <children>
-                              <Slider fx:id="volumeSlider" maxHeight="-Infinity" maxWidth="60.0" minHeight="-Infinity" minWidth="0.0" prefHeight="10.0" prefWidth="60.0" value="50.0">
+                              <Slider fx:id="volumeSlider" blockIncrement="5.0" maxHeight="-Infinity" maxWidth="60.0" minHeight="-Infinity" minWidth="0.0" prefHeight="10.0" prefWidth="60.0" value="50.0">
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
@@ -72,6 +72,14 @@
                   </HBox>
                   <HBox alignment="CENTER_RIGHT" prefHeight="36.0" prefWidth="250.0" HBox.hgrow="ALWAYS">
                      <children>
+                        <Button fx:id="settingsButton" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#openCloseSettings" prefHeight="36.0" prefWidth="46.0" style="-fx-padding: 0;">
+                           <graphic>
+                              <ImageView fx:id="settingsIcon" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" />
+                           </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
                         <Button fx:id="fullScreenButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#fullScreen" onMouseEntered="#fullScreenEnter" onMouseExited="#fullSreenExit" prefHeight="36.0" prefWidth="46.0" style="-fx-padding: 0;">
                            <cursor>
                               <Cursor fx:constant="HAND" />

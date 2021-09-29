@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -38,7 +39,37 @@ public class Main extends Application {
 				public void handle(KeyEvent event) {
 					
 					switch(event.getCode()) {
-						case SPACE:	controller.playOrPause();
+						case SPACE:	{
+							
+							if(controller.atEnd) {
+								controller.replayMedia();
+							}
+							else {
+								controller.playOrPause();
+							}
+						}
+						break;
+						
+						case RIGHT: {
+							if(!controller.volumeSlider.focusedProperty().get() && !controller.atEnd) {
+								controller.mediaPlayer.seek(Duration.seconds(controller.mediaPlayer.getCurrentTime().toSeconds() + 5));
+							}
+						}
+						break;
+						
+						case LEFT: {
+							if(!controller.volumeSlider.focusedProperty().get()) {
+								
+								if(controller.mediaPlayer.getCurrentTime().toSeconds() > 5.0) {
+									controller.mediaPlayer.seek(Duration.seconds(controller.mediaPlayer.getCurrentTime().toSeconds() - 5));
+
+								}
+								else {
+									controller.mediaPlayer.seek(Duration.ZERO);
+								}
+																
+							}
+						}
 						break;
 						
 						default: System.out.println(event.getCode());
@@ -63,6 +94,7 @@ public class Main extends Application {
 	            	controller.fullScreenIcon.setImage(controller.maximize);
 	            }
 	        });
+			
 			
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Media Player");
