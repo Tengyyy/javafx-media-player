@@ -60,7 +60,7 @@ public class Controller implements Initializable{
 	StackPane pane;
 	
 	@FXML
-	Pane playPane;
+	Pane playPane, settingsPane;
 	
 	@FXML
 	Slider volumeSlider, durationSlider;
@@ -69,7 +69,7 @@ public class Controller implements Initializable{
 	FlowPane volumeSliderPane;
 	
 	@FXML
-	Label durationLabel;
+	Label durationLabel, playbackValueLabel;
 	
 	private File file;
 	private Media media;
@@ -85,14 +85,15 @@ public class Controller implements Initializable{
 	private DoubleProperty mediaViewWidth;
 	private DoubleProperty mediaViewHeight;
 	
-	Image maximize, minimize, volumeUp, volumeDown, volumeMute;
+	Image maximize, minimize, volumeUp, volumeDown, volumeMute, settingsEnter, settingsExit, settingsImage, rightArrow;
 	
 	double volumeValue;
 
 
 	private Image start;
 	
-	private File maximizeFile, minimizeFile, playFile, pauseFile, startFile, volumeUpFile, volumeDownFile, volumeMuteFile, replayFile, pauseImageFile;
+	private File maximizeFile, minimizeFile, playFile, pauseFile, startFile, volumeUpFile, volumeDownFile, volumeMuteFile, replayFile, pauseImageFile, settingsEnterFile, settingsExitFile, settingsImageFile, rightArrowFile;
+
 	
 	Timeline fullscreenTimeline;
 	
@@ -150,7 +151,11 @@ public class Controller implements Initializable{
 		replayFile = new File("src/application/replay.png");
 		pauseImageFile = new File("src/application/pause.png");
 		
+		settingsEnterFile = new File("src/application/settingsMenuOpen.gif");
+		settingsExitFile = new File("src/application/settingsMenuClose.gif");
+		settingsImageFile = new File("src/application/settingsMenuImage.png");
 		
+		rightArrowFile = new File("src/application/rightArrow.png");
 		
 		maximize = new Image(maximizeFile.toURI().toString());
 		minimize = new Image(minimizeFile.toURI().toString());
@@ -159,6 +164,12 @@ public class Controller implements Initializable{
 		volumeUp = new Image(volumeUpFile.toURI().toString());
 		volumeDown = new Image(volumeDownFile.toURI().toString());
 		volumeMute = new Image(volumeMuteFile.toURI().toString());
+		
+		rightArrow = new Image(rightArrowFile.toURI().toString());
+		
+
+		settingsImage = new Image(settingsImageFile.toURI().toString());
+
 		
 		// Make mediaView adjust to frame size
 		mediaViewWidth = mediaView.fitWidthProperty();
@@ -173,6 +184,8 @@ public class Controller implements Initializable{
 		
 		pane.setStyle("-fx-background-color: rgb(24,24,24)");
 		
+		settingsPane.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
+		
 		playLogo.setImage(start);
 		playButton.setBackground(Background.EMPTY);
 		
@@ -182,9 +195,12 @@ public class Controller implements Initializable{
 		fullScreenButton.setBackground(Background.EMPTY);
 		
 		settingsButton.setBackground(Background.EMPTY);
+		settingsIcon.setImage(settingsImage);
 		
 		volumeButton.setBackground(Background.EMPTY);
 		volumeIcon.setImage(volumeUp);
+		
+		playbackValueLabel.setGraphic(new ImageView(rightArrow));
 		
 		volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
@@ -501,11 +517,13 @@ public class Controller implements Initializable{
 	
 	public void openCloseSettings() {
 		if(settingsOpen) {
-			System.out.println("Closing settings menu");
+			settingsExit = new Image(settingsExitFile.toURI().toString());
+			settingsIcon.setImage(settingsExit);
 			settingsOpen = false;
 		}
 		else {
-			System.out.println("Opening settings menu");
+			settingsEnter = new Image(settingsEnterFile.toURI().toString());
+			settingsIcon.setImage(settingsEnter);
 			settingsOpen = true;
 		}
 	}

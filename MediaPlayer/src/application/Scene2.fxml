@@ -10,6 +10,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.media.MediaView?>
@@ -105,5 +106,40 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
+      <Pane fx:id="settingsPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="100.0" minWidth="235.0" prefHeight="100.0" prefWidth="235.0" StackPane.alignment="BOTTOM_RIGHT">
+         <StackPane.margin>
+            <Insets bottom="60.0" right="10.0" />
+         </StackPane.margin>
+         <children>
+            <VBox alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="100.0" minWidth="235.0" prefHeight="100.0" prefWidth="235.0">
+               <children>
+                  <HBox prefHeight="50.0" prefWidth="235.0" />
+                  <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="235.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Label prefHeight="50.0" prefWidth="135.0" text="Playback speed" textFill="WHITE" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="playbackValueLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="50.0" prefWidth="100.0" text="Normal" textFill="WHITE" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </Pane>
    </children>
 </StackPane>
