@@ -48,7 +48,10 @@ public class Controller implements Initializable{
 	public MediaView mediaView;
 	
 	@FXML
-	VBox controlBar;
+	VBox controlBar, settingsHome;
+	
+	@FXML
+	HBox playbackSpeedBox, playbackOptionsBox, directoryBox;
 	
 	@FXML
 	Button fullScreenButton, playButton, volumeButton, settingsButton;
@@ -60,6 +63,9 @@ public class Controller implements Initializable{
 	StackPane pane;
 	
 	@FXML
+	FlowPane settingsBackgroundPane;
+	
+	@FXML
 	Pane playPane, settingsPane;
 	
 	@FXML
@@ -69,7 +75,7 @@ public class Controller implements Initializable{
 	FlowPane volumeSliderPane;
 	
 	@FXML
-	Label durationLabel, playbackValueLabel;
+	Label durationLabel, playbackValueLabel, changeDirectoryLabel, playbackOptionsArrow;
 	
 	private File file;
 	private Media media;
@@ -201,6 +207,10 @@ public class Controller implements Initializable{
 		volumeIcon.setImage(volumeUp);
 		
 		playbackValueLabel.setGraphic(new ImageView(rightArrow));
+		
+		changeDirectoryLabel.setGraphic(new ImageView(rightArrow));
+		
+		playbackOptionsArrow.setGraphic(new ImageView(rightArrow));
 		
 		volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
@@ -393,6 +403,46 @@ public class Controller implements Initializable{
 			
 		});
 		
+		
+		// On-hover effect for setting tab items
+		//////////////////////////////////////////////////
+		playbackSpeedBox.setOnMouseEntered((e) -> {
+			hoverEffectOn(playbackSpeedBox);
+		});
+		playbackSpeedBox.setOnMouseExited((e) -> {
+			hoverEffectOff(playbackSpeedBox);
+		});
+		
+		
+		
+		playbackOptionsBox.setOnMouseEntered((e) -> {
+			hoverEffectOn(playbackOptionsBox);
+		});
+		playbackOptionsBox.setOnMouseExited((e) -> {
+			hoverEffectOff(playbackOptionsBox);
+		});
+		
+		
+		
+		directoryBox.setOnMouseEntered((e) -> {
+			hoverEffectOn(directoryBox);
+		});
+		directoryBox.setOnMouseExited((e) -> {
+			hoverEffectOff(directoryBox);
+		});
+		
+		settingsBackgroundPane.setPickOnBounds(false);
+		//////////////////////////////////////////////////
+		
+		// Clipping for the settings pane
+		Rectangle rectangle = new Rectangle(settingsBackgroundPane.getWidth(), settingsBackgroundPane.getHeight());
+		rectangle.widthProperty().bind(settingsBackgroundPane.widthProperty());
+		rectangle.heightProperty().bind(settingsBackgroundPane.heightProperty());
+		settingsBackgroundPane.setClip(rectangle);
+		System.out.println(rectangle.getWidth());
+		System.out.println(rectangle.getHeight());
+		settingsPane.setTranslateY(170);
+				 
 	}
 	
 	public void mediaClick() {
@@ -520,11 +570,13 @@ public class Controller implements Initializable{
 			settingsExit = new Image(settingsExitFile.toURI().toString());
 			settingsIcon.setImage(settingsExit);
 			settingsOpen = false;
+			settingsPane.setTranslateY(170);
 		}
 		else {
 			settingsEnter = new Image(settingsEnterFile.toURI().toString());
 			settingsIcon.setImage(settingsEnter);
 			settingsOpen = true;
+			settingsPane.setTranslateY(0);
 		}
 	}
 	
@@ -650,6 +702,14 @@ public class Controller implements Initializable{
 	            }
 	        }, mediaPlayer.currentTimeProperty()));
 	    }
+	
+	public void hoverEffectOn(HBox setting) {
+		setting.setStyle("-fx-background-color: rgba(73,73,73,0.8)");
+	}
+	
+	public void hoverEffectOff(HBox setting) {
+		setting.setStyle("-fx-background-color: rgba(83,83,83,0)");
+	}
 
 	
 	
