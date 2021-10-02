@@ -52,7 +52,14 @@ public class Main extends Application {
 						
 						case RIGHT: {
 							if(!controller.volumeSlider.focusedProperty().get() && !controller.atEnd) {
-								controller.mediaPlayer.seek(Duration.seconds(controller.mediaPlayer.getCurrentTime().toSeconds() + 5));
+								
+								if(controller.durationSlider.getValue() + 5 >= controller.durationSlider.getMax()) {
+									controller.durationSlider.setValue(controller.durationSlider.getMax());
+								}
+								else {
+									controller.durationSlider.setValue(controller.durationSlider.getValue() + 5);
+								}
+								
 							}
 						}
 						break;
@@ -61,11 +68,11 @@ public class Main extends Application {
 							if(!controller.volumeSlider.focusedProperty().get()) {
 								
 								if(controller.mediaPlayer.getCurrentTime().toSeconds() > 5.0) {
-									controller.mediaPlayer.seek(Duration.seconds(controller.mediaPlayer.getCurrentTime().toSeconds() - 5));
+									controller.durationSlider.setValue(controller.durationSlider.getValue() - 5);
 
 								}
 								else {
-									controller.mediaPlayer.seek(Duration.ZERO);
+									controller.durationSlider.setValue(0);
 								}
 																
 							}

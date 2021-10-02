@@ -7,9 +7,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
 
+import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
@@ -81,9 +83,8 @@ public class Controller implements Initializable{
 	private Media media;
 	MediaPlayer mediaPlayer;
 	
-	private boolean playing;
-	private boolean wasPlaying;
-	private boolean randomBool;
+	private boolean playing = false;
+	private boolean wasPlaying = false;
 	
 	
 	boolean atEnd = false;
@@ -234,7 +235,26 @@ public class Controller implements Initializable{
 			
 		});
 		
-		durationSlider.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> durationSlider.setValueChanging(true));
+		 /**
+         * totalDurationProperty() - the total amount of play time if allowed to play until finished.
+         * This checks how long the the video attached to the media player is.
+         * If the media attached to the media player changes then the max of the slider will change as well.
+         */
+		 mediaPlayer.totalDurationProperty().addListener(new ChangeListener<Duration>() {
+	            @Override
+	            public void changed(ObservableValue<? extends Duration> observableValue, Duration oldDuration, Duration newDuration) {
+	            	
+	                // Note that duration is originally in milliseconds.
+	                // newDuration is the time of the current video, oldDuration is the duration of the previous video.
+	            	
+	            	
+	                durationSlider.setMax(newDuration.toSeconds());
+	               // labelTotalTime.setText(getTime(newDuration));
+
+	            }
+	        });
+		
+		durationSlider.addEventFilter(MouseEvent.DRAG_DETECTED, e -> durationSlider.setValueChanging(true));
 		durationSlider.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> durationSlider.setValueChanging(false));
 		
 		
@@ -249,8 +269,23 @@ public class Controller implements Initializable{
 				
 				if(atEnd) {
 					atEnd = false;
-					playLogo.setImage(new Image(pauseImageFile.toURI().toString()));
-					//playing = true;
+					
+					if(wasPlaying) {
+						playLogo.setImage(new Image(pauseImageFile.toURI().toString()));
+						
+						if(!durationSlider.isValueChanging()) {
+							playing = true;
+							mediaPlayer.play();
+						}
+					}
+					else {
+						playLogo.setImage(new Image(startFile.toURI().toString()));
+						playing = false;
+					}
+					
+					
+					
+
 					
 					playButton.setOnAction((e) -> {
 						playOrPause();
@@ -259,18 +294,15 @@ public class Controller implements Initializable{
 				else if(newValue.doubleValue() >= durationSlider.getMax()) {
 					durationSlider.setValue(newValue.doubleValue());
 					atEnd = true;
-					randomBool = true;
 					
-					//playing = false;
+					System.out.println(atEnd);
 					
-					//endTimer();
+					playing = false;
+
 					
 					playLogo.setImage(new Image(replayFile.toURI().toString()));
 					
 					playButton.setOnAction((e) -> replayMedia());
-				}
-				if(randomBool) {
-					
 				}
 				
 				if(Math.abs(mediaPlayer.getCurrentTime().toSeconds() - newValue.doubleValue()) > 0.5)	{
@@ -284,14 +316,13 @@ public class Controller implements Initializable{
 			
 		});
 		
+		
 		durationSlider.valueChangingProperty().addListener(new ChangeListener<Boolean>() { // vaja ära fixida see jama
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				bindCurrentTimeLabel();
 				if(wasPlaying) {
-					if(randomBool) {
-						if(newValue) {
-							//mediaPlayer.play();
+						if(newValue && !atEnd) {
 							Platform.runLater(new Runnable() {
 								@Override
 								public void run() {
@@ -303,42 +334,30 @@ public class Controller implements Initializable{
 							
 							playing = false;
 							playLogo.setImage(new Image(pauseFile.toURI().toString()));
-							//endTimer();
-							mediaPlayer.seek(Duration.seconds(durationSlider.getValue()));
-							System.out.println(newValue);
-							//randomBool = false;
+
+							//mediaPlayer.seek(Duration.seconds(durationSlider.getValue()));
+
 						}
-						else if(!newValue) {
+						else if(!newValue && !atEnd){
 							mediaPlayer.play();
 							playing = true;
-							playLogo.setImage(new Image(pauseImageFile.toURI().toString()));
+							playLogo.setImage(new Image(playFile.toURI().toString()));
 						}
 					}
 					
 					else {
 						if(newValue) {
 						
-							mediaPlayer.pause();
-							playing = false;
-							playLogo.setImage(new Image(pauseFile.toURI().toString()));
-							//endTimer();
-							mediaPlayer.seek(Duration.seconds(durationSlider.getValue()));
+
+							//playLogo.setImage(new Image(pauseFile.toURI().toString()));
+
+							//mediaPlayer.seek(Duration.seconds(durationSlider.getValue()));
 						}
-						else if(!newValue) {
-							mediaPlayer.play();
-							playing = true;
-							playLogo.setImage(new Image(playFile.toURI().toString()));
-							//startTimer();
-							}
+
 						}
-					}
-					else {
+					
 						mediaPlayer.seek(Duration.seconds(durationSlider.getValue()));
-						if(!newValue) {
-							mediaPlayer.play();
-						}
-				
-					}
+
 				
 			}
 			
@@ -388,12 +407,16 @@ public class Controller implements Initializable{
 
 			@Override
 			public void run() {
-				atEnd = true;
-				randomBool = true;
+				//atEnd = true;
 				
-				//playing = false;
+				durationSlider.setValue(durationSlider.getMax());
 				
-				//endTimer();
+				if(!durationLabel.textProperty().getValue().equals(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()))) {
+					
+					durationLabel.textProperty().unbind();
+					durationLabel.setText(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()));
+				}
+
 				
 				playLogo.setImage(new Image(replayFile.toURI().toString()));
 				
@@ -439,8 +462,7 @@ public class Controller implements Initializable{
 		rectangle.widthProperty().bind(settingsBackgroundPane.widthProperty());
 		rectangle.heightProperty().bind(settingsBackgroundPane.heightProperty());
 		settingsBackgroundPane.setClip(rectangle);
-		System.out.println(rectangle.getWidth());
-		System.out.println(rectangle.getHeight());
+
 		settingsPane.setTranslateY(170);
 				 
 	}
@@ -454,7 +476,6 @@ public class Controller implements Initializable{
 		playOrPause();
 		}
 		
-		
 		mediaView.requestFocus();
 	}
 	
@@ -465,19 +486,18 @@ public class Controller implements Initializable{
 		if(!playing) {
 			mediaPlayer.play();
 			playing = true;
-			//startTimer();
+
 			playLogo.setImage(new Image(playFile.toURI().toString()));
-			
-			wasPlaying = playing;
+
 		}
 		else {
 			mediaPlayer.pause();
 			playing = false;
 			playLogo.setImage(new Image(pauseFile.toURI().toString()));
-			//endTimer();
-			
-			wasPlaying = playing;
+
 		}
+		
+		wasPlaying = playing;
 	}
 	
 	
@@ -492,6 +512,7 @@ public class Controller implements Initializable{
 		//startTimer();
 		
 		playButton.setOnAction((e) -> playOrPause());
+		
 		
 	}
 
@@ -570,13 +591,44 @@ public class Controller implements Initializable{
 			settingsExit = new Image(settingsExitFile.toURI().toString());
 			settingsIcon.setImage(settingsExit);
 			settingsOpen = false;
-			settingsPane.setTranslateY(170);
+
+			FadeTransition fadeTransition = new FadeTransition(Duration.millis(100), settingsPane);
+			fadeTransition.setFromValue(0.8f);
+			fadeTransition.setToValue(0.0f);
+			fadeTransition.setCycleCount(1);
+			
+			
+			TranslateTransition translateTransition = new TranslateTransition(Duration.millis(100), settingsPane);
+			translateTransition.setFromY(0);
+			translateTransition.setToY(170);
+			translateTransition.setCycleCount(1);
+			
+			ParallelTransition parallelTransition = new ParallelTransition();
+			parallelTransition.getChildren().addAll(fadeTransition, translateTransition);
+			parallelTransition.setCycleCount(1);
+			parallelTransition.play();
+			
 		}
 		else {
 			settingsEnter = new Image(settingsEnterFile.toURI().toString());
 			settingsIcon.setImage(settingsEnter);
 			settingsOpen = true;
-			settingsPane.setTranslateY(0);
+			
+			FadeTransition fadeTransition = new FadeTransition(Duration.millis(100), settingsPane);
+			fadeTransition.setFromValue(0.0f);
+			fadeTransition.setToValue(0.8f);
+			fadeTransition.setCycleCount(1);
+			
+			
+			TranslateTransition translateTransition = new TranslateTransition(Duration.millis(100), settingsPane);
+			translateTransition.setFromY(170);
+			translateTransition.setToY(0);
+			translateTransition.setCycleCount(1);
+			
+			ParallelTransition parallelTransition = new ParallelTransition();
+			parallelTransition.getChildren().addAll(fadeTransition, translateTransition);
+			parallelTransition.setCycleCount(1);
+			parallelTransition.play();
 		}
 	}
 	
