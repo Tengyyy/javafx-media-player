@@ -25,7 +25,7 @@
       </MediaView>
       <VBox fx:id="controlBar" alignment="BOTTOM_CENTER" maxHeight="50.0" prefHeight="50.0" prefWidth="600.0" style="-fx-background-color: transparent;" StackPane.alignment="BOTTOM_CENTER">
          <children>
-            <Slider fx:id="durationSlider" blockIncrement="5.0" prefWidth="600.0">
+            <Slider fx:id="durationSlider" blockIncrement="5.0" focusTraversable="false" pickOnBounds="false" prefWidth="600.0">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Slider>
@@ -64,7 +64,7 @@
                               </Slider>
                            </children>
                         </FlowPane>
-                        <Label fx:id="durationLabel" prefHeight="27.0" prefWidth="135.0" text="Label" textFill="WHITE">
+                        <Label fx:id="durationLabel" focusTraversable="false" prefHeight="27.0" prefWidth="135.0" text="Label" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -117,12 +117,12 @@
                      <children>
                         <HBox fx:id="playbackOptionsBox" prefHeight="50.0" prefWidth="235.0">
                            <children>
-                              <Label prefHeight="50.0" prefWidth="125.0" text="Playback options" textFill="WHITE">
+                              <Label focusTraversable="false" prefHeight="50.0" prefWidth="125.0" text="Playback options" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="playbackOptionsArrow" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="50.0" prefWidth="90.0" textFill="WHITE">
+                              <Label fx:id="playbackOptionsArrow" alignment="CENTER_RIGHT" contentDisplay="RIGHT" focusTraversable="false" prefHeight="50.0" prefWidth="90.0" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
@@ -140,12 +140,12 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                            <children>
-                              <Label contentDisplay="RIGHT" prefHeight="50.0" prefWidth="125.0" text="Change directory" textFill="WHITE">
+                              <Label contentDisplay="RIGHT" focusTraversable="false" prefHeight="50.0" prefWidth="125.0" text="Change directory" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="changeDirectoryLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="50.0" prefWidth="90.0" text="Videos" textFill="WHITE">
+                              <Label fx:id="changeDirectoryLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" focusTraversable="false" prefHeight="50.0" prefWidth="90.0" text="Videos" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
@@ -157,12 +157,12 @@
                         </HBox>
                         <HBox fx:id="playbackSpeedBox" alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="235.0">
                            <children>
-                              <Label prefHeight="50.0" prefWidth="125.0" text="Playback speed" textFill="WHITE" HBox.hgrow="ALWAYS">
+                              <Label focusTraversable="false" prefHeight="50.0" prefWidth="125.0" text="Playback speed" textFill="WHITE" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="playbackValueLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="50.0" prefWidth="90.0" text="Normal" textFill="WHITE" HBox.hgrow="ALWAYS">
+                              <Label fx:id="playbackValueLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" focusTraversable="false" prefHeight="50.0" prefWidth="90.0" text="Normal" textFill="WHITE" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font size="15.0" />
                                  </font>

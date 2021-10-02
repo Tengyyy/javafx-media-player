@@ -2,6 +2,7 @@ package application;
 
 import java.io.File;
 import java.net.URL;
+import java.util.EnumSet;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -23,11 +24,14 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.FlowPane;
@@ -86,6 +90,8 @@ public class Controller implements Initializable{
 	private boolean playing = false;
 	private boolean wasPlaying = false;
 	
+	private boolean tempBool = false;
+	
 	
 	boolean atEnd = false;
 	
@@ -141,6 +147,8 @@ public class Controller implements Initializable{
 		
 		mediaPlayer = new MediaPlayer(media);
 		
+		
+		
 		//mediaPlayer.get
 		
 		
@@ -195,6 +203,8 @@ public class Controller implements Initializable{
 		
 		playLogo.setImage(start);
 		playButton.setBackground(Background.EMPTY);
+
+		
 		
 		playButton.setOnAction((e) -> playOrPause());
 		
@@ -258,6 +268,7 @@ public class Controller implements Initializable{
 		durationSlider.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> durationSlider.setValueChanging(false));
 		
 		
+		
 		durationSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
@@ -294,10 +305,13 @@ public class Controller implements Initializable{
 				else if(newValue.doubleValue() >= durationSlider.getMax()) {
 					durationSlider.setValue(newValue.doubleValue());
 					atEnd = true;
+					tempBool = true;
 					
 					System.out.println(atEnd);
 					
 					playing = false;
+					
+					mediaPlayer.pause();
 
 					
 					playLogo.setImage(new Image(replayFile.toURI().toString()));
@@ -322,7 +336,30 @@ public class Controller implements Initializable{
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				bindCurrentTimeLabel();
 				if(wasPlaying) {
-						if(newValue && !atEnd) {
+					
+					if(!newValue && tempBool &&!atEnd) {
+						mediaPlayer.play();
+						playing = true;
+						playLogo.setImage(new Image(pauseImageFile.toURI().toString()));
+						tempBool = false;
+						
+						System.out.println("su ema");
+					}
+					
+					else if(newValue && tempBool){
+						
+						
+						Platform.runLater(new Runnable() {
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								mediaPlayer.pause();
+							}
+							
+						});
+					}
+					
+					else if(newValue && !atEnd) {
 							Platform.runLater(new Runnable() {
 								@Override
 								public void run() {
@@ -338,10 +375,23 @@ public class Controller implements Initializable{
 							//mediaPlayer.seek(Duration.seconds(durationSlider.getValue()));
 
 						}
-						else if(!newValue && !atEnd){
+					else if(!newValue && !atEnd){
 							mediaPlayer.play();
 							playing = true;
 							playLogo.setImage(new Image(playFile.toURI().toString()));
+						}
+						
+					else if(newValue && tempBool){
+							
+							
+							Platform.runLater(new Runnable() {
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+									mediaPlayer.pause();
+								}
+								
+							});
 						}
 					}
 					

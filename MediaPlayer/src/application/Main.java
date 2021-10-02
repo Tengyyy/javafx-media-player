@@ -19,6 +19,9 @@ public class Main extends Application {
 	
 	public static Stage stage;
 	
+	public EventHandler<KeyEvent> eventHandler;
+
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -31,27 +34,31 @@ public class Main extends Application {
 			
 			Scene scene = new Scene(root, 600, 400);
 			
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());		
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());	
 			
-			scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			eventHandler = new EventHandler<KeyEvent>() {
 
 				@Override
 				public void handle(KeyEvent event) {
+					// TODO Auto-generated method stub
 					
 					switch(event.getCode()) {
 						case SPACE:	{
 							
-							if(controller.atEnd) {
+							if(!controller.playButton.isFocused()) {
+								if(controller.atEnd) {
 								controller.replayMedia();
-							}
-							else {
+								}
+								else {
 								controller.playOrPause();
+								}
 							}
+							
 						}
 						break;
 						
-						case RIGHT: {
-							if(!controller.volumeSlider.focusedProperty().get() && !controller.atEnd) {
+						case D: {
+							if(!controller.atEnd) {
 								
 								if(controller.durationSlider.getValue() + 5 >= controller.durationSlider.getMax()) {
 									controller.durationSlider.setValue(controller.durationSlider.getMax());
@@ -64,8 +71,8 @@ public class Main extends Application {
 						}
 						break;
 						
-						case LEFT: {
-							if(!controller.volumeSlider.focusedProperty().get()) {
+						case A: {
+
 								
 								if(controller.mediaPlayer.getCurrentTime().toSeconds() > 5.0) {
 									controller.durationSlider.setValue(controller.durationSlider.getValue() - 5);
@@ -74,18 +81,24 @@ public class Main extends Application {
 								else {
 									controller.durationSlider.setValue(0);
 								}
-																
-							}
+
 						}
 						break;
 						
 						default: System.out.println(event.getCode());
 						
+						
+						
 					}
+
 					
 				}
 				
-			});
+			};
+			
+			scene.setOnKeyPressed(eventHandler);
+			controller.playButton.setOnKeyPressed(eventHandler);
+			
 			
 			Main.stage = primaryStage;
 			
