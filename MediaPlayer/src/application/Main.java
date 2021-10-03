@@ -97,7 +97,6 @@ public class Main extends Application {
 			};
 			
 			scene.setOnKeyPressed(eventHandler);
-			controller.playButton.setOnKeyPressed(eventHandler);
 			
 			
 			Main.stage = primaryStage;
