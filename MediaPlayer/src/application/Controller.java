@@ -60,7 +60,7 @@ public class Controller implements Initializable {
 	HBox playbackSpeedBox, playbackOptionsBox, directoryBox, durationSliderBox;
 
 	@FXML
-	Button fullScreenButton, playButton, volumeButton, settingsButton, menuButton;
+	Button fullScreenButton, playButton, volumeButton, settingsButton, menuButton, nextVideoButton;
 
 	@FXML
 	ImageView playLogo, fullScreenIcon, volumeIcon, settingsIcon;
@@ -123,6 +123,8 @@ public class Controller implements Initializable {
 
 	int videoLength;
 	int currLength = 0;
+	
+	int focusNodeTracker = 0;
 
 	Timer durationTimer;
 	TimerTask durationTimerTask;
@@ -190,6 +192,8 @@ public class Controller implements Initializable {
 		pane.setStyle("-fx-background-color: rgb(24,24,24)");
 
 		settingsPane.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
+		
+		menuButton.setBackground(Background.EMPTY);
 
 		playLogo.setImage(start);
 		playButton.setBackground(Background.EMPTY);
@@ -381,6 +385,51 @@ public class Controller implements Initializable {
 			}
 
 		});
+		
+		mediaView.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+			if(!newValue) {
+				mediaView.setStyle("-fx-border-color: transparent;");
+			}
+			else {
+				focusNodeTracker = 0;
+			}
+		});
+		
+		durationSlider.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+			if(!newValue) {
+				durationSlider.setStyle("-fx-border-color: transparent;");
+			}
+			else {
+				focusNodeTracker = 1;
+			}
+		});
+		
+		playButton.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+			if(!newValue) {
+				playButton.setStyle("-fx-border-color: transparent;");
+			}
+			else {
+				focusNodeTracker = 2;
+			}
+		});
+		
+		nextVideoButton.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+			if(!newValue) {
+				nextVideoButton.setStyle("-fx-border-color: transparent;");
+			}
+			else {
+				focusNodeTracker = 3;
+			}
+		});
+		
+		volumeButton.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+			if(!newValue) {
+				volumeButton.setStyle("-fx-border-color: transparent;");
+			}
+			else {
+				focusNodeTracker = 4;
+			}
+		});
 
 		volumeSlider.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 
@@ -388,13 +437,47 @@ public class Controller implements Initializable {
 
 					if (!newValue) {
 						volumeSliderExit();
+						
+						volumeSlider.setStyle("-fx-border-color: transparent;");
+						
+						
 					} else {
 						volumeSliderEnter();
 						isExited = true;
-
+						focusNodeTracker = 5;
 					}
 
 				});
+		
+		settingsButton.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+			if(!newValue) {
+				settingsButton.setStyle("-fx-border-color: transparent;");
+			}
+			else {
+				focusNodeTracker = 6;
+			}
+		});
+		
+		fullScreenButton.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+			if(!newValue) {
+				fullScreenButton.setStyle("-fx-border-color: transparent;");
+			}
+			else {
+				focusNodeTracker = 7;
+			}
+		});
+		
+		menuButton.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+			if(!newValue) {
+				menuButton.setStyle("-fx-border-color: transparent;");
+			}
+			else {
+				focusNodeTracker = 8;
+			}
+		});
+		
+		
+		//TODO: Add focuslisteners for all 9 traversable nodes
 
 		mediaPlayer.setOnReady(new Runnable() {
 
@@ -641,8 +724,6 @@ public class Controller implements Initializable {
 			parallelTransition.getChildren().addAll(fadeTransition, translateTransition);
 			parallelTransition.setCycleCount(1);
 			parallelTransition.play();
-
-			playbackSpeedBox.requestFocus();
 		}
 	}
 
@@ -771,6 +852,152 @@ public class Controller implements Initializable {
 
 	public void hoverEffectOff(HBox setting) {
 		setting.setStyle("-fx-background-color: rgba(83,83,83,0)");
+	}
+
+	public void traverseFocusForwards() {
+		
+		switch(focusNodeTracker) {
+		
+			// mediaView
+			case 0: {
+				menuButton.setStyle("-fx-border-color: transparent;");
+				mediaView.setStyle("-fx-border-color: blue;");
+			}
+				break;
+		
+			// durationSlider
+			case 1: {
+				mediaView.setStyle("-fx-border-color: transparent;");
+				durationSlider.setStyle("-fx-border-color: blue;");
+			}
+			break;
+			
+			// playButton
+			case 2: {
+				durationSlider.setStyle("-fx-border-color: transparent;");
+				playButton.setStyle("-fx-border-color: blue;");
+			}
+			break;
+			
+			// nextVideoButton
+			case 3: {
+				playButton.setStyle("-fx-border-color: transparent;");
+				nextVideoButton.setStyle("-fx-border-color: blue;");
+			}
+			break;
+			
+			// muteButton
+			case 4: {
+				nextVideoButton.setStyle("-fx-border-color: transparent;");
+				volumeButton.setStyle("-fx-border-color: blue;");
+			}
+			break;
+			
+			// volumeSlider
+			case 5: {
+				volumeButton.setStyle("-fx-border-color: transparent;");
+				volumeSlider.setStyle("-fx-border-color: blue;");
+			}
+			break;
+			
+			// settingsButton
+			case 6: {
+				volumeSlider.setStyle("-fx-border-color: transparent;");
+				settingsButton.setStyle("-fx-border-color: blue;");
+			}
+			break;
+			
+			// fullscreenButton
+			case 7: {
+				settingsButton.setStyle("-fx-border-color: transparent;");
+				fullScreenButton.setStyle("-fx-border-color: blue;");
+			}
+			break;
+			
+			// menuButton
+			case 8: {
+				fullScreenButton.setStyle("-fx-border-color: transparent;");
+				menuButton.setStyle("-fx-border-color: blue;");
+			}
+			break;
+			
+			default: break;
+		
+		}
+		
+	}
+	
+	public void traverseFocusBackwards() {
+		
+		switch(focusNodeTracker) {
+		
+			// mediaView
+			case 0: {
+				durationSlider.setStyle("-fx-border-color: transparent;");
+				mediaView.setStyle("-fx-border-color: blue;");
+			}
+				break;
+		
+			// durationSlider
+			case 1: {
+				playButton.setStyle("-fx-border-color: transparent;");
+				durationSlider.setStyle("-fx-border-color: blue;");
+			}
+			break;
+			
+			// playButton
+			case 2: {
+				nextVideoButton.setStyle("-fx-border-color: transparent;");
+				playButton.setStyle("-fx-border-color: blue;");
+			}
+			break;
+			
+			// nextVideoButton
+			case 3: {
+				volumeButton.setStyle("-fx-border-color: transparent;");
+				nextVideoButton.setStyle("-fx-border-color: blue;");
+			}
+			break;
+			
+			// muteButton
+			case 4: {
+				volumeSlider.setStyle("-fx-border-color: transparent;");
+				volumeButton.setStyle("-fx-border-color: blue;");
+			}
+			break;
+			
+			// volumeSlider
+			case 5: {
+				settingsButton.setStyle("-fx-border-color: transparent;");
+				volumeSlider.setStyle("-fx-border-color: blue;");
+			}
+			break;
+			
+			// settingsButton
+			case 6: {
+				fullScreenButton.setStyle("-fx-border-color: transparent;");
+				settingsButton.setStyle("-fx-border-color: blue;");
+			}
+			break;
+			
+			// fullscreenButton
+			case 7: {
+				menuButton.setStyle("-fx-border-color: transparent;");
+				fullScreenButton.setStyle("-fx-border-color: blue;");
+			}
+			break;
+			
+			// menuButton
+			case 8: {
+				mediaView.setStyle("-fx-border-color: transparent;");
+				menuButton.setStyle("-fx-border-color: blue;");
+			}
+			break;
+			
+			default: break;
+		
+		}
+		
 	}
 
 }

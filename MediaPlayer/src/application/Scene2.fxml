@@ -18,7 +18,7 @@
 
 <StackPane fx:id="pane" focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@focusStyles.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
-      <MediaView fx:id="mediaView" focusTraversable="true" onMouseClicked="#mediaClick" StackPane.alignment="CENTER">
+      <MediaView fx:id="mediaView" focusTraversable="true" onMouseClicked="#mediaClick" styleClass="focusableProperty" StackPane.alignment="CENTER">
          <viewport>
             <Rectangle2D />
          </viewport>
@@ -44,7 +44,7 @@
                            <graphic>
                               <ImageView fx:id="playLogo" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" />
                            </graphic></Button>
-                        <Button layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="focusableProperty" text="Button">
+                        <Button fx:id="nextVideoButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="focusableProperty" text="Button">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor></Button>
@@ -72,7 +72,7 @@
                         </Label>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER_RIGHT" prefHeight="36.0" prefWidth="250.0" HBox.hgrow="ALWAYS">
+                  <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" prefHeight="36.0" prefWidth="250.0" HBox.hgrow="ALWAYS">
                      <children>
                         <Button fx:id="settingsButton" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#openCloseSettings" prefHeight="36.0" prefWidth="46.0" style="-fx-padding: 0;" styleClass="focusableProperty">
                            <graphic>
@@ -95,7 +95,7 @@
             </HBox>
          </children>
       </VBox>
-      <Button fx:id="menuButton" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" style="-fx-padding: 0; -fx-background-color: transparent;" styleClass="focusableProperty" StackPane.alignment="TOP_LEFT">
+      <Button fx:id="menuButton" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" style="-fx-padding: 0;" styleClass="focusableProperty" StackPane.alignment="TOP_LEFT">
          <graphic>
             <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -116,7 +116,7 @@
                <children>
                   <VBox fx:id="settingsHome" alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="170.0" minWidth="235.0" prefHeight="170.0" prefWidth="235.0">
                      <children>
-                        <HBox fx:id="playbackOptionsBox" focusTraversable="true" prefHeight="50.0" prefWidth="235.0">
+                        <HBox fx:id="playbackOptionsBox" prefHeight="50.0" prefWidth="235.0">
                            <children>
                               <Label focusTraversable="false" prefHeight="50.0" prefWidth="125.0" text="Playback options" textFill="WHITE">
                                  <font>
@@ -136,7 +136,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </HBox>
-                        <HBox fx:id="directoryBox" alignment="CENTER_LEFT" focusTraversable="true" prefHeight="50.0" prefWidth="235.0">
+                        <HBox fx:id="directoryBox" alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="235.0">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
@@ -156,7 +156,7 @@
                               <Insets left="10.0" right="10.0" />
                            </padding>
                         </HBox>
-                        <HBox fx:id="playbackSpeedBox" alignment="CENTER_LEFT" focusTraversable="true" prefHeight="50.0" prefWidth="235.0">
+                        <HBox fx:id="playbackSpeedBox" alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="235.0">
                            <children>
                               <Label focusTraversable="false" prefHeight="50.0" prefWidth="125.0" text="Playback speed" textFill="WHITE" HBox.hgrow="ALWAYS">
                                  <font>
