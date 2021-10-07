@@ -64,7 +64,7 @@ public class Controller implements Initializable {
 	Button fullScreenButton, playButton, volumeButton, settingsButton, menuButton, nextVideoButton;
 
 	@FXML
-	ImageView playLogo, fullScreenIcon, volumeIcon, settingsIcon;
+	ImageView playLogo, fullScreenIcon, volumeIcon, settingsIcon, nextVideoIcon;
 
 	@FXML
 	StackPane pane;
@@ -100,7 +100,7 @@ public class Controller implements Initializable {
 	private DoubleProperty mediaViewWidth;
 	private DoubleProperty mediaViewHeight;
 
-	Image maximize, minimize, volumeUp, volumeDown, volumeMute, settingsEnter, settingsExit, settingsImage, rightArrow;
+	Image maximize, minimize, volumeUp, volumeDown, volumeMute, settingsEnter, settingsExit, settingsImage, rightArrow, nextVideo;
 
 	double volumeValue;
 
@@ -108,7 +108,7 @@ public class Controller implements Initializable {
 
 	private File maximizeFile, minimizeFile, playFile, pauseFile, startFile, volumeUpFile, volumeDownFile,
 			volumeMuteFile, pauseImageFile, settingsEnterFile, settingsExitFile, settingsImageFile,
-			rightArrowFile;
+			rightArrowFile, nextVideoFile;
 	
 	File replayFile;
 
@@ -171,6 +171,10 @@ public class Controller implements Initializable {
 		settingsImageFile = new File("src/application/settingsMenuImage.png");
 
 		rightArrowFile = new File("src/application/rightArrow.png");
+		
+		nextVideoFile = new File("src/application/nextMedia.png");
+		
+		nextVideo = new Image(nextVideoFile.toURI().toString());
 
 		maximize = new Image(maximizeFile.toURI().toString());
 		minimize = new Image(minimizeFile.toURI().toString());
@@ -202,6 +206,9 @@ public class Controller implements Initializable {
 
 		playLogo.setImage(start);
 		playButton.setBackground(Background.EMPTY);
+		
+		nextVideoButton.setBackground(Background.EMPTY);
+		nextVideoIcon.setImage(nextVideo);
 
 		playButton.setOnAction((e) -> playOrPause());
 

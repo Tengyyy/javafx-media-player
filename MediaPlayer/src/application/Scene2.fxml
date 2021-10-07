@@ -44,10 +44,13 @@
                            <graphic>
                               <ImageView fx:id="playLogo" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" />
                            </graphic></Button>
-                        <Button fx:id="nextVideoButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="focusableProperty" text="Button">
+                        <Button fx:id="nextVideoButton" layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" mnemonicParsing="false" prefHeight="36.0" prefWidth="52.0" style="-fx-padding: 0;" styleClass="focusableProperty">
                            <cursor>
                               <Cursor fx:constant="HAND" />
-                           </cursor></Button>
+                           </cursor>
+                           <graphic>
+                              <ImageView fx:id="nextVideoIcon" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" />
+                           </graphic></Button>
                         <Button fx:id="volumeButton" mnemonicParsing="false" onAction="#mute" onMouseEntered="#enterArea" prefHeight="36.0" prefWidth="52.0" style="-fx-padding: 0;" styleClass="focusableProperty">
                            <graphic>
                               <ImageView fx:id="volumeIcon" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" />
