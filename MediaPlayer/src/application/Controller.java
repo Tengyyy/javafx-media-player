@@ -17,6 +17,7 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.Property;
@@ -84,15 +85,17 @@ public class Controller implements Initializable {
 	Label durationLabel, playbackValueLabel, changeDirectoryLabel, playbackOptionsArrow;
 
 	private File file;
-	private Media media;
+	Media media;
 	MediaPlayer mediaPlayer;
 
-	private boolean playing = false;
-	private boolean wasPlaying = false;
+	boolean playing = false;
+	boolean wasPlaying = false;
 
-	private boolean tempBool = false;
+	boolean tempBool = false;
 
 	boolean atEnd = false;
+	
+	boolean seekedToEnd = false;
 
 	private DoubleProperty mediaViewWidth;
 	private DoubleProperty mediaViewHeight;
@@ -104,8 +107,10 @@ public class Controller implements Initializable {
 	private Image start;
 
 	private File maximizeFile, minimizeFile, playFile, pauseFile, startFile, volumeUpFile, volumeDownFile,
-			volumeMuteFile, replayFile, pauseImageFile, settingsEnterFile, settingsExitFile, settingsImageFile,
+			volumeMuteFile, pauseImageFile, settingsEnterFile, settingsExitFile, settingsImageFile,
 			rightArrowFile;
+	
+	File replayFile;
 
 	Timeline fullscreenTimeline;
 
@@ -263,48 +268,7 @@ public class Controller implements Initializable {
 
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-
-				bindCurrentTimeLabel();
-
-				if (atEnd) {
-					atEnd = false;
-
-					if (wasPlaying) {
-						playLogo.setImage(new Image(pauseImageFile.toURI().toString()));
-
-						if (!durationSlider.isValueChanging()) {
-							playing = true;
-							mediaPlayer.play();
-						}
-					} else {
-						playLogo.setImage(new Image(startFile.toURI().toString()));
-						playing = false;
-					}
-
-					playButton.setOnAction((e) -> {
-						playOrPause();
-					});
-				} else if (newValue.doubleValue() >= durationSlider.getMax()) {
-					durationSlider.setValue(newValue.doubleValue());
-					atEnd = true;
-					tempBool = true;
-
-					System.out.println(atEnd);
-
-					playing = false;
-
-					mediaPlayer.pause();
-
-					playLogo.setImage(new Image(replayFile.toURI().toString()));
-
-					playButton.setOnAction((e) -> replayMedia());
-				}
-
-				if (Math.abs(mediaPlayer.getCurrentTime().toSeconds() - newValue.doubleValue()) > 0.5) {
-					mediaPlayer.seek(Duration.seconds(newValue.doubleValue()));
-
-				}
-
+				updateMedia(newValue.doubleValue());
 			}
 
 		});
@@ -320,8 +284,6 @@ public class Controller implements Initializable {
 						playing = true;
 						playLogo.setImage(new Image(pauseImageFile.toURI().toString()));
 						tempBool = false;
-
-						System.out.println("su ema");
 					}
 
 					else if (newValue && tempBool) {
@@ -512,23 +474,11 @@ public class Controller implements Initializable {
 
 			@Override
 			public void run() {
-				// atEnd = true;
+				// TODO Auto-generated method stub
 
-				durationSlider.setValue(durationSlider.getMax());
-
-				if (!durationLabel.textProperty().getValue()
-						.equals(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()))) {
-
-					durationLabel.textProperty().unbind();
-					durationLabel.setText(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()));
-				}
-
-				playLogo.setImage(new Image(replayFile.toURI().toString()));
-
-				playButton.setOnAction((e) -> replayMedia());
-
+					endMedia();
 			}
-
+			
 		});
 
 		// On-hover effect for setting tab items
@@ -999,5 +949,75 @@ public class Controller implements Initializable {
 		}
 		
 	}
+	
+	public void updateMedia(double newValue) {
+
+		bindCurrentTimeLabel();
+
+		if (atEnd) {
+			atEnd = false;
+
+			if (wasPlaying) {
+				playLogo.setImage(new Image(pauseImageFile.toURI().toString()));
+
+				if (!durationSlider.isValueChanging()) {
+					playing = true;
+					mediaPlayer.play();
+				}
+			} else {
+				playLogo.setImage(new Image(startFile.toURI().toString()));
+				playing = false;
+			}
+
+			playButton.setOnAction((e) -> {
+				playOrPause();
+			});
+		} else if (newValue >= durationSlider.getMax()) {
+			//durationSlider.setValue(durationSlider.getMax());
+			atEnd = true;
+			
+			
+				//endMedia();
+				seekedToEnd = false;
+			tempBool = true;
+
+
+			playing = false;
+
+			mediaPlayer.pause();
+
+			playLogo.setImage(new Image(replayFile.toURI().toString()));
+
+			playButton.setOnAction((e) -> replayMedia());
+		}
+
+		if (Math.abs(mediaPlayer.getCurrentTime().toSeconds() - newValue) > 0.5) {
+			mediaPlayer.seek(Duration.seconds(newValue));
+
+
+		}
+
+	}
+	
+	public void endMedia() {
+		
+		//System.out.println("TEST");
+
+		durationSlider.setValue(durationSlider.getMax());
+
+		if (!durationLabel.textProperty().getValue().equals(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()))) {
+
+			durationLabel.textProperty().unbind();
+			durationLabel.setText(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()));
+			
+		}
+
+		playLogo.setImage(new Image(replayFile.toURI().toString()));
+
+		playButton.setOnAction((e) -> replayMedia());
+
+
+	}
+
 
 }

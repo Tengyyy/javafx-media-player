@@ -9,6 +9,7 @@ import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
@@ -65,8 +66,8 @@ public class Main extends Application {
 					}
 					break;
 				
-					case D: {
-						if(!controller.atEnd) {
+					case RIGHT: {
+						/*if(!controller.atEnd) {
 						
 							if(controller.durationSlider.getValue() + 5 >= controller.durationSlider.getMax()) {
 							controller.durationSlider.setValue(controller.durationSlider.getMax());
@@ -75,21 +76,21 @@ public class Main extends Application {
 								controller.durationSlider.setValue(controller.durationSlider.getValue() + 5);
 							}
 						
-						}
+						}*/
 					
 					}
 					break;
 				
-					case A: {
+					case LEFT: {
 
 						
-						if(controller.mediaPlayer.getCurrentTime().toSeconds() > 5.0) {
+						/*if(controller.mediaPlayer.getCurrentTime().toSeconds() > 5.0) {
 							controller.durationSlider.setValue(controller.durationSlider.getValue() - 5);
 
 						}
 						else {
 							controller.durationSlider.setValue(0);
-						}
+						}*/
 
 					}
 					break;
@@ -130,6 +131,46 @@ public class Main extends Application {
 						controller.traverseFocusForwards();
 					}
 				}
+				else if(event.getCode() == KeyCode.RIGHT) {
+					
+					if(!controller.volumeSlider.isFocused()) {
+						
+						
+						if(controller.mediaPlayer.getCurrentTime().toSeconds() + 5 >= controller.media.getDuration().toSeconds()) {
+							controller.seekedToEnd = true;
+							controller.mediaPlayer.seek(controller.media.getDuration());
+						}
+						else {
+						controller.durationSlider.setValue(controller.durationSlider.getValue() + 5);
+						}
+						event.consume();
+						
+						
+					}
+
+					
+
+					
+				}
+				else if(event.getCode() == KeyCode.LEFT) {
+					
+					if(!controller.volumeSlider.isFocused()) {
+						if(controller.atEnd) {
+							controller.seekedToEnd = false;
+							controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
+
+						}
+						
+						else {
+							controller.durationSlider.setValue(controller.durationSlider.getValue() - 5.0);
+							//controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
+						}
+
+						
+					}
+				}
+					
+				
 			});
 			
 			
