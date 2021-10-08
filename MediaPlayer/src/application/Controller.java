@@ -14,6 +14,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
+import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -28,6 +29,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -55,10 +57,10 @@ public class Controller implements Initializable {
 	public MediaView mediaView;
 
 	@FXML
-	VBox controlBar, settingsHome;
+	VBox controlBar, settingsHome, playbackSpeedPage;
 
 	@FXML
-	HBox playbackSpeedBox, playbackOptionsBox, directoryBox, durationSliderBox;
+	HBox playbackSpeedBox, playbackOptionsBox, directoryBox, durationSliderBox, playbackSpeedTitle, playbackSpeed1, playbackSpeed2, playbackSpeed3, playbackSpeed4, playbackSpeed5, playbackSpeed6, playbackSpeed7, playbackSpeed8;
 
 	@FXML
 	Button fullScreenButton, playButton, volumeButton, settingsButton, menuButton, nextVideoButton;
@@ -67,13 +69,13 @@ public class Controller implements Initializable {
 	ImageView playLogo, fullScreenIcon, volumeIcon, settingsIcon, nextVideoIcon;
 
 	@FXML
-	StackPane pane;
+	StackPane pane, settingsPane;
 
 	@FXML
-	FlowPane settingsBackgroundPane;
+	Pane settingsBackgroundPane;
 
 	@FXML
-	Pane playPane, settingsPane;
+	Pane playPane;
 
 	@FXML
 	Slider volumeSlider, durationSlider;
@@ -83,6 +85,9 @@ public class Controller implements Initializable {
 
 	@FXML
 	Label durationLabel, playbackValueLabel, changeDirectoryLabel, playbackOptionsArrow;
+	
+	@FXML
+	ScrollPane playbackSpeedScroll;
 
 	private File file;
 	Media media;
@@ -201,6 +206,9 @@ public class Controller implements Initializable {
 		pane.setStyle("-fx-background-color: rgb(24,24,24)");
 
 		settingsPane.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
+		
+		playbackSpeedPage.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
+		playbackSpeedScroll.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 		
 		menuButton.setBackground(Background.EMPTY);
 
@@ -510,9 +518,93 @@ public class Controller implements Initializable {
 		directoryBox.setOnMouseExited((e) -> {
 			hoverEffectOff(directoryBox);
 		});
+		
+		// On-hover effect for playback speed items
+		//////////////////////////////////////////////////
+		
+		playbackSpeedTitle.setOnMouseEntered((e) -> {
+			hoverEffectOn(playbackSpeedTitle);
+		});
+		
+		playbackSpeedTitle.setOnMouseExited((e) -> {
+			hoverEffectOff(playbackSpeedTitle);
+		});
+		
+		
+		playbackSpeed1.setOnMouseEntered((e) -> {
+			hoverEffectOn(playbackSpeed1);
+		});
+		
+		playbackSpeed1.setOnMouseExited((e) -> {
+			hoverEffectOff(playbackSpeed1);
+		});
+
+		playbackSpeed2.setOnMouseEntered((e) -> {
+			hoverEffectOn(playbackSpeed2);
+		});
+		
+		playbackSpeed2.setOnMouseExited((e) -> {
+			hoverEffectOff(playbackSpeed2);
+		});
+		
+		playbackSpeed3.setOnMouseEntered((e) -> {
+			hoverEffectOn(playbackSpeed3);
+		});
+		
+		playbackSpeed3.setOnMouseExited((e) -> {
+			hoverEffectOff(playbackSpeed3);
+		});
+		
+		playbackSpeed4.setOnMouseEntered((e) -> {
+			hoverEffectOn(playbackSpeed4);
+		});
+		
+		playbackSpeed4.setOnMouseExited((e) -> {
+			hoverEffectOff(playbackSpeed4);
+		});
+		
+		playbackSpeed5.setOnMouseEntered((e) -> {
+			hoverEffectOn(playbackSpeed5);
+		});
+		
+		playbackSpeed5.setOnMouseExited((e) -> {
+			hoverEffectOff(playbackSpeed5);
+		});
+		
+		playbackSpeed6.setOnMouseEntered((e) -> {
+			hoverEffectOn(playbackSpeed6);
+		});
+		
+		playbackSpeed6.setOnMouseExited((e) -> {
+			hoverEffectOff(playbackSpeed6);
+		});
+		
+		playbackSpeed7.setOnMouseEntered((e) -> {
+			hoverEffectOn(playbackSpeed7);
+		});
+		
+		playbackSpeed7.setOnMouseExited((e) -> {
+			hoverEffectOff(playbackSpeed7);
+		});
+		
+		playbackSpeed8.setOnMouseEntered((e) -> {
+			hoverEffectOn(playbackSpeed8);
+		});
+		
+		playbackSpeed8.setOnMouseExited((e) -> {
+			hoverEffectOff(playbackSpeed8);
+		});
+		
+		
+		
 
 		settingsBackgroundPane.setPickOnBounds(false);
 		//////////////////////////////////////////////////
+		
+		settingsBackgroundPane.prefWidthProperty().bind(settingsPane.widthProperty());
+		settingsBackgroundPane.prefHeightProperty().bind(settingsPane.heightProperty());
+		
+		
 
 		// Clipping for the settings pane
 		Rectangle rectangle = new Rectangle(settingsBackgroundPane.getWidth(), settingsBackgroundPane.getHeight());
@@ -521,6 +613,7 @@ public class Controller implements Initializable {
 		settingsBackgroundPane.setClip(rectangle);
 
 		settingsPane.setTranslateY(170);
+		
 
 	}
 
@@ -1024,6 +1117,46 @@ public class Controller implements Initializable {
 		playButton.setOnAction((e) -> replayMedia());
 
 
+	}
+	
+	public void openPlaybackSpeedPage() {
+		
+
+		
+		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), settingsHome);
+		translateTransition1.setFromX(0);
+		translateTransition1.setToX(-235);
+		translateTransition1.setCycleCount(1);
+		
+		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(100), playbackSpeedScroll);
+		translateTransition2.setFromX(235);
+		translateTransition2.setToX(0);
+		translateTransition2.setCycleCount(1);
+		
+		Timeline settingsTimeline = new Timeline();
+
+		settingsTimeline.setCycleCount(1);
+		settingsTimeline.setAutoReverse(false);
+		settingsTimeline.getKeyFrames()
+				.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsPane.prefHeightProperty(), mediaView.sceneProperty().get().getHeight() < 575 ? mediaView.sceneProperty().get().getHeight() - 100 : 475 )));
+		
+
+
+		/*settingsTimeline.setOnFinished((e) -> {
+			settingsTimeline.stop();
+			settingsTimeline.getKeyFrames().clear();
+		});*/
+
+		ParallelTransition parallelTransition = new ParallelTransition();
+		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline);
+		parallelTransition.setCycleCount(1);
+		parallelTransition.play();
+
+		/*SequentialTransition seqTrans = new SequentialTransition();
+		seqTrans.getChildren().addAll(parallelTransition, translateTransition2);
+		seqTrans.play();*/
+		
+		//settingsTimeline.play();
 	}
 
 
