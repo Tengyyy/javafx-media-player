@@ -84,7 +84,8 @@ public class Controller implements Initializable {
 	FlowPane volumeSliderPane;
 
 	@FXML
-	Label durationLabel, playbackValueLabel, changeDirectoryLabel, playbackOptionsArrow;
+	Label durationLabel, playbackValueLabel, changeDirectoryLabel, playbackOptionsArrow, playbackSpeedArrow, playbackSpeedTitleLabel, playbackSpeedCustom, checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7, checkBox8;
+
 	
 	@FXML
 	ScrollPane playbackSpeedScroll;
@@ -105,7 +106,7 @@ public class Controller implements Initializable {
 	private DoubleProperty mediaViewWidth;
 	private DoubleProperty mediaViewHeight;
 
-	Image maximize, minimize, volumeUp, volumeDown, volumeMute, settingsEnter, settingsExit, settingsImage, rightArrow, nextVideo;
+	Image maximize, minimize, volumeUp, volumeDown, volumeMute, settingsEnter, settingsExit, settingsImage, rightArrow, nextVideo, leftArrow, check;
 
 	double volumeValue;
 
@@ -113,7 +114,7 @@ public class Controller implements Initializable {
 
 	private File maximizeFile, minimizeFile, playFile, pauseFile, startFile, volumeUpFile, volumeDownFile,
 			volumeMuteFile, pauseImageFile, settingsEnterFile, settingsExitFile, settingsImageFile,
-			rightArrowFile, nextVideoFile;
+			rightArrowFile, nextVideoFile, leftArrowFile, checkFile;
 	
 	File replayFile;
 
@@ -126,6 +127,8 @@ public class Controller implements Initializable {
 	boolean isExited = false;
 
 	boolean settingsOpen = false;
+	
+	boolean playbackSpeedOpen = false;
 
 	boolean sliderFocus = false;
 
@@ -135,6 +138,8 @@ public class Controller implements Initializable {
 	int currLength = 0;
 	
 	int focusNodeTracker = 0;
+	
+	int playbackSpeedTracker = 4;
 
 	Timer durationTimer;
 	TimerTask durationTimerTask;
@@ -177,6 +182,10 @@ public class Controller implements Initializable {
 
 		rightArrowFile = new File("src/application/rightArrow.png");
 		
+		leftArrowFile = new File("src/application/leftArrow.png");
+		
+		checkFile = new File("src/application/check.png");
+		
 		nextVideoFile = new File("src/application/nextMedia.png");
 		
 		nextVideo = new Image(nextVideoFile.toURI().toString());
@@ -190,6 +199,9 @@ public class Controller implements Initializable {
 		volumeMute = new Image(volumeMuteFile.toURI().toString());
 
 		rightArrow = new Image(rightArrowFile.toURI().toString());
+		leftArrow = new Image(leftArrowFile.toURI().toString());
+		
+		check = new Image(checkFile.toURI().toString());
 
 		settingsImage = new Image(settingsImageFile.toURI().toString());
 
@@ -206,6 +218,8 @@ public class Controller implements Initializable {
 		pane.setStyle("-fx-background-color: rgb(24,24,24)");
 
 		settingsPane.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
+
+
 		
 		playbackSpeedPage.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 		playbackSpeedScroll.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
@@ -234,6 +248,11 @@ public class Controller implements Initializable {
 		changeDirectoryLabel.setGraphic(new ImageView(rightArrow));
 
 		playbackOptionsArrow.setGraphic(new ImageView(rightArrow));
+		
+		playbackSpeedArrow.setGraphic(new ImageView(leftArrow));
+		
+		checkBox4.setGraphic(new ImageView(check));
+
 
 		volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
@@ -521,15 +540,7 @@ public class Controller implements Initializable {
 		
 		// On-hover effect for playback speed items
 		//////////////////////////////////////////////////
-		
-		playbackSpeedTitle.setOnMouseEntered((e) -> {
-			hoverEffectOn(playbackSpeedTitle);
-		});
-		
-		playbackSpeedTitle.setOnMouseExited((e) -> {
-			hoverEffectOff(playbackSpeedTitle);
-		});
-		
+
 		
 		playbackSpeed1.setOnMouseEntered((e) -> {
 			hoverEffectOn(playbackSpeed1);
@@ -613,6 +624,242 @@ public class Controller implements Initializable {
 		settingsBackgroundPane.setClip(rectangle);
 
 		settingsPane.setTranslateY(170);
+
+		
+		/////////////////////////////////
+		// mouse listeners for playback speed
+		
+		playbackSpeed1.setOnMouseClicked((e) -> {
+			
+			switch(playbackSpeedTracker) {
+				case 2: checkBox2.setGraphic(null);
+				break;
+				case 3: checkBox3.setGraphic(null);
+				break;
+				case 4: checkBox4.setGraphic(null);
+				break;
+				case 5: checkBox5.setGraphic(null);
+				break;
+				case 6: checkBox6.setGraphic(null);
+				break;
+				case 7: checkBox7.setGraphic(null);
+				break;
+				case 8: checkBox8.setGraphic(null);
+				break;
+				default: break;
+			}
+			
+			playbackSpeedTracker = 1;
+			checkBox1.setGraphic(new ImageView(check));
+			
+			mediaPlayer.setRate(0.25);
+			
+			playbackValueLabel.setText("0.25");
+		});
+		
+		
+		playbackSpeed2.setOnMouseClicked((e) -> {
+			
+			switch(playbackSpeedTracker) {
+				case 1: checkBox1.setGraphic(null);
+				break;
+				case 3: checkBox3.setGraphic(null);
+				break;
+				case 4: checkBox4.setGraphic(null);
+				break;
+				case 5: checkBox5.setGraphic(null);
+				break;
+				case 6: checkBox6.setGraphic(null);
+				break;
+				case 7: checkBox7.setGraphic(null);
+				break;
+				case 8: checkBox8.setGraphic(null);
+				break;
+				default: break;
+			}
+			
+			playbackSpeedTracker = 2;
+			checkBox2.setGraphic(new ImageView(check));
+			
+			mediaPlayer.setRate(0.5);
+			
+			playbackValueLabel.setText("0.5");
+		});
+		
+		
+		playbackSpeed3.setOnMouseClicked((e) -> {
+			
+			switch(playbackSpeedTracker) {
+				case 1: checkBox1.setGraphic(null);
+				break;
+				case 2: checkBox2.setGraphic(null);
+				break;
+				case 4: checkBox4.setGraphic(null);
+				break;
+				case 5: checkBox5.setGraphic(null);
+				break;
+				case 6: checkBox6.setGraphic(null);
+				break;
+				case 7: checkBox7.setGraphic(null);
+				break;
+				case 8: checkBox8.setGraphic(null);
+				break;
+				default: break;
+			}
+			
+			playbackSpeedTracker = 3;
+			checkBox3.setGraphic(new ImageView(check));
+			
+			mediaPlayer.setRate(0.75);
+			
+			playbackValueLabel.setText("0.75");
+		});
+		
+		
+		playbackSpeed4.setOnMouseClicked((e) -> {
+			
+			switch(playbackSpeedTracker) {
+				case 1: checkBox1.setGraphic(null);
+				break;
+				case 2: checkBox2.setGraphic(null);
+				break;
+				case 3: checkBox3.setGraphic(null);
+				break;
+				case 5: checkBox5.setGraphic(null);
+				break;
+				case 6: checkBox6.setGraphic(null);
+				break;
+				case 7: checkBox7.setGraphic(null);
+				break;
+				case 8: checkBox8.setGraphic(null);
+				break;
+				default: break;
+			}
+			
+			playbackSpeedTracker = 4;
+			checkBox4.setGraphic(new ImageView(check));
+			
+			mediaPlayer.setRate(1);
+			
+			playbackValueLabel.setText("Normal");
+		});
+		
+		
+		playbackSpeed5.setOnMouseClicked((e) -> {
+			
+			switch(playbackSpeedTracker) {
+				case 1: checkBox1.setGraphic(null);
+				break;
+				case 2: checkBox2.setGraphic(null);
+				break;
+				case 3: checkBox3.setGraphic(null);
+				break;
+				case 4: checkBox4.setGraphic(null);
+				break;
+				case 6: checkBox6.setGraphic(null);
+				break;
+				case 7: checkBox7.setGraphic(null);
+				break;
+				case 8: checkBox8.setGraphic(null);
+				break;
+				default: break;
+				
+			}
+			
+			playbackSpeedTracker = 5;
+			checkBox5.setGraphic(new ImageView(check));
+			
+			mediaPlayer.setRate(1.25);
+			
+			playbackValueLabel.setText("1.25");
+			});
+		
+		
+		playbackSpeed6.setOnMouseClicked((e) -> {
+			
+			switch(playbackSpeedTracker) {
+				case 1: checkBox1.setGraphic(null);
+				break;
+				case 2: checkBox2.setGraphic(null);
+				break;
+				case 3: checkBox3.setGraphic(null);
+				break;
+				case 4: checkBox4.setGraphic(null);
+				break;
+				case 5: checkBox5.setGraphic(null);
+				break;
+				case 7: checkBox7.setGraphic(null);
+				break;
+				case 8: checkBox8.setGraphic(null);
+				break;
+				default: break;
+			}
+			
+			playbackSpeedTracker = 6;
+			checkBox6.setGraphic(new ImageView(check));
+			
+			mediaPlayer.setRate(1.5);
+			
+			playbackValueLabel.setText("1.5");
+		});
+		
+		
+		playbackSpeed7.setOnMouseClicked((e) -> {
+			
+			switch(playbackSpeedTracker) {
+				case 1: checkBox7.setGraphic(null);
+				break;
+				case 2: checkBox2.setGraphic(null);
+				break;
+				case 3: checkBox3.setGraphic(null);
+				break;
+				case 4: checkBox4.setGraphic(null);
+				break;
+				case 5: checkBox5.setGraphic(null);
+				break;
+				case 6: checkBox6.setGraphic(null);
+				break;
+				case 8: checkBox8.setGraphic(null);
+				break;
+				default: break;
+			}
+			
+			playbackSpeedTracker = 7;
+			checkBox7.setGraphic(new ImageView(check));
+			
+			mediaPlayer.setRate(1.75);
+			
+			playbackValueLabel.setText("1.75");
+		});
+		
+		
+		playbackSpeed8.setOnMouseClicked((e) -> {
+			
+			switch(playbackSpeedTracker) {
+				case 1: checkBox1.setGraphic(null);
+				break;
+				case 2: checkBox2.setGraphic(null);
+				break;
+				case 3: checkBox3.setGraphic(null);
+				break;
+				case 4: checkBox4.setGraphic(null);
+				break;
+				case 5: checkBox5.setGraphic(null);
+				break;
+				case 6: checkBox6.setGraphic(null);
+				break;
+				case 7: checkBox7.setGraphic(null);
+				break;
+				default: break;
+			}
+			
+			playbackSpeedTracker = 8;
+			checkBox8.setGraphic(new ImageView(check));
+			
+			mediaPlayer.setRate(2);
+			
+			playbackValueLabel.setText("2");
+		});
 		
 
 	}
@@ -736,42 +983,70 @@ public class Controller implements Initializable {
 
 	public void openCloseSettings() {
 		if (settingsOpen) {
-			settingsExit = new Image(settingsExitFile.toURI().toString());
-			settingsIcon.setImage(settingsExit);
-			settingsOpen = false;
+			if(!playbackSpeedOpen) {
+				settingsExit = new Image(settingsExitFile.toURI().toString());
+				settingsIcon.setImage(settingsExit);
+				settingsOpen = false;
 
-			FadeTransition fadeTransition = new FadeTransition(Duration.millis(100), settingsPane);
-			fadeTransition.setFromValue(0.8f);
-			fadeTransition.setToValue(0.0f);
-			fadeTransition.setCycleCount(1);
+				FadeTransition fadeTransition1 = new FadeTransition(Duration.millis(100), settingsPane);
+				fadeTransition1.setFromValue(0.8f);
+				fadeTransition1.setToValue(0.0f);
+				fadeTransition1.setCycleCount(1);
 
-			TranslateTransition translateTransition = new TranslateTransition(Duration.millis(100), settingsPane);
-			translateTransition.setFromY(0);
-			translateTransition.setToY(170);
-			translateTransition.setCycleCount(1);
+				TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), settingsPane);
+				translateTransition1.setFromY(0);
+				translateTransition1.setToY(170);
+				translateTransition1.setCycleCount(1);
 
-			ParallelTransition parallelTransition = new ParallelTransition();
-			parallelTransition.getChildren().addAll(fadeTransition, translateTransition);
-			parallelTransition.setCycleCount(1);
-			parallelTransition.play();
+				ParallelTransition parallelTransition = new ParallelTransition();
+				parallelTransition.getChildren().addAll(fadeTransition1, translateTransition1);
+				parallelTransition.setCycleCount(1);
+				parallelTransition.play();
+			}
+			else {
+				settingsExit = new Image(settingsExitFile.toURI().toString());
+				settingsIcon.setImage(settingsExit);
+				settingsOpen = false;
+				playbackSpeedOpen = false;
+				
+				FadeTransition fadeTransition1 = new FadeTransition(Duration.millis(100), settingsPane);
+				fadeTransition1.setFromValue(0.8f);
+				fadeTransition1.setToValue(0.0f);
+				fadeTransition1.setCycleCount(1);
+				TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), settingsPane);
+				translateTransition1.setFromY(0);
+				translateTransition1.setToY(playbackSpeedScroll.getHeight());
+				translateTransition1.setCycleCount(1);
+
+				ParallelTransition parallelTransition = new ParallelTransition();
+				parallelTransition.getChildren().addAll(fadeTransition1, translateTransition1);
+				parallelTransition.setCycleCount(1);
+				parallelTransition.play();
+				
+				parallelTransition.setOnFinished((e) -> {
+					playbackSpeedScroll.setTranslateX(235);
+					settingsHome.setTranslateX(0);
+					settingsPane.setPrefHeight(170);
+				});
+			}
 
 		} else {
 			settingsEnter = new Image(settingsEnterFile.toURI().toString());
 			settingsIcon.setImage(settingsEnter);
 			settingsOpen = true;
 
-			FadeTransition fadeTransition = new FadeTransition(Duration.millis(100), settingsPane);
-			fadeTransition.setFromValue(0.0f);
-			fadeTransition.setToValue(0.8f);
-			fadeTransition.setCycleCount(1);
+			FadeTransition fadeTransition1 = new FadeTransition(Duration.millis(100), settingsPane);
+			fadeTransition1.setFromValue(0.0f);
+			fadeTransition1.setToValue(0.8f);
+			fadeTransition1.setCycleCount(1);
 
-			TranslateTransition translateTransition = new TranslateTransition(Duration.millis(100), settingsPane);
-			translateTransition.setFromY(170);
-			translateTransition.setToY(0);
-			translateTransition.setCycleCount(1);
+			TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), settingsPane);
+			translateTransition1.setFromY(170);
+			translateTransition1.setToY(0);
+			translateTransition1.setCycleCount(1);
 
 			ParallelTransition parallelTransition = new ParallelTransition();
-			parallelTransition.getChildren().addAll(fadeTransition, translateTransition);
+			parallelTransition.getChildren().addAll(fadeTransition1, translateTransition1);
 			parallelTransition.setCycleCount(1);
 			parallelTransition.play();
 		}
@@ -1121,26 +1396,27 @@ public class Controller implements Initializable {
 	
 	public void openPlaybackSpeedPage() {
 		
+		playbackSpeedOpen = true;
 
 		
 		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), settingsHome);
 		translateTransition1.setFromX(0);
 		translateTransition1.setToX(-235);
 		translateTransition1.setCycleCount(1);
+		translateTransition1.setInterpolator(Interpolator.EASE_OUT);
 		
 		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(100), playbackSpeedScroll);
 		translateTransition2.setFromX(235);
 		translateTransition2.setToX(0);
 		translateTransition2.setCycleCount(1);
+		translateTransition2.setInterpolator(Interpolator.EASE_OUT);
 		
-		Timeline settingsTimeline = new Timeline();
+		Timeline settingsTimeline1 = new Timeline();
 
-		settingsTimeline.setCycleCount(1);
-		settingsTimeline.setAutoReverse(false);
-		settingsTimeline.getKeyFrames()
-				.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsPane.prefHeightProperty(), mediaView.sceneProperty().get().getHeight() < 575 ? mediaView.sceneProperty().get().getHeight() - 100 : 475 )));
-		
-
+		settingsTimeline1.setCycleCount(1);
+		settingsTimeline1.setAutoReverse(false);
+		settingsTimeline1.getKeyFrames()
+				.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsPane.prefHeightProperty(), mediaView.sceneProperty().get().getHeight() < 585 ? mediaView.sceneProperty().get().getHeight() - 100 : 485, Interpolator.EASE_OUT )));
 
 		/*settingsTimeline.setOnFinished((e) -> {
 			settingsTimeline.stop();
@@ -1148,7 +1424,7 @@ public class Controller implements Initializable {
 		});*/
 
 		ParallelTransition parallelTransition = new ParallelTransition();
-		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline);
+		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline1);
 		parallelTransition.setCycleCount(1);
 		parallelTransition.play();
 
@@ -1158,6 +1434,42 @@ public class Controller implements Initializable {
 		
 		//settingsTimeline.play();
 	}
+	
+	
+	
+	public void closePlaybackSpeedPage() {
+		
+		playbackSpeedOpen = false;
+		
+		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), settingsHome);
+		translateTransition1.setFromX(-235);
+		translateTransition1.setToX(0);
+		translateTransition1.setCycleCount(1);
+		translateTransition1.setInterpolator(Interpolator.LINEAR);
+		
+		
+		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(100), playbackSpeedScroll);
+		translateTransition2.setFromX(0);
+		translateTransition2.setToX(235);
+		translateTransition2.setCycleCount(1);
+		translateTransition2.setInterpolator(Interpolator.LINEAR);
+		
+		Timeline settingsTimeline1 = new Timeline();
 
+		settingsTimeline1.setCycleCount(1);
+		settingsTimeline1.setAutoReverse(false);
+		settingsTimeline1.getKeyFrames()
+				.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsPane.prefHeightProperty(), 170, Interpolator.LINEAR)));
 
+		ParallelTransition parallelTransition = new ParallelTransition();
+		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2);
+		parallelTransition.setCycleCount(1);
+
+		
+		SequentialTransition seqTrans = new SequentialTransition();
+		seqTrans.getChildren().addAll(settingsTimeline1, parallelTransition);
+		seqTrans.play();
+		
+	}
+	
 }

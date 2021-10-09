@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -118,7 +119,7 @@
          <children>
             <StackPane fx:id="settingsPane" alignment="BOTTOM_CENTER" prefHeight="170.0" prefWidth="235.0">
                <children>
-                  <VBox fx:id="settingsHome" alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="170.0" minWidth="235.0" prefHeight="170.0" prefWidth="235.0">
+                  <VBox fx:id="settingsHome" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="170.0" minWidth="235.0" prefHeight="170.0" prefWidth="235.0" StackPane.alignment="CENTER">
                      <children>
                         <HBox fx:id="playbackOptionsBox" prefHeight="50.0" prefWidth="235.0">
                            <children>
@@ -188,31 +189,61 @@
                         <Insets bottom="10.0" top="10.0" />
                      </padding>
                   </VBox>
-                  <ScrollPane fx:id="playbackSpeedScroll" focusTraversable="false" hbarPolicy="NEVER" maxHeight="-Infinity" minHeight="170.0" minWidth="235.0" prefWidth="235.0" styleClass="playbackSpeedScroll" stylesheets="@application.css" translateX="235.0">
+                  <ScrollPane fx:id="playbackSpeedScroll" focusTraversable="false" hbarPolicy="NEVER" maxHeight="-Infinity" minHeight="170.0" minWidth="235.0" prefWidth="235.0" styleClass="playbackSpeedScroll" stylesheets="@application.css" translateX="235.0" StackPane.alignment="CENTER">
                      <content>
                         <VBox fx:id="playbackSpeedPage" alignment="BOTTOM_LEFT" minHeight="170.0" minWidth="235.0" prefWidth="235.0">
                            <padding>
                               <Insets bottom="10.0" top="10.0" />
                            </padding>
                            <children>
-                              <HBox fx:id="playbackSpeedTitle" prefHeight="50.0" prefWidth="200.0">
+                              <HBox fx:id="playbackSpeedTitle" prefHeight="50.0" prefWidth="235.0">
                                  <padding>
                                     <Insets left="10.0" right="10.0" />
                                  </padding>
                                  <children>
-                                    <Label prefHeight="50.0" prefWidth="215.0" text="Playback speed" textFill="WHITE">
+                                    <Label fx:id="playbackSpeedArrow" alignment="CENTER" focusTraversable="false" onMouseClicked="#closePlaybackSpeedPage" prefHeight="50.0" prefWidth="24.0">
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </Label>
+                                    <Label fx:id="playbackSpeedTitleLabel" focusTraversable="false" onMouseClicked="#closePlaybackSpeedPage" prefHeight="50.0" prefWidth="106.0" text="Playback speed" textFill="WHITE">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </Label>
+                                    <Label prefHeight="50.0" prefWidth="20.0" />
+                                    <Label fx:id="playbackSpeedCustom" alignment="CENTER_RIGHT" focusTraversable="false" prefHeight="50.0" prefWidth="65.0" text="Custom" textFill="WHITE" underline="true">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets right="20.0" />
+                                       </padding>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
                                     </Label>
                                  </children>
                               </HBox>
+                              <Separator prefWidth="200.0">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" top="5.0" />
+                                 </VBox.margin>
+                              </Separator>
                               <HBox fx:id="playbackSpeed1" prefHeight="50.0" prefWidth="200.0">
                                  <padding>
                                     <Insets left="10.0" right="10.0" />
                                  </padding>
                                  <children>
-                                    <Label prefHeight="50.0" prefWidth="215.0" text="0.25" textFill="WHITE">
+                                    <Label fx:id="checkBox1" alignment="CENTER" prefHeight="50.0" prefWidth="24.0">
+                                       <HBox.margin>
+                                          <Insets right="5.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Label prefHeight="50.0" prefWidth="186.0" text="0.25" textFill="WHITE">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
@@ -227,7 +258,12 @@
                                     <Insets left="10.0" right="10.0" />
                                  </padding>
                                  <children>
-                                    <Label prefHeight="50.0" prefWidth="215.0" text="0.5" textFill="WHITE">
+                                    <Label fx:id="checkBox2" alignment="CENTER" prefHeight="50.0" prefWidth="24.0">
+                                       <HBox.margin>
+                                          <Insets right="5.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Label prefHeight="50.0" prefWidth="186.0" text="0.5" textFill="WHITE">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
@@ -242,7 +278,12 @@
                                     <Insets left="10.0" right="10.0" />
                                  </padding>
                                  <children>
-                                    <Label prefHeight="50.0" prefWidth="215.0" text="0.75" textFill="WHITE">
+                                    <Label fx:id="checkBox3" alignment="CENTER" prefHeight="50.0" prefWidth="24.0">
+                                       <HBox.margin>
+                                          <Insets right="5.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Label prefHeight="50.0" prefWidth="186.0" text="0.75" textFill="WHITE">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
@@ -254,10 +295,15 @@
                               </HBox>
                               <HBox fx:id="playbackSpeed4" prefHeight="50.0" prefWidth="200.0">
                                  <padding>
-                                    <Insets left="10.0" right="10.0" />
+                                    <Insets left="5.0" right="10.0" />
                                  </padding>
                                  <children>
-                                    <Label prefHeight="50.0" prefWidth="215.0" text="Normal" textFill="WHITE">
+                                    <Label fx:id="checkBox4" alignment="CENTER" prefHeight="50.0" prefWidth="24.0">
+                                       <HBox.margin>
+                                          <Insets right="5.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Label prefHeight="50.0" prefWidth="186.0" text="Normal" textFill="WHITE">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
@@ -272,7 +318,12 @@
                                     <Insets left="10.0" right="10.0" />
                                  </padding>
                                  <children>
-                                    <Label prefHeight="50.0" prefWidth="215.0" text="1.25" textFill="WHITE">
+                                    <Label fx:id="checkBox5" alignment="CENTER" prefHeight="50.0" prefWidth="24.0">
+                                       <HBox.margin>
+                                          <Insets right="5.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Label prefHeight="50.0" prefWidth="186.0" text="1.25" textFill="WHITE">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
@@ -287,7 +338,12 @@
                                     <Insets left="10.0" right="10.0" />
                                  </padding>
                                  <children>
-                                    <Label prefHeight="50.0" prefWidth="215.0" text="1.5" textFill="WHITE">
+                                    <Label fx:id="checkBox6" alignment="CENTER" prefHeight="50.0" prefWidth="24.0">
+                                       <HBox.margin>
+                                          <Insets right="5.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Label prefHeight="50.0" prefWidth="186.0" text="1.5" textFill="WHITE">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
@@ -302,7 +358,12 @@
                                     <Insets left="10.0" right="10.0" />
                                  </padding>
                                  <children>
-                                    <Label prefHeight="50.0" prefWidth="215.0" text="1.75" textFill="WHITE">
+                                    <Label fx:id="checkBox7" alignment="CENTER" prefHeight="50.0" prefWidth="24.0">
+                                       <HBox.margin>
+                                          <Insets right="5.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Label prefHeight="50.0" prefWidth="186.0" text="1.75" textFill="WHITE">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
@@ -317,7 +378,12 @@
                                     <Insets left="10.0" right="10.0" />
                                  </padding>
                                  <children>
-                                    <Label prefHeight="50.0" prefWidth="215.0" text="2" textFill="WHITE">
+                                    <Label fx:id="checkBox8" alignment="CENTER" prefHeight="50.0" prefWidth="24.0">
+                                       <HBox.margin>
+                                          <Insets right="5.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Label prefHeight="50.0" prefWidth="186.0" text="2" textFill="WHITE">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
