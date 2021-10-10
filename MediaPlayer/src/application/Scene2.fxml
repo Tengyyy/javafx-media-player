@@ -12,7 +12,6 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.media.MediaView?>
@@ -112,14 +111,11 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Pane fx:id="settingsBackgroundPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="170.0" minWidth="235.0" prefHeight="170.0" prefWidth="235.0" StackPane.alignment="BOTTOM_RIGHT">
-         <StackPane.margin>
-            <Insets bottom="60.0" right="10.0" />
-         </StackPane.margin>
+      <StackPane fx:id="settingsBackgroundPane" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="170.0" minWidth="235.0" prefHeight="170.0" prefWidth="235.0" StackPane.alignment="BOTTOM_RIGHT">
          <children>
-            <StackPane fx:id="settingsPane" alignment="BOTTOM_CENTER" prefHeight="170.0" prefWidth="235.0">
+            <StackPane fx:id="settingsPane" alignment="BOTTOM_CENTER" prefHeight="170.0" prefWidth="235.0" StackPane.alignment="BOTTOM_CENTER">
                <children>
-                  <VBox fx:id="settingsHome" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="170.0" minWidth="235.0" prefHeight="170.0" prefWidth="235.0" StackPane.alignment="CENTER">
+                  <VBox fx:id="settingsHome" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="170.0" minWidth="235.0" prefHeight="170.0" prefWidth="235.0" StackPane.alignment="BOTTOM_CENTER">
                      <children>
                         <HBox fx:id="playbackOptionsBox" prefHeight="50.0" prefWidth="235.0">
                            <children>
@@ -189,7 +185,7 @@
                         <Insets bottom="10.0" top="10.0" />
                      </padding>
                   </VBox>
-                  <ScrollPane fx:id="playbackSpeedScroll" focusTraversable="false" hbarPolicy="NEVER" maxHeight="-Infinity" minHeight="170.0" minWidth="235.0" prefWidth="235.0" styleClass="playbackSpeedScroll" stylesheets="@application.css" translateX="235.0" StackPane.alignment="CENTER">
+                  <ScrollPane fx:id="playbackSpeedScroll" focusTraversable="false" hbarPolicy="NEVER" maxHeight="-Infinity" minHeight="170.0" minWidth="235.0" prefWidth="235.0" styleClass="playbackSpeedScroll" stylesheets="@application.css" translateX="235.0" StackPane.alignment="BOTTOM_CENTER">
                      <content>
                         <VBox fx:id="playbackSpeedPage" alignment="BOTTOM_LEFT" minHeight="170.0" minWidth="235.0" prefWidth="235.0">
                            <padding>
@@ -400,6 +396,9 @@
                </children>
             </StackPane>
          </children>
-      </Pane>
+         <StackPane.margin>
+            <Insets bottom="60.0" right="10.0" />
+         </StackPane.margin>
+      </StackPane>
    </children>
 </StackPane>

@@ -69,10 +69,8 @@ public class Controller implements Initializable {
 	ImageView playLogo, fullScreenIcon, volumeIcon, settingsIcon, nextVideoIcon;
 
 	@FXML
-	StackPane pane, settingsPane;
+	StackPane pane, settingsPane, settingsBackgroundPane;
 
-	@FXML
-	Pane settingsBackgroundPane;
 
 	@FXML
 	Pane playPane;
@@ -612,8 +610,8 @@ public class Controller implements Initializable {
 		settingsBackgroundPane.setPickOnBounds(false);
 		//////////////////////////////////////////////////
 		
-		settingsBackgroundPane.prefWidthProperty().bind(settingsPane.widthProperty());
-		settingsBackgroundPane.prefHeightProperty().bind(settingsPane.heightProperty());
+		settingsPane.prefWidthProperty().bind(settingsBackgroundPane.widthProperty());
+		settingsPane.prefHeightProperty().bind(settingsBackgroundPane.heightProperty());
 		
 		
 
@@ -1015,7 +1013,7 @@ public class Controller implements Initializable {
 				fadeTransition1.setCycleCount(1);
 				TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), settingsPane);
 				translateTransition1.setFromY(0);
-				translateTransition1.setToY(playbackSpeedScroll.getHeight());
+				translateTransition1.setToY(settingsPane.getHeight());
 				translateTransition1.setCycleCount(1);
 
 				ParallelTransition parallelTransition = new ParallelTransition();
@@ -1403,20 +1401,20 @@ public class Controller implements Initializable {
 		translateTransition1.setFromX(0);
 		translateTransition1.setToX(-235);
 		translateTransition1.setCycleCount(1);
-		translateTransition1.setInterpolator(Interpolator.EASE_OUT);
+		translateTransition1.setInterpolator(Interpolator.LINEAR);
 		
 		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(100), playbackSpeedScroll);
 		translateTransition2.setFromX(235);
 		translateTransition2.setToX(0);
 		translateTransition2.setCycleCount(1);
-		translateTransition2.setInterpolator(Interpolator.EASE_OUT);
+		translateTransition2.setInterpolator(Interpolator.LINEAR);
 		
 		Timeline settingsTimeline1 = new Timeline();
 
 		settingsTimeline1.setCycleCount(1);
 		settingsTimeline1.setAutoReverse(false);
 		settingsTimeline1.getKeyFrames()
-				.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsPane.prefHeightProperty(), mediaView.sceneProperty().get().getHeight() < 585 ? mediaView.sceneProperty().get().getHeight() - 100 : 485, Interpolator.EASE_OUT )));
+				.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsBackgroundPane.prefHeightProperty(), mediaView.sceneProperty().get().getHeight() < 585 ? mediaView.sceneProperty().get().getHeight() - 100 : 485, Interpolator.LINEAR )));
 
 		/*settingsTimeline.setOnFinished((e) -> {
 			settingsTimeline.stop();
@@ -1441,14 +1439,14 @@ public class Controller implements Initializable {
 		
 		playbackSpeedOpen = false;
 		
-		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), settingsHome);
+		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(1000), settingsHome);
 		translateTransition1.setFromX(-235);
 		translateTransition1.setToX(0);
 		translateTransition1.setCycleCount(1);
 		translateTransition1.setInterpolator(Interpolator.LINEAR);
 		
 		
-		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(100), playbackSpeedScroll);
+		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(1000), playbackSpeedScroll);
 		translateTransition2.setFromX(0);
 		translateTransition2.setToX(235);
 		translateTransition2.setCycleCount(1);
@@ -1459,17 +1457,13 @@ public class Controller implements Initializable {
 		settingsTimeline1.setCycleCount(1);
 		settingsTimeline1.setAutoReverse(false);
 		settingsTimeline1.getKeyFrames()
-				.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsPane.prefHeightProperty(), 170, Interpolator.LINEAR)));
+				.add(new KeyFrame(Duration.millis(1000), new KeyValue(settingsBackgroundPane.prefHeightProperty(), 170, Interpolator.LINEAR)));
 
 		ParallelTransition parallelTransition = new ParallelTransition();
-		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2);
+		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline1);
 		parallelTransition.setCycleCount(1);
+		parallelTransition.play();
 
-		
-		SequentialTransition seqTrans = new SequentialTransition();
-		seqTrans.getChildren().addAll(settingsTimeline1, parallelTransition);
-		seqTrans.play();
-		
 	}
 	
 }
