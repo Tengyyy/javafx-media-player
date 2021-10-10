@@ -252,6 +252,7 @@ public class Controller implements Initializable {
 		checkBox4.setGraphic(new ImageView(check));
 
 
+
 		volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
@@ -1024,7 +1025,7 @@ public class Controller implements Initializable {
 				parallelTransition.setOnFinished((e) -> {
 					playbackSpeedScroll.setTranslateX(235);
 					settingsHome.setTranslateX(0);
-					settingsPane.setPrefHeight(170);
+					settingsBackgroundPane.setPrefHeight(170);
 				});
 			}
 
@@ -1439,14 +1440,14 @@ public class Controller implements Initializable {
 		
 		playbackSpeedOpen = false;
 		
-		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(1000), settingsHome);
+		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), settingsHome);
 		translateTransition1.setFromX(-235);
 		translateTransition1.setToX(0);
 		translateTransition1.setCycleCount(1);
 		translateTransition1.setInterpolator(Interpolator.LINEAR);
 		
 		
-		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(1000), playbackSpeedScroll);
+		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(100), playbackSpeedScroll);
 		translateTransition2.setFromX(0);
 		translateTransition2.setToX(235);
 		translateTransition2.setCycleCount(1);
@@ -1457,7 +1458,7 @@ public class Controller implements Initializable {
 		settingsTimeline1.setCycleCount(1);
 		settingsTimeline1.setAutoReverse(false);
 		settingsTimeline1.getKeyFrames()
-				.add(new KeyFrame(Duration.millis(1000), new KeyValue(settingsBackgroundPane.prefHeightProperty(), 170, Interpolator.LINEAR)));
+				.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsBackgroundPane.prefHeightProperty(), 170, Interpolator.LINEAR)));
 
 		ParallelTransition parallelTransition = new ParallelTransition();
 		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline1);
