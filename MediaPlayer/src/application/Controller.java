@@ -69,11 +69,11 @@ public class Controller implements Initializable {
 	ImageView playLogo, fullScreenIcon, volumeIcon, settingsIcon, nextVideoIcon;
 
 	@FXML
-	StackPane pane, settingsPane, settingsBackgroundPane;
+	StackPane pane, settingsPane, bufferPane;
 
 
 	@FXML
-	Pane playPane;
+	Pane playPane, settingsBackgroundPane;
 
 	@FXML
 	Slider volumeSlider, durationSlider;
@@ -215,11 +215,18 @@ public class Controller implements Initializable {
 
 		pane.setStyle("-fx-background-color: rgb(24,24,24)");
 
+		
+		settingsPane.setBackground(Background.EMPTY);
+		
 		settingsPane.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 
 
 		
-		playbackSpeedPage.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
+		//playbackSpeedPage.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
+		
+		
+		playbackSpeedScroll.setBackground(Background.EMPTY);
+		
 		playbackSpeedScroll.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 		
 		menuButton.setBackground(Background.EMPTY);
@@ -611,18 +618,22 @@ public class Controller implements Initializable {
 		settingsBackgroundPane.setPickOnBounds(false);
 		//////////////////////////////////////////////////
 		
-		settingsPane.prefWidthProperty().bind(settingsBackgroundPane.widthProperty());
-		settingsPane.prefHeightProperty().bind(settingsBackgroundPane.heightProperty());
-		
-		
+		bufferPane.prefWidthProperty().bind(settingsBackgroundPane.widthProperty());
+		bufferPane.prefHeightProperty().bind(settingsBackgroundPane.heightProperty());
 
+		
+		playbackSpeedScroll.prefHeightProperty().bind(Bindings.min(487, Bindings.subtract(mediaViewHeight, 100)));
+		playbackSpeedScroll.translateYProperty().bind(Bindings.subtract(settingsBackgroundPane.heightProperty(), playbackSpeedScroll.heightProperty()));
+		
+		
+		
 		// Clipping for the settings pane
 		Rectangle rectangle = new Rectangle(settingsBackgroundPane.getWidth(), settingsBackgroundPane.getHeight());
 		rectangle.widthProperty().bind(settingsBackgroundPane.widthProperty());
 		rectangle.heightProperty().bind(settingsBackgroundPane.heightProperty());
 		settingsBackgroundPane.setClip(rectangle);
 
-		settingsPane.setTranslateY(170);
+		bufferPane.setTranslateY(170);
 
 		
 		/////////////////////////////////
@@ -987,14 +998,14 @@ public class Controller implements Initializable {
 				settingsIcon.setImage(settingsExit);
 				settingsOpen = false;
 
-				FadeTransition fadeTransition1 = new FadeTransition(Duration.millis(100), settingsPane);
+				FadeTransition fadeTransition1 = new FadeTransition(Duration.millis(100), bufferPane);
 				fadeTransition1.setFromValue(0.8f);
 				fadeTransition1.setToValue(0.0f);
 				fadeTransition1.setCycleCount(1);
 
-				TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), settingsPane);
+				TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), bufferPane);
 				translateTransition1.setFromY(0);
-				translateTransition1.setToY(170);
+				translateTransition1.setToY(bufferPane.getHeight());
 				translateTransition1.setCycleCount(1);
 
 				ParallelTransition parallelTransition = new ParallelTransition();
@@ -1008,14 +1019,27 @@ public class Controller implements Initializable {
 				settingsOpen = false;
 				playbackSpeedOpen = false;
 				
-				FadeTransition fadeTransition1 = new FadeTransition(Duration.millis(100), settingsPane);
+				settingsBackgroundPane.prefHeightProperty().unbind();
+				
+				playbackSpeedScroll.translateYProperty().unbind();
+				
+				FadeTransition fadeTransition1 = new FadeTransition(Duration.millis(100), playbackSpeedScroll);
 				fadeTransition1.setFromValue(0.8f);
 				fadeTransition1.setToValue(0.0f);
 				fadeTransition1.setCycleCount(1);
-				TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), settingsPane);
-				translateTransition1.setFromY(0);
-				translateTransition1.setToY(settingsPane.getHeight());
+				TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), playbackSpeedScroll);
+				translateTransition1.setFromY(playbackSpeedScroll.getTranslateY());
+				translateTransition1.setToY(bufferPane.getHeight());
 				translateTransition1.setCycleCount(1);
+				
+				/*FadeTransition fadeTransition2 = new FadeTransition(Duration.millis(100), bufferPane);
+				fadeTransition2.setFromValue(0.8f);
+				fadeTransition2.setToValue(0.0f);
+				fadeTransition2.setCycleCount(1);
+				TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(100), bufferPane);
+				translateTransition2.setFromY(0);
+				translateTransition2.setToY(bufferPane.getHeight());
+				translateTransition2.setCycleCount(1);*/
 
 				ParallelTransition parallelTransition = new ParallelTransition();
 				parallelTransition.getChildren().addAll(fadeTransition1, translateTransition1);
@@ -1023,23 +1047,31 @@ public class Controller implements Initializable {
 				parallelTransition.play();
 				
 				parallelTransition.setOnFinished((e) -> {
-					playbackSpeedScroll.setTranslateX(235);
-					settingsHome.setTranslateX(0);
+					playbackSpeedScroll.setTranslateX(settingsBackgroundPane.getWidth());
+					bufferPane.setTranslateX(0);
 					settingsBackgroundPane.setPrefHeight(170);
+					playbackSpeedScroll.setTranslateY(settingsBackgroundPane.getHeight() - playbackSpeedScroll.getHeight());
+					playbackSpeedScroll.setOpacity(0.8f);
+					playbackSpeedScroll.translateYProperty().bind(Bindings.subtract(settingsBackgroundPane.heightProperty(), playbackSpeedScroll.heightProperty()));
+					bufferPane.setTranslateY(bufferPane.getHeight());
+					
+					playbackSpeedScroll.setVvalue(0);
 				});
 			}
+			
+			
 
 		} else {
 			settingsEnter = new Image(settingsEnterFile.toURI().toString());
 			settingsIcon.setImage(settingsEnter);
 			settingsOpen = true;
 
-			FadeTransition fadeTransition1 = new FadeTransition(Duration.millis(100), settingsPane);
+			FadeTransition fadeTransition1 = new FadeTransition(Duration.millis(100), bufferPane);
 			fadeTransition1.setFromValue(0.0f);
 			fadeTransition1.setToValue(0.8f);
 			fadeTransition1.setCycleCount(1);
 
-			TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), settingsPane);
+			TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), bufferPane);
 			translateTransition1.setFromY(170);
 			translateTransition1.setToY(0);
 			translateTransition1.setCycleCount(1);
@@ -1398,14 +1430,14 @@ public class Controller implements Initializable {
 		playbackSpeedOpen = true;
 
 		
-		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), settingsHome);
+		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), bufferPane);
 		translateTransition1.setFromX(0);
-		translateTransition1.setToX(-235);
+		translateTransition1.setToX(-settingsBackgroundPane.getWidth());
 		translateTransition1.setCycleCount(1);
 		translateTransition1.setInterpolator(Interpolator.LINEAR);
 		
 		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(100), playbackSpeedScroll);
-		translateTransition2.setFromX(235);
+		translateTransition2.setFromX(settingsBackgroundPane.getWidth());
 		translateTransition2.setToX(0);
 		translateTransition2.setCycleCount(1);
 		translateTransition2.setInterpolator(Interpolator.LINEAR);
@@ -1415,7 +1447,7 @@ public class Controller implements Initializable {
 		settingsTimeline1.setCycleCount(1);
 		settingsTimeline1.setAutoReverse(false);
 		settingsTimeline1.getKeyFrames()
-				.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsBackgroundPane.prefHeightProperty(), mediaView.sceneProperty().get().getHeight() < 585 ? mediaView.sceneProperty().get().getHeight() - 100 : 485, Interpolator.LINEAR )));
+				.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsBackgroundPane.prefHeightProperty(), mediaView.sceneProperty().get().getHeight() < 587 ? mediaView.sceneProperty().get().getHeight() - 100 : 487, Interpolator.LINEAR )));
 
 		/*settingsTimeline.setOnFinished((e) -> {
 			settingsTimeline.stop();
@@ -1432,6 +1464,10 @@ public class Controller implements Initializable {
 		seqTrans.play();*/
 		
 		//settingsTimeline.play();
+		
+		parallelTransition.setOnFinished((e) -> {
+			settingsBackgroundPane.prefHeightProperty().bind(playbackSpeedScroll.heightProperty());
+		});
 	}
 	
 	
@@ -1440,8 +1476,10 @@ public class Controller implements Initializable {
 		
 		playbackSpeedOpen = false;
 		
-		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), settingsHome);
-		translateTransition1.setFromX(-235);
+		settingsBackgroundPane.prefHeightProperty().unbind();
+		
+		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), bufferPane);
+		translateTransition1.setFromX(-settingsBackgroundPane.getWidth());
 		translateTransition1.setToX(0);
 		translateTransition1.setCycleCount(1);
 		translateTransition1.setInterpolator(Interpolator.LINEAR);
@@ -1449,7 +1487,7 @@ public class Controller implements Initializable {
 		
 		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(100), playbackSpeedScroll);
 		translateTransition2.setFromX(0);
-		translateTransition2.setToX(235);
+		translateTransition2.setToX(settingsBackgroundPane.getWidth());
 		translateTransition2.setCycleCount(1);
 		translateTransition2.setInterpolator(Interpolator.LINEAR);
 		
@@ -1464,6 +1502,10 @@ public class Controller implements Initializable {
 		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline1);
 		parallelTransition.setCycleCount(1);
 		parallelTransition.play();
+		
+		parallelTransition.setOnFinished((e) -> {
+			playbackSpeedScroll.setVvalue(0);
+		});
 
 	}
 	
