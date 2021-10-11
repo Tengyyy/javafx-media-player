@@ -25,7 +25,7 @@
             <Rectangle2D />
          </viewport>
       </MediaView>
-      <VBox fx:id="controlBar" alignment="BOTTOM_CENTER" maxHeight="50.0" prefHeight="50.0" prefWidth="600.0" style="-fx-background-color: transparent;" StackPane.alignment="BOTTOM_CENTER">
+      <VBox fx:id="controlBar" alignment="BOTTOM_CENTER" maxHeight="50.0" onMouseClicked="#controlBarClick" prefHeight="50.0" prefWidth="600.0" style="-fx-background-color: transparent;" StackPane.alignment="BOTTOM_CENTER">
          <children>
             <Slider fx:id="durationSlider" blockIncrement="5.0" pickOnBounds="false" prefWidth="600.0" styleClass="focusableProperty">
                <cursor>
@@ -46,7 +46,7 @@
                            <graphic>
                               <ImageView fx:id="playLogo" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" />
                            </graphic></Button>
-                        <Button fx:id="nextVideoButton" layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" mnemonicParsing="false" prefHeight="36.0" prefWidth="52.0" style="-fx-padding: 0;" styleClass="focusableProperty">
+                        <Button fx:id="nextVideoButton" layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" mnemonicParsing="false" onAction="#playNextMedia" prefHeight="36.0" prefWidth="52.0" style="-fx-padding: 0;" styleClass="focusableProperty">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
@@ -87,7 +87,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button fx:id="fullScreenButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#fullScreen" onMouseEntered="#fullScreenEnter" onMouseExited="#fullSreenExit" prefHeight="36.0" prefWidth="46.0" style="-fx-padding: 0;" styleClass="focusableProperty">
+                        <Button fx:id="fullScreenButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#pressFullScreen" onMouseEntered="#fullScreenEnter" onMouseExited="#fullSreenExit" prefHeight="36.0" prefWidth="46.0" style="-fx-padding: 0;" styleClass="focusableProperty">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
@@ -100,7 +100,7 @@
             </HBox>
          </children>
       </VBox>
-      <Button fx:id="menuButton" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" style="-fx-padding: 0;" styleClass="focusableProperty" StackPane.alignment="TOP_LEFT">
+      <Button fx:id="menuButton" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#openCloseMenu" prefHeight="64.0" prefWidth="64.0" style="-fx-padding: 0;" styleClass="focusableProperty" StackPane.alignment="TOP_LEFT">
          <graphic>
             <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                <image>

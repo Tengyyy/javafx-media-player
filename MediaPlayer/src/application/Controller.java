@@ -237,7 +237,7 @@ public class Controller implements Initializable {
 		nextVideoButton.setBackground(Background.EMPTY);
 		nextVideoIcon.setImage(nextVideo);
 
-		playButton.setOnAction((e) -> playOrPause());
+		playButton.setOnAction((e) -> playButtonClick1());
 
 		fullScreenIcon.setImage(maximize);
 		fullScreenButton.setBackground(Background.EMPTY);
@@ -257,7 +257,23 @@ public class Controller implements Initializable {
 		playbackSpeedArrow.setGraphic(new ImageView(leftArrow));
 		
 		checkBox4.setGraphic(new ImageView(check));
+		
+		volumeSlider.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> volumeSlider.setValueChanging(true));
+		volumeSlider.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> volumeSlider.setValueChanging(false));
 
+		
+		volumeSlider.valueChangingProperty().addListener(new ChangeListener<Boolean>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				// TODO Auto-generated method stub
+				if(!newValue && settingsOpen) {
+					openCloseSettings();
+				}
+				
+			}
+			
+		});
 
 
 		volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
@@ -266,6 +282,7 @@ public class Controller implements Initializable {
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 
 				mediaPlayer.setVolume(volumeSlider.getValue() / 100);
+
 
 				if (volumeSlider.getValue() == 0) {
 					volumeIcon.setImage(volumeMute);
@@ -303,6 +320,12 @@ public class Controller implements Initializable {
 
 		durationSlider.addEventFilter(MouseEvent.DRAG_DETECTED, e -> durationSlider.setValueChanging(true));
 		durationSlider.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> durationSlider.setValueChanging(false));
+		
+		durationSlider.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
+			if(settingsOpen) {
+				openCloseSettings();
+			}
+		});
 
 		durationSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
@@ -317,6 +340,14 @@ public class Controller implements Initializable {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				bindCurrentTimeLabel();
+				
+				if(!newValue) {
+						if(settingsOpen) {
+							openCloseSettings();
+						}
+
+				}
+				
 				if (wasPlaying) {
 
 					if (!newValue && tempBool && !atEnd) {
@@ -387,6 +418,7 @@ public class Controller implements Initializable {
 			}
 
 		});
+
 		
 		mediaView.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 			if(!newValue) {
@@ -490,6 +522,7 @@ public class Controller implements Initializable {
 
 				bindCurrentTimeLabel();
 
+				//dont know why this works
 				mediaPlayer.play();
 				mediaPlayer.pause();
 
@@ -921,7 +954,7 @@ public class Controller implements Initializable {
 
 		// startTimer();
 
-		playButton.setOnAction((e) -> playOrPause());
+		playButton.setOnAction((e) -> playButtonClick1());
 
 	}
 
@@ -1152,22 +1185,28 @@ public class Controller implements Initializable {
 	}
 
 	public void mute() {
+		
+		if(settingsOpen) {
+			openCloseSettings();
+		}
+		else {
 
-		if (!muted) {
+			if (!muted) {
 
-			muted = true;
-			volumeIcon.setImage(volumeMute);
-			mediaPlayer.setVolume(0);
+				muted = true;
+				volumeIcon.setImage(volumeMute);
+				mediaPlayer.setVolume(0);
 
-			volumeValue = volumeSlider.getValue();
+				volumeValue = volumeSlider.getValue();
 
-			volumeSlider.setValue(0);
-		} else {
-			muted = false;
-			volumeIcon.setImage(volumeUp);
-			mediaPlayer.setVolume(volumeValue);
+				volumeSlider.setValue(0);
+			} else {
+				muted = false;
+				volumeIcon.setImage(volumeUp);
+				mediaPlayer.setVolume(volumeValue);
 
-			volumeSlider.setValue(volumeValue);
+				volumeSlider.setValue(volumeValue);
+			}
 		}
 
 	}
@@ -1379,7 +1418,7 @@ public class Controller implements Initializable {
 			}
 
 			playButton.setOnAction((e) -> {
-				playOrPause();
+				playButtonClick1();
 			});
 		} else if (newValue >= durationSlider.getMax()) {
 			//durationSlider.setValue(durationSlider.getMax());
@@ -1397,7 +1436,7 @@ public class Controller implements Initializable {
 
 			playLogo.setImage(new Image(replayFile.toURI().toString()));
 
-			playButton.setOnAction((e) -> replayMedia());
+			playButton.setOnAction((e) -> playButtonClick2());
 		}
 
 		if (Math.abs(mediaPlayer.getCurrentTime().toSeconds() - newValue) > 0.5) {
@@ -1423,7 +1462,7 @@ public class Controller implements Initializable {
 
 		playLogo.setImage(new Image(replayFile.toURI().toString()));
 
-		playButton.setOnAction((e) -> replayMedia());
+		playButton.setOnAction((e) -> playButtonClick2());
 
 
 	}
@@ -1512,4 +1551,55 @@ public class Controller implements Initializable {
 
 	}
 	
+	public void openCloseMenu() {
+			if(settingsOpen) {
+				openCloseSettings();
+			}
+			else {
+				
+			}
+	}
+	
+	public void playNextMedia() {
+		if(settingsOpen) {
+			openCloseSettings();
+		}
+		else {
+			
+		}
+	}
+	
+	public void pressFullScreen() {
+		if(settingsOpen) {
+			openCloseSettings();
+		}
+		else {
+			fullScreen();
+		}
+	}
+	
+	public void controlBarClick() {
+		if(settingsOpen) {
+			openCloseSettings();
+		}
+	}
+	
+	public void playButtonClick1() {
+		if(settingsOpen) {
+			openCloseSettings();
+		}
+		else {
+			playOrPause();
+		}
+	}
+	
+	public void playButtonClick2() {
+		if(settingsOpen) {
+			openCloseSettings();
+		}
+		else {
+			replayMedia();
+		}
+	}
+
 }
