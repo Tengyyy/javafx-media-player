@@ -955,8 +955,11 @@ public class Controller implements Initializable {
 
 		if (Main.stage.isFullScreen()) {
 			fullScreenIcon.setImage(minimize);
+			Main.fullScreen = true;
+			
 		} else {
 			fullScreenIcon.setImage(maximize);
+			Main.fullScreen = false;
 		}
 	}
 

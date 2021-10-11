@@ -21,6 +21,8 @@ public class Main extends Application {
 	public static Stage stage;
 	
 	public EventHandler<KeyEvent> eventHandler;
+	
+	static boolean fullScreen;
 
 	
 	@Override
@@ -41,16 +43,22 @@ public class Main extends Application {
 			Main.stage = primaryStage;
 			
 			primaryStage.setFullScreenExitHint("Press Esc to exit fullscreen mode");
-			primaryStage.setFullScreenExitKeyCombination(KeyCombination.valueOf("Esc"));
+			//primaryStage.setFullScreenExitKeyCombination(KeyCombination.);
 			
 			primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
 				
 				switch(event.getCode()) {
 					case F11: controller.fullScreen();
 					break;
-					case F: controller.fullScreen();
+					case F: {
+						controller.fullScreen();
+
+					}
 					break;
-					case ESCAPE: controller.fullScreenIcon.setImage(controller.maximize);
+					case ESCAPE: {
+						controller.fullScreenIcon.setImage(controller.maximize);
+						primaryStage.setFullScreen(false);
+					}
 					break;
 					case SPACE:	{
 					
@@ -168,6 +176,12 @@ public class Main extends Application {
 
 						
 					}
+				}
+				else if(event.getCode() == KeyCode.ESCAPE) {
+					if(controller.settingsOpen && !fullScreen) {
+						controller.openCloseSettings();
+					}
+					fullScreen = false;
 				}
 					
 				
