@@ -31,6 +31,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -142,8 +143,40 @@ public class Controller implements Initializable {
 	Timer durationTimer;
 	TimerTask durationTimerTask;
 
+	Tooltip play;
+	Tooltip pause;
+	Tooltip replay;
+	
+	Tooltip mute;
+	Tooltip unmute;
+
+	Tooltip settings;
+	
+	Tooltip enterFullScreen;
+	Tooltip exitFullScreen;
+	
+	Tooltip next;
+	
+	//TODO: Finish creating these tooltips.
+	Tooltip openMenu;
+	Tooltip closeMenu;
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		
+		play = new Tooltip("Play (k)");
+		pause = new Tooltip("Pause (k)");
+		replay = new Tooltip("Replay (k)");
+		
+		mute = new Tooltip("Mute (m)");
+		unmute = new Tooltip("Unmute (m)");
+		
+		settings = new Tooltip("Settings");
+		
+		enterFullScreen = new Tooltip("Full screen (f)");
+		exitFullScreen = new Tooltip("Exit full screen (f)");
+		
+		next = new Tooltip("Next video (SHIFT + N)");
 
 		volumeSliderPane.setClip(new Rectangle(60, 17));
 
@@ -234,18 +267,24 @@ public class Controller implements Initializable {
 		playLogo.setImage(start);
 		playButton.setBackground(Background.EMPTY);
 		
+		playButton.setTooltip(play);
+		
 		nextVideoButton.setBackground(Background.EMPTY);
+		nextVideoButton.setTooltip(next);
 		nextVideoIcon.setImage(nextVideo);
 
 		playButton.setOnAction((e) -> playButtonClick1());
 
 		fullScreenIcon.setImage(maximize);
 		fullScreenButton.setBackground(Background.EMPTY);
+		fullScreenButton.setTooltip(enterFullScreen);
 
 		settingsButton.setBackground(Background.EMPTY);
+		settingsButton.setTooltip(settings);
 		settingsIcon.setImage(settingsImage);
 
 		volumeButton.setBackground(Background.EMPTY);
+		volumeButton.setTooltip(mute);
 		volumeIcon.setImage(volumeUp);
 
 		playbackValueLabel.setGraphic(new ImageView(rightArrow));
@@ -287,11 +326,15 @@ public class Controller implements Initializable {
 				if (volumeSlider.getValue() == 0) {
 					volumeIcon.setImage(volumeMute);
 					muted = true;
+					volumeButton.setTooltip(unmute);
 				} else if (volumeSlider.getValue() < 50) {
 					volumeIcon.setImage(volumeDown);
 					muted = false;
+					volumeButton.setTooltip(mute);
 				} else {
 					volumeIcon.setImage(volumeUp);
+					muted = false;
+					volumeButton.setTooltip(mute);
 				}
 			}
 
@@ -355,6 +398,7 @@ public class Controller implements Initializable {
 						playing = true;
 						playLogo.setImage(new Image(pauseImageFile.toURI().toString()));
 						tempBool = false;
+						playButton.setTooltip(pause);
 					}
 
 					else if (newValue && tempBool) {
@@ -382,12 +426,14 @@ public class Controller implements Initializable {
 						playing = false;
 						playLogo.setImage(new Image(pauseFile.toURI().toString()));
 
+						playButton.setTooltip(play);						
 						// mediaPlayer.seek(Duration.seconds(durationSlider.getValue()));
 
 					} else if (!newValue && !atEnd) {
 						mediaPlayer.play();
 						playing = true;
 						playLogo.setImage(new Image(playFile.toURI().toString()));
+						playButton.setTooltip(pause);
 					}
 
 					else if (newValue && tempBool) {
@@ -932,11 +978,15 @@ public class Controller implements Initializable {
 			playing = true;
 
 			playLogo.setImage(new Image(playFile.toURI().toString()));
+			
+			playButton.setTooltip(pause);
 
 		} else {
 			mediaPlayer.pause();
 			playing = false;
 			playLogo.setImage(new Image(pauseFile.toURI().toString()));
+			
+			playButton.setTooltip(play);
 
 		}
 
@@ -951,6 +1001,8 @@ public class Controller implements Initializable {
 		playing = true;
 		atEnd = false;
 		playLogo.setImage(new Image(pauseImageFile.toURI().toString()));
+		
+		playButton.setTooltip(pause);
 
 		// startTimer();
 
@@ -989,10 +1041,12 @@ public class Controller implements Initializable {
 		if (Main.stage.isFullScreen()) {
 			fullScreenIcon.setImage(minimize);
 			Main.fullScreen = true;
+			fullScreenButton.setTooltip(exitFullScreen);
 			
 		} else {
 			fullScreenIcon.setImage(maximize);
 			Main.fullScreen = false;
+			fullScreenButton.setTooltip(enterFullScreen);
 		}
 	}
 
@@ -1198,12 +1252,16 @@ public class Controller implements Initializable {
 				mediaPlayer.setVolume(0);
 
 				volumeValue = volumeSlider.getValue();
+				
+				volumeButton.setTooltip(unmute);
 
 				volumeSlider.setValue(0);
 			} else {
 				muted = false;
 				volumeIcon.setImage(volumeUp);
 				mediaPlayer.setVolume(volumeValue);
+				
+				volumeButton.setTooltip(mute);
 
 				volumeSlider.setValue(volumeValue);
 			}
@@ -1411,10 +1469,12 @@ public class Controller implements Initializable {
 				if (!durationSlider.isValueChanging()) {
 					playing = true;
 					mediaPlayer.play();
+					playButton.setTooltip(pause);
 				}
 			} else {
 				playLogo.setImage(new Image(startFile.toURI().toString()));
 				playing = false;
+				playButton.setTooltip(play);
 			}
 
 			playButton.setOnAction((e) -> {
@@ -1435,6 +1495,8 @@ public class Controller implements Initializable {
 			mediaPlayer.pause();
 
 			playLogo.setImage(new Image(replayFile.toURI().toString()));
+			
+			playButton.setTooltip(replay);
 
 			playButton.setOnAction((e) -> playButtonClick2());
 		}
@@ -1461,6 +1523,8 @@ public class Controller implements Initializable {
 		}
 
 		playLogo.setImage(new Image(replayFile.toURI().toString()));
+		
+		playButton.setTooltip(replay);
 
 		playButton.setOnAction((e) -> playButtonClick2());
 

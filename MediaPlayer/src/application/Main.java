@@ -59,6 +59,7 @@ public class Main extends Application {
 					case ESCAPE: {
 						controller.fullScreenIcon.setImage(controller.maximize);
 						primaryStage.setFullScreen(false);
+						controller.fullScreenButton.setTooltip(controller.enterFullScreen);
 					}
 					break;
 					case SPACE:	{
