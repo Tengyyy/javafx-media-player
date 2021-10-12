@@ -118,117 +118,214 @@ public class Main extends Application {
 			//press F11 to set full screen
 			primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
 				
-				if(event.getCode() == KeyCode.TAB){
-					if(event.isShiftDown()) {
-						// user pressed SHIFT + TAB which means focus should traverse backwards
-						if(controller.focusNodeTracker == 0) {
-							controller.focusNodeTracker = 8;
+				switch(event.getCode()) {
+					case TAB: {
+						if(event.isShiftDown()) {
+							// user pressed SHIFT + TAB which means focus should traverse backwards
+							if(controller.focusNodeTracker == 0) {
+								controller.focusNodeTracker = 8;
+							}
+							else {
+								controller.focusNodeTracker--;
+
+							}
+
+							
+							controller.traverseFocusBackwards();
 						}
 						else {
-							controller.focusNodeTracker--;
-
+							if(controller.focusNodeTracker == 8) {
+								controller.focusNodeTracker = 0;
+							}
+							else {
+								controller.focusNodeTracker++;
+							}
+							// user pressed TAB which means focus should traverse forwards
+							
+							controller.traverseFocusForwards();
 						}
-
-						
-						controller.traverseFocusBackwards();
 					}
-					else {
-						if(controller.focusNodeTracker == 8) {
-							controller.focusNodeTracker = 0;
+					break;	
+					
+					case RIGHT: {
+						if(!controller.volumeSlider.isFocused()) {
+							
+							
+							if(controller.mediaPlayer.getCurrentTime().toSeconds() + 5 >= controller.media.getDuration().toSeconds()) {
+								controller.seekedToEnd = true;
+								controller.mediaPlayer.seek(controller.media.getDuration());
+							}
+							else {
+							controller.durationSlider.setValue(controller.durationSlider.getValue() + 5);
+							}
+							event.consume();
+							
+							
 						}
-						else {
-							controller.focusNodeTracker++;
-						}
-						// user pressed TAB which means focus should traverse forwards
-						
-						controller.traverseFocusForwards();
 					}
-				}
-				else if(event.getCode() == KeyCode.RIGHT) {
 					
-					if(!controller.volumeSlider.isFocused()) {
-						
-						
-						if(controller.mediaPlayer.getCurrentTime().toSeconds() + 5 >= controller.media.getDuration().toSeconds()) {
-							controller.seekedToEnd = true;
-							controller.mediaPlayer.seek(controller.media.getDuration());
+					break;
+					
+					case LEFT: {
+						if(!controller.volumeSlider.isFocused()) {
+							if(controller.atEnd) {
+								controller.seekedToEnd = false;
+								controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
+
+							}
+							
+							else {
+								controller.durationSlider.setValue(controller.durationSlider.getValue() - 5.0);
+								//controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
+							}
+
+							
 						}
-						else {
-						controller.durationSlider.setValue(controller.durationSlider.getValue() + 5);
-						}
-						event.consume();
-						
-						
 					}
+					break;
+					
+					case ESCAPE: {
+						if(controller.settingsOpen && !fullScreen) {
+							controller.openCloseSettings();
+						}
+						fullScreen = false;
+					}
+					break;
+					
+					case L: {
+						if(!controller.volumeSlider.isFocused()) {
+							
+							
+							if(controller.mediaPlayer.getCurrentTime().toSeconds() + 10 >= controller.media.getDuration().toSeconds()) {
+								controller.seekedToEnd = true;
+								controller.mediaPlayer.seek(controller.media.getDuration());
+							}
+							else {
+							controller.durationSlider.setValue(controller.durationSlider.getValue() + 10);
+							}
+							event.consume();
+							
+							
+						}	
+					}
+					break;
+					
+					case J: {
+						if(!controller.volumeSlider.isFocused()) {
+							if(controller.atEnd) {
+								controller.seekedToEnd = false;
+								controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 10000));
 
-					
+							}
+							
+							else {
+								controller.durationSlider.setValue(controller.durationSlider.getValue() - 10.0);
+								//controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
+							}
 
+							
+						}
+					}
+					break;
+					case DIGIT1: {
+						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 1/10);
+						System.out.println("su ema");
+					}
+					break;
+					case DIGIT2: {
+						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 2/10);
+						System.out.println("su ema");
+					}
+					break;
+					case DIGIT3: {
+						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 3/10);
+						System.out.println("su ema");
+					}
+					break;
+					case DIGIT4: {
+						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 4/10);
+						System.out.println("su ema");
+					}
+					break;
+					case DIGIT5: {
+						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 5/10);
+						System.out.println("su ema");
+					}
+					break;
+					case DIGIT6: {
+						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 6/10);
+						System.out.println("su ema");
+					}
+					break;
+					case DIGIT7: {
+						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 7/10);
+						System.out.println("su ema");
+					}
+					break;
+					case DIGIT8: {
+						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 8/10);
+						System.out.println("su ema");
+					}
+					break;
+					case DIGIT9: {
+						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 9/10);
+						System.out.println("su ema");
+					}
+					break;
+					case DIGIT0: {
+						controller.seekedToEnd = true;
+						controller.mediaPlayer.seek(controller.media.getDuration());
+					}
+					break;
 					
-				}
-				else if(event.getCode() == KeyCode.LEFT) {
-					
-					if(!controller.volumeSlider.isFocused()) {
+					case K: {
 						if(controller.atEnd) {
-							controller.seekedToEnd = false;
-							controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
-
-						}
-						
-						else {
-							controller.durationSlider.setValue(controller.durationSlider.getValue() - 5.0);
-							//controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
-						}
-
-						
-					}
-				}
-				else if(event.getCode() == KeyCode.ESCAPE) {
-					if(controller.settingsOpen && !fullScreen) {
-						controller.openCloseSettings();
-					}
-					fullScreen = false;
-				}
-				else if(event.getCode() == KeyCode.L) {
-					
-					if(!controller.volumeSlider.isFocused()) {
-						
-						
-						if(controller.mediaPlayer.getCurrentTime().toSeconds() + 10 >= controller.media.getDuration().toSeconds()) {
-							controller.seekedToEnd = true;
-							controller.mediaPlayer.seek(controller.media.getDuration());
+							controller.replayMedia();
 						}
 						else {
-						controller.durationSlider.setValue(controller.durationSlider.getValue() + 10);
+							controller.playOrPause();
 						}
-						event.consume();
-						
-						
 					}
-
+					break;
 					
+					case M: {
+						if (!controller.muted) {
 
-					
-				}
-				
-				else if(event.getCode() == KeyCode.J) {
-					
-					if(!controller.volumeSlider.isFocused()) {
-						if(controller.atEnd) {
-							controller.seekedToEnd = false;
-							controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 10000));
+							controller.muted = true;
+							controller.volumeIcon.setImage(controller.volumeMute);
+							controller.mediaPlayer.setVolume(0);
 
+							controller.volumeValue = controller.volumeSlider.getValue();
+							
+							controller.volumeButton.setTooltip(controller.unmute);
+
+							controller.volumeSlider.setValue(0);
+						} else {
+							controller.muted = false;
+							controller.volumeIcon.setImage(controller.volumeUp);
+							controller.mediaPlayer.setVolume(controller.volumeValue);
+							
+							controller.volumeButton.setTooltip(controller.mute);
+
+							controller.volumeSlider.setValue(controller.volumeValue);
 						}
-						
+					}
+					break;
+					
+					case Q: {
+						if(controller.menuOpen) {
+							controller.menuOpen = false;
+							controller.menuButton.setTooltip(controller.openMenu);
+						}
 						else {
-							controller.durationSlider.setValue(controller.durationSlider.getValue() - 10.0);
-							//controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
+							controller.menuOpen = true;
+							controller.menuButton.setTooltip(controller.closeMenu);
 						}
-
-						
 					}
-				}
+					break;
 					
-				
+					default: break;
+				}
 			});
 			
 			
