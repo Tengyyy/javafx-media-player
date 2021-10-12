@@ -128,6 +128,10 @@ public class Controller implements Initializable {
 	boolean settingsOpen = false;
 	
 	boolean playbackSpeedOpen = false;
+	
+	boolean customSpeedOpen = false;
+	
+	boolean menuOpen = false;
 
 	boolean sliderFocus = false;
 
@@ -175,6 +179,9 @@ public class Controller implements Initializable {
 		
 		enterFullScreen = new Tooltip("Full screen (f)");
 		exitFullScreen = new Tooltip("Exit full screen (f)");
+		
+		openMenu = new Tooltip("Open menu (q)");
+		closeMenu = new Tooltip("Close menu (q)");
 		
 		next = new Tooltip("Next video (SHIFT + N)");
 
@@ -263,6 +270,7 @@ public class Controller implements Initializable {
 		playbackSpeedScroll.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 		
 		menuButton.setBackground(Background.EMPTY);
+		menuButton.setTooltip(openMenu);
 
 		playLogo.setImage(start);
 		playButton.setBackground(Background.EMPTY);
@@ -1620,7 +1628,14 @@ public class Controller implements Initializable {
 				openCloseSettings();
 			}
 			else {
-				
+				if(menuOpen) {
+					menuOpen = false;
+					menuButton.setTooltip(openMenu);
+				}
+				else {
+					menuOpen = true;
+					menuButton.setTooltip(closeMenu);
+				}
 			}
 	}
 	

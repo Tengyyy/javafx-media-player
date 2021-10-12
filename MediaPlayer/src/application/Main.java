@@ -188,6 +188,45 @@ public class Main extends Application {
 					}
 					fullScreen = false;
 				}
+				else if(event.getCode() == KeyCode.L) {
+					
+					if(!controller.volumeSlider.isFocused()) {
+						
+						
+						if(controller.mediaPlayer.getCurrentTime().toSeconds() + 10 >= controller.media.getDuration().toSeconds()) {
+							controller.seekedToEnd = true;
+							controller.mediaPlayer.seek(controller.media.getDuration());
+						}
+						else {
+						controller.durationSlider.setValue(controller.durationSlider.getValue() + 10);
+						}
+						event.consume();
+						
+						
+					}
+
+					
+
+					
+				}
+				
+				else if(event.getCode() == KeyCode.J) {
+					
+					if(!controller.volumeSlider.isFocused()) {
+						if(controller.atEnd) {
+							controller.seekedToEnd = false;
+							controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 10000));
+
+						}
+						
+						else {
+							controller.durationSlider.setValue(controller.durationSlider.getValue() - 10.0);
+							//controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
+						}
+
+						
+					}
+				}
 					
 				
 			});
