@@ -221,7 +221,7 @@
                                  </cursor>
                               </Label>
                               <Label prefHeight="50.0" prefWidth="20.0" />
-                              <Label fx:id="playbackSpeedCustom" alignment="CENTER_RIGHT" focusTraversable="false" maxWidth="-Infinity" prefHeight="50.0" prefWidth="65.0" text="Custom" textFill="WHITE" underline="true">
+                              <Label fx:id="playbackSpeedCustom" alignment="CENTER_RIGHT" focusTraversable="false" maxWidth="-Infinity" onMouseClicked="#openCustomSpeed" prefHeight="50.0" prefWidth="65.0" text="Custom" textFill="WHITE" underline="true">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -403,6 +403,54 @@
                   </VBox>
                </content>
             </ScrollPane>
+            <StackPane fx:id="customSpeedBuffer" alignment="BOTTOM_CENTER" prefHeight="170.0" prefWidth="235.0" translateX="235.0">
+               <children>
+                  <StackPane fx:id="customSpeedPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="130.0" prefWidth="235.0" StackPane.alignment="BOTTOM_CENTER">
+                     <children>
+                        <VBox fx:id="customSpeedBox" alignment="TOP_CENTER" prefHeight="130.0" prefWidth="235.0">
+                           <children>
+                              <HBox fx:id="customSpeedTitle" prefHeight="50.0" prefWidth="235.0">
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" />
+                                 </padding>
+                                 <children>
+                                    <Label fx:id="CustomSpeedArrow" onMouseClicked="#closeCustomSpeed" prefHeight="50.0" prefWidth="34.0">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                       <padding>
+                                          <Insets right="10.0" />
+                                       </padding>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </Label>
+                                    <Label fx:id="CustomSpeedTitleLabel" onMouseClicked="#closeCustomSpeed" prefHeight="50.0" prefWidth="60.0" text="Custom" textFill="WHITE">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </Label>
+                                 </children>
+                              </HBox>
+                              <Separator prefWidth="200.0">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" top="5.0" />
+                                 </VBox.margin>
+                              </Separator>
+                              <Slider fx:id="customSpeedSlider" blockIncrement="0.05" max="2.0" min="0.25" value="1.0" />
+                              <Label fx:id="customSpeedLabel" text="1.65x" textFill="WHITE">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children></StackPane>
+               </children>
+            </StackPane>
          </children>
       </Pane>
    </children>

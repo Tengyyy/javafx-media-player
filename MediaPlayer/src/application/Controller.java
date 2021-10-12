@@ -58,10 +58,10 @@ public class Controller implements Initializable {
 	public MediaView mediaView;
 
 	@FXML
-	VBox controlBar, settingsHome, playbackSpeedPage;
+	VBox controlBar, settingsHome, playbackSpeedPage, customSpeedBox;
 
 	@FXML
-	HBox playbackSpeedBox, playbackOptionsBox, directoryBox, durationSliderBox, playbackSpeedTitle, playbackSpeed1, playbackSpeed2, playbackSpeed3, playbackSpeed4, playbackSpeed5, playbackSpeed6, playbackSpeed7, playbackSpeed8;
+	HBox playbackSpeedBox, playbackOptionsBox, directoryBox, durationSliderBox, playbackSpeedTitle, playbackSpeed1, playbackSpeed2, playbackSpeed3, playbackSpeed4, playbackSpeed5, playbackSpeed6, playbackSpeed7, playbackSpeed8, customSpeedTitle;
 
 	@FXML
 	Button fullScreenButton, playButton, volumeButton, settingsButton, menuButton, nextVideoButton;
@@ -70,20 +70,20 @@ public class Controller implements Initializable {
 	ImageView playLogo, fullScreenIcon, volumeIcon, settingsIcon, nextVideoIcon;
 
 	@FXML
-	StackPane pane, settingsPane, bufferPane;
+	StackPane pane, settingsPane, bufferPane, customSpeedBuffer, customSpeedPane;
 
 
 	@FXML
 	Pane playPane, settingsBackgroundPane;
 
 	@FXML
-	Slider volumeSlider, durationSlider;
+	Slider volumeSlider, durationSlider, customSpeedSlider;
 
 	@FXML
 	FlowPane volumeSliderPane;
 
 	@FXML
-	Label durationLabel, playbackValueLabel, changeDirectoryLabel, playbackOptionsArrow, playbackSpeedArrow, playbackSpeedTitleLabel, playbackSpeedCustom, checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7, checkBox8;
+	Label durationLabel, playbackValueLabel, changeDirectoryLabel, playbackOptionsArrow, playbackSpeedArrow, playbackSpeedTitleLabel, playbackSpeedCustom, checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7, checkBox8, customSpeedArrow, customSpeedTitleLabel, customSpeedLabel;
 
 	
 	@FXML
@@ -305,6 +305,8 @@ public class Controller implements Initializable {
 		
 		checkBox4.setGraphic(new ImageView(check));
 		
+		//customSpeedArrow.setGraphic(new ImageView(leftArrow));
+		
 		volumeSlider.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> volumeSlider.setValueChanging(true));
 		volumeSlider.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> volumeSlider.setValueChanging(false));
 
@@ -346,6 +348,19 @@ public class Controller implements Initializable {
 				}
 			}
 
+		});
+		
+		customSpeedSlider.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				
+				mediaPlayer.setRate(newValue.doubleValue());
+				
+				customSpeedLabel.setText(newValue.toString() + "x");
+				
+			}
+			
 		});
 
 		/**
@@ -1679,6 +1694,14 @@ public class Controller implements Initializable {
 		else {
 			replayMedia();
 		}
+	}
+	
+	public void openCustomSpeed() {
+		customSpeedOpen = true;
+	}
+	
+	public void closeCustomSpeed() {
+		
 	}
 
 }
