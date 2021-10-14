@@ -403,7 +403,7 @@
                   </VBox>
                </content>
             </ScrollPane>
-            <StackPane fx:id="customSpeedBuffer" alignment="BOTTOM_CENTER" prefHeight="170.0" prefWidth="235.0" translateX="235.0">
+            <StackPane fx:id="customSpeedBuffer" alignment="BOTTOM_CENTER" prefHeight="170.0" prefWidth="235.0">
                <children>
                   <StackPane fx:id="customSpeedPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="130.0" prefWidth="235.0" StackPane.alignment="BOTTOM_CENTER">
                      <children>
@@ -414,7 +414,7 @@
                                     <Insets left="10.0" right="10.0" />
                                  </padding>
                                  <children>
-                                    <Label fx:id="CustomSpeedArrow" onMouseClicked="#closeCustomSpeed" prefHeight="50.0" prefWidth="34.0">
+                                    <Label fx:id="customSpeedArrow" onMouseClicked="#closeCustomSpeed" prefHeight="50.0" prefWidth="34.0">
                                        <HBox.margin>
                                           <Insets />
                                        </HBox.margin>
@@ -425,7 +425,7 @@
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
                                     </Label>
-                                    <Label fx:id="CustomSpeedTitleLabel" onMouseClicked="#closeCustomSpeed" prefHeight="50.0" prefWidth="60.0" text="Custom" textFill="WHITE">
+                                    <Label fx:id="customSpeedTitleLabel" onMouseClicked="#closeCustomSpeed" prefHeight="50.0" prefWidth="60.0" text="Custom" textFill="WHITE">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
@@ -440,8 +440,8 @@
                                     <Insets bottom="5.0" top="5.0" />
                                  </VBox.margin>
                               </Separator>
-                              <Slider fx:id="customSpeedSlider" blockIncrement="0.05" max="2.0" min="0.25" value="1.0" />
-                              <Label fx:id="customSpeedLabel" text="1.65x" textFill="WHITE">
+                              <Slider fx:id="customSpeedSlider" blockIncrement="0.05" majorTickUnit="0.05" max="2.0" min="0.25" minorTickCount="0" showTickLabels="true" snapToTicks="true" value="1.0" />
+                              <Label fx:id="customSpeedLabel" text="1x" textFill="WHITE">
                                  <font>
                                     <Font size="20.0" />
                                  </font>

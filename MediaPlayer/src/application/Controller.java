@@ -269,6 +269,9 @@ public class Controller implements Initializable {
 		
 		playbackSpeedScroll.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 		
+		customSpeedPane.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
+
+		
 		menuButton.setBackground(Background.EMPTY);
 		menuButton.setTooltip(openMenu);
 
@@ -305,7 +308,7 @@ public class Controller implements Initializable {
 		
 		checkBox4.setGraphic(new ImageView(check));
 		
-		//customSpeedArrow.setGraphic(new ImageView(leftArrow));
+		customSpeedArrow.setGraphic(new ImageView(leftArrow));
 		
 		volumeSlider.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> volumeSlider.setValueChanging(true));
 		volumeSlider.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> volumeSlider.setValueChanging(false));
@@ -722,6 +725,9 @@ public class Controller implements Initializable {
 		
 		bufferPane.prefWidthProperty().bind(settingsBackgroundPane.widthProperty());
 		bufferPane.prefHeightProperty().bind(settingsBackgroundPane.heightProperty());
+		
+		customSpeedBuffer.prefHeightProperty().bind(settingsBackgroundPane.heightProperty());
+		customSpeedBuffer.prefWidthProperty().bind(settingsBackgroundPane.widthProperty());
 
 		
 		playbackSpeedScroll.prefHeightProperty().bind(Bindings.min(487, Bindings.subtract(mediaViewHeight, 100)));
@@ -1126,7 +1132,7 @@ public class Controller implements Initializable {
 				parallelTransition.setCycleCount(1);
 				parallelTransition.play();
 			}
-			else {
+			else if(!customSpeedOpen){
 				settingsExit = new Image(settingsExitFile.toURI().toString());
 				settingsIcon.setImage(settingsExit);
 				settingsOpen = false;
@@ -1170,6 +1176,9 @@ public class Controller implements Initializable {
 					
 					playbackSpeedScroll.setVvalue(0);
 				});
+			}
+			else {
+				// TODO: Settings closing animation when custom playback speed selector is open.
 			}
 			
 			
@@ -1698,10 +1707,45 @@ public class Controller implements Initializable {
 	
 	public void openCustomSpeed() {
 		customSpeedOpen = true;
+		
+		settingsBackgroundPane.prefHeightProperty().unbind();
+		
+		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), customSpeedBuffer);
+		translateTransition1.setFromX(settingsBackgroundPane.getWidth());
+		translateTransition1.setToX(0);
+		translateTransition1.setCycleCount(1);
+		translateTransition1.setInterpolator(Interpolator.LINEAR);
+		
+		
+		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(100), playbackSpeedScroll);
+		translateTransition2.setFromX(0);
+		translateTransition2.setToX(-settingsBackgroundPane.getWidth());
+		translateTransition2.setCycleCount(1);
+		translateTransition2.setInterpolator(Interpolator.LINEAR);
+		
+		Timeline settingsTimeline1 = new Timeline();
+
+		settingsTimeline1.setCycleCount(1);
+		settingsTimeline1.setAutoReverse(false);
+		settingsTimeline1.getKeyFrames()
+				.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsBackgroundPane.prefHeightProperty(), 130, Interpolator.LINEAR)));
+
+		ParallelTransition parallelTransition = new ParallelTransition();
+		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline1);
+		parallelTransition.setCycleCount(1);
+		parallelTransition.play();
+		
+		parallelTransition.setOnFinished((e) -> {
+			playbackSpeedScroll.setVvalue(0);
+		});
+
 	}
 	
 	public void closeCustomSpeed() {
+		customSpeedOpen = false;
 		
+		//Custom playback speed page closing animation goes here!
+
 	}
 
 }
