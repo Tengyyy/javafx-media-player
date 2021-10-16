@@ -5,6 +5,7 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Slider?>
@@ -403,7 +404,7 @@
                   </VBox>
                </content>
             </ScrollPane>
-            <StackPane fx:id="customSpeedBuffer" alignment="BOTTOM_CENTER" prefHeight="170.0" prefWidth="235.0">
+            <StackPane fx:id="customSpeedBuffer" alignment="BOTTOM_CENTER" prefHeight="170.0" prefWidth="235.0" translateX="235.0">
                <children>
                   <StackPane fx:id="customSpeedPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="130.0" prefWidth="235.0" StackPane.alignment="BOTTOM_CENTER">
                      <children>
@@ -440,7 +441,12 @@
                                     <Insets bottom="5.0" top="5.0" />
                                  </VBox.margin>
                               </Separator>
-                              <Slider fx:id="customSpeedSlider" blockIncrement="0.05" majorTickUnit="0.05" max="2.0" min="0.25" minorTickCount="0" showTickLabels="true" snapToTicks="true" value="1.0" />
+                              <StackPane prefHeight="30.0" prefWidth="235.0">
+                                 <children>
+                                    <ProgressBar fx:id="customSpeedTrack" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="10.0" prefWidth="140.0" progress="0.45" styleClass="customSpeedTrack" />
+                                    <Slider fx:id="customSpeedSlider" blockIncrement="0.05" majorTickUnit="0.05" max="2.0" maxWidth="-Infinity" min="0.25" minWidth="-Infinity" minorTickCount="0" prefWidth="150.0" styleClass="customSpeedSlider" value="1.0" />
+                                 </children>
+                              </StackPane>
                               <Label fx:id="customSpeedLabel" text="1x" textFill="WHITE">
                                  <font>
                                     <Font size="20.0" />

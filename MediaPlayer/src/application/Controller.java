@@ -8,6 +8,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
 
+
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -29,6 +30,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
@@ -78,6 +80,10 @@ public class Controller implements Initializable {
 
 	@FXML
 	Slider volumeSlider, durationSlider, customSpeedSlider;
+	
+	@FXML
+	ProgressBar customSpeedTrack;
+
 
 	@FXML
 	FlowPane volumeSliderPane;
@@ -353,18 +359,31 @@ public class Controller implements Initializable {
 
 		});
 		
+		customSpeedTrack.setProgress(0.75 /1.75);
+
+		
 		customSpeedSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				
-				mediaPlayer.setRate(newValue.doubleValue());
+				//mediaPlayer.setRate(newValue.doubleValue());
 				
 				customSpeedLabel.setText(newValue.toString() + "x");
+				
+				System.out.println((newValue.doubleValue() - 0.25) * 1/1.75);
+				
+				double progress = (newValue.doubleValue() - 0.25) * 1/1.75;
+
+						
+				customSpeedTrack.setProgress(progress);
+
+
 				
 			}
 			
 		});
+
 
 		/**
 		 * totalDurationProperty() - the total amount of play time if allowed to play
