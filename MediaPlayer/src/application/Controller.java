@@ -2,11 +2,13 @@ package application;
 
 import java.io.File;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.EnumSet;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
+
 
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
@@ -26,9 +28,11 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
@@ -49,6 +53,7 @@ import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -78,6 +83,10 @@ public class Controller implements Initializable {
 
 	@FXML
 	Slider volumeSlider, durationSlider, customSpeedSlider;
+	
+	@FXML
+	ProgressBar customSpeedTrack;
+
 
 	@FXML
 	FlowPane volumeSliderPane;
@@ -88,6 +97,11 @@ public class Controller implements Initializable {
 	
 	@FXML
 	ScrollPane playbackSpeedScroll;
+	
+	//TODO: Create custom playback speed selector inside the scrollpane using these objects.
+	HBox playbackCustom;
+	Label playbackCustomCheck;
+	Label playbackCustomText;
 
 	private File file;
 	Media media;
@@ -108,6 +122,9 @@ public class Controller implements Initializable {
 	Image maximize, minimize, volumeUp, volumeDown, volumeMute, settingsEnter, settingsExit, settingsImage, rightArrow, nextVideo, leftArrow, check;
 
 	double volumeValue;
+	
+	double formattedValue;
+	DecimalFormat df;
 
 	private Image start;
 
@@ -130,6 +147,8 @@ public class Controller implements Initializable {
 	boolean playbackSpeedOpen = false;
 	
 	boolean customSpeedOpen = false;
+	
+	boolean customSpeedChanged = false;
 	
 	boolean menuOpen = false;
 
@@ -269,6 +288,9 @@ public class Controller implements Initializable {
 		
 		playbackSpeedScroll.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 		
+		customSpeedPane.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
+
+		
 		menuButton.setBackground(Background.EMPTY);
 		menuButton.setTooltip(openMenu);
 
@@ -305,7 +327,7 @@ public class Controller implements Initializable {
 		
 		checkBox4.setGraphic(new ImageView(check));
 		
-		//customSpeedArrow.setGraphic(new ImageView(leftArrow));
+		customSpeedArrow.setGraphic(new ImageView(leftArrow));
 		
 		volumeSlider.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> volumeSlider.setValueChanging(true));
 		volumeSlider.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> volumeSlider.setValueChanging(false));
@@ -350,18 +372,34 @@ public class Controller implements Initializable {
 
 		});
 		
+		customSpeedTrack.setProgress(0.75 /1.75);
+
+		
 		customSpeedSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				
-				mediaPlayer.setRate(newValue.doubleValue());
+				customSpeedChanged = true;
+
+				formattedValue = Math.floor(newValue.doubleValue()* 20) / 20; // floors the new slider value to 2 decimal points with the last decimal being only 5 or 0.
 				
-				customSpeedLabel.setText(newValue.toString() + "x");
+				mediaPlayer.setRate(formattedValue);
+				
+				double progress = (newValue.doubleValue() - 0.25) * 1/1.75; // adjust the slider scale ( 0.25 - 2 ) to match with the progress bar scale ( 0 - 1 )
+
+				customSpeedTrack.setProgress(progress);
+				
+				df = new DecimalFormat("#.##"); // makes it so that only the minimum amount of digits wil be displayed, eg. 2 not 2.00
+				
+				customSpeedLabel.setText(df.format(formattedValue) + "x");
+
+
 				
 			}
 			
 		});
+
 
 		/**
 		 * totalDurationProperty() - the total amount of play time if allowed to play
@@ -722,6 +760,9 @@ public class Controller implements Initializable {
 		
 		bufferPane.prefWidthProperty().bind(settingsBackgroundPane.widthProperty());
 		bufferPane.prefHeightProperty().bind(settingsBackgroundPane.heightProperty());
+		
+		customSpeedBuffer.prefHeightProperty().bind(settingsBackgroundPane.heightProperty());
+		customSpeedBuffer.prefWidthProperty().bind(settingsBackgroundPane.widthProperty());
 
 		
 		playbackSpeedScroll.prefHeightProperty().bind(Bindings.min(487, Bindings.subtract(mediaViewHeight, 100)));
@@ -744,6 +785,13 @@ public class Controller implements Initializable {
 		playbackSpeed1.setOnMouseClicked((e) -> {
 			
 			switch(playbackSpeedTracker) {
+			
+				case 0: {
+					if(playbackCustomCheck != null) {
+						playbackCustomCheck.setGraphic(null);
+					}
+				}
+				break;
 				case 2: checkBox2.setGraphic(null);
 				break;
 				case 3: checkBox3.setGraphic(null);
@@ -773,6 +821,12 @@ public class Controller implements Initializable {
 		playbackSpeed2.setOnMouseClicked((e) -> {
 			
 			switch(playbackSpeedTracker) {
+				case 0: {
+					if(playbackCustomCheck != null) {
+						playbackCustomCheck.setGraphic(null);
+					}
+				}
+				break;
 				case 1: checkBox1.setGraphic(null);
 				break;
 				case 3: checkBox3.setGraphic(null);
@@ -802,6 +856,12 @@ public class Controller implements Initializable {
 		playbackSpeed3.setOnMouseClicked((e) -> {
 			
 			switch(playbackSpeedTracker) {
+				case 0: {
+					if(playbackCustomCheck != null) {
+						playbackCustomCheck.setGraphic(null);
+					}
+				}
+				break;
 				case 1: checkBox1.setGraphic(null);
 				break;
 				case 2: checkBox2.setGraphic(null);
@@ -831,6 +891,12 @@ public class Controller implements Initializable {
 		playbackSpeed4.setOnMouseClicked((e) -> {
 			
 			switch(playbackSpeedTracker) {
+				case 0: {
+					if(playbackCustomCheck != null) {
+						playbackCustomCheck.setGraphic(null);
+					}
+				}
+				break;
 				case 1: checkBox1.setGraphic(null);
 				break;
 				case 2: checkBox2.setGraphic(null);
@@ -860,6 +926,13 @@ public class Controller implements Initializable {
 		playbackSpeed5.setOnMouseClicked((e) -> {
 			
 			switch(playbackSpeedTracker) {
+			
+				case 0: {
+					if(playbackCustomCheck != null) {
+						playbackCustomCheck.setGraphic(null);
+					}
+				}
+				break;
 				case 1: checkBox1.setGraphic(null);
 				break;
 				case 2: checkBox2.setGraphic(null);
@@ -890,6 +963,13 @@ public class Controller implements Initializable {
 		playbackSpeed6.setOnMouseClicked((e) -> {
 			
 			switch(playbackSpeedTracker) {
+			
+				case 0: {
+					if(playbackCustomCheck != null) {
+						playbackCustomCheck.setGraphic(null);
+					}
+				}
+				break;
 				case 1: checkBox1.setGraphic(null);
 				break;
 				case 2: checkBox2.setGraphic(null);
@@ -919,6 +999,13 @@ public class Controller implements Initializable {
 		playbackSpeed7.setOnMouseClicked((e) -> {
 			
 			switch(playbackSpeedTracker) {
+			
+				case 0: {
+					if(playbackCustomCheck != null) {
+						playbackCustomCheck.setGraphic(null);
+					}
+				}
+				break;
 				case 1: checkBox7.setGraphic(null);
 				break;
 				case 2: checkBox2.setGraphic(null);
@@ -948,6 +1035,13 @@ public class Controller implements Initializable {
 		playbackSpeed8.setOnMouseClicked((e) -> {
 			
 			switch(playbackSpeedTracker) {
+			
+				case 0: {
+					if(playbackCustomCheck != null) {
+						playbackCustomCheck.setGraphic(null);
+					}
+				}
+				break;
 				case 1: checkBox1.setGraphic(null);
 				break;
 				case 2: checkBox2.setGraphic(null);
@@ -1112,7 +1206,7 @@ public class Controller implements Initializable {
 				settingsOpen = false;
 
 				FadeTransition fadeTransition1 = new FadeTransition(Duration.millis(100), bufferPane);
-				fadeTransition1.setFromValue(0.8f);
+				fadeTransition1.setFromValue(1);
 				fadeTransition1.setToValue(0.0f);
 				fadeTransition1.setCycleCount(1);
 
@@ -1126,7 +1220,7 @@ public class Controller implements Initializable {
 				parallelTransition.setCycleCount(1);
 				parallelTransition.play();
 			}
-			else {
+			else if(!customSpeedOpen){
 				settingsExit = new Image(settingsExitFile.toURI().toString());
 				settingsIcon.setImage(settingsExit);
 				settingsOpen = false;
@@ -1137,7 +1231,7 @@ public class Controller implements Initializable {
 				playbackSpeedScroll.translateYProperty().unbind();
 				
 				FadeTransition fadeTransition1 = new FadeTransition(Duration.millis(100), playbackSpeedScroll);
-				fadeTransition1.setFromValue(0.8f);
+				fadeTransition1.setFromValue(1);
 				fadeTransition1.setToValue(0.0f);
 				fadeTransition1.setCycleCount(1);
 				TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), playbackSpeedScroll);
@@ -1164,9 +1258,52 @@ public class Controller implements Initializable {
 					bufferPane.setTranslateX(0);
 					settingsBackgroundPane.setPrefHeight(170);
 					playbackSpeedScroll.setTranslateY(settingsBackgroundPane.getHeight() - playbackSpeedScroll.getHeight());
+					playbackSpeedScroll.setOpacity(1);
+					playbackSpeedScroll.translateYProperty().bind(Bindings.subtract(settingsBackgroundPane.heightProperty(), playbackSpeedScroll.heightProperty()));
+					bufferPane.setTranslateY(bufferPane.getHeight());
+					
+					playbackSpeedScroll.setVvalue(0);
+				});
+			}
+			else if(customSpeedOpen){
+				// TODO: Settings closing animation when custom playback speed selector is open.
+				settingsExit = new Image(settingsExitFile.toURI().toString());
+				settingsIcon.setImage(settingsExit);
+				settingsOpen = false;
+				playbackSpeedOpen = false;
+				customSpeedOpen = false;
+				
+				settingsBackgroundPane.prefHeightProperty().unbind();
+				
+				playbackSpeedScroll.translateYProperty().unbind();
+				
+				FadeTransition fadeTransition1 = new FadeTransition(Duration.millis(100), customSpeedBuffer);
+				fadeTransition1.setFromValue(1);
+				fadeTransition1.setToValue(0.0f);
+				fadeTransition1.setCycleCount(1);
+				
+				TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), customSpeedBuffer);
+				translateTransition1.setFromY(0);
+				translateTransition1.setToY(customSpeedBuffer.getHeight());
+				translateTransition1.setCycleCount(1);
+				
+				ParallelTransition parallelTransition = new ParallelTransition();
+				parallelTransition.getChildren().addAll(fadeTransition1, translateTransition1);
+				parallelTransition.setCycleCount(1);
+				parallelTransition.play();
+				
+				parallelTransition.setOnFinished((e) -> {
+					playbackSpeedScroll.setTranslateX(settingsBackgroundPane.getWidth());
+					bufferPane.setTranslateX(0);
+					settingsBackgroundPane.setPrefHeight(170);
+					playbackSpeedScroll.setTranslateY(settingsBackgroundPane.getHeight() - playbackSpeedScroll.getHeight());
 					playbackSpeedScroll.setOpacity(0.8f);
 					playbackSpeedScroll.translateYProperty().bind(Bindings.subtract(settingsBackgroundPane.heightProperty(), playbackSpeedScroll.heightProperty()));
 					bufferPane.setTranslateY(bufferPane.getHeight());
+					
+					customSpeedBuffer.setOpacity(1);
+					customSpeedBuffer.setTranslateX(settingsBackgroundPane.getWidth());
+					customSpeedBuffer.setTranslateY(0);
 					
 					playbackSpeedScroll.setVvalue(0);
 				});
@@ -1174,14 +1311,16 @@ public class Controller implements Initializable {
 			
 			
 
-		} else {
+		}
+		
+		else {
 			settingsEnter = new Image(settingsEnterFile.toURI().toString());
 			settingsIcon.setImage(settingsEnter);
 			settingsOpen = true;
 
 			FadeTransition fadeTransition1 = new FadeTransition(Duration.millis(100), bufferPane);
 			fadeTransition1.setFromValue(0.0f);
-			fadeTransition1.setToValue(0.8f);
+			fadeTransition1.setToValue(1);
 			fadeTransition1.setCycleCount(1);
 
 			TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), bufferPane);
@@ -1698,9 +1837,167 @@ public class Controller implements Initializable {
 	
 	public void openCustomSpeed() {
 		customSpeedOpen = true;
+		
+		settingsBackgroundPane.prefHeightProperty().unbind();
+		
+		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), customSpeedBuffer);
+		translateTransition1.setFromX(settingsBackgroundPane.getWidth());
+		translateTransition1.setToX(0);
+		translateTransition1.setCycleCount(1);
+		translateTransition1.setInterpolator(Interpolator.LINEAR);
+		
+		
+		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(100), playbackSpeedScroll);
+		translateTransition2.setFromX(0);
+		translateTransition2.setToX(-settingsBackgroundPane.getWidth());
+		translateTransition2.setCycleCount(1);
+		translateTransition2.setInterpolator(Interpolator.LINEAR);
+		
+		Timeline settingsTimeline1 = new Timeline();
+
+		settingsTimeline1.setCycleCount(1);
+		settingsTimeline1.setAutoReverse(false);
+		settingsTimeline1.getKeyFrames()
+				.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsBackgroundPane.prefHeightProperty(), 130, Interpolator.LINEAR)));
+
+		ParallelTransition parallelTransition = new ParallelTransition();
+		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline1);
+		parallelTransition.setCycleCount(1);
+		parallelTransition.play();
+		
+		parallelTransition.setOnFinished((e) -> {
+			playbackSpeedScroll.setVvalue(0);
+		});
+
 	}
 	
 	public void closeCustomSpeed() {
+		customSpeedOpen = false;
+		
+		
+		if(playbackCustom == null && customSpeedChanged) {
+			
+			playbackCustom = new HBox();
+			playbackCustomCheck = new Label();
+			playbackCustomText = new Label();
+			
+			playbackCustom.setPrefWidth(235);
+			playbackCustom.setPrefHeight(50);
+			playbackCustom.setPadding(new Insets(0, 10, 0, 10));
+			
+			playbackCustomCheck.setPrefHeight(50);
+			playbackCustomCheck.setPrefWidth(29);
+			playbackCustomCheck.setPadding(new Insets(0, 5, 0, 0));
+			playbackCustomCheck.setGraphic(new ImageView(check));
+			
+			switch(playbackSpeedTracker) {
+			case 1: checkBox1.setGraphic(null);
+			break;
+			case 2: checkBox2.setGraphic(null);
+			break;
+			case 3: checkBox3.setGraphic(null);
+			break;
+			case 4: checkBox4.setGraphic(null);
+			break;
+			case 5: checkBox5.setGraphic(null);
+			break;
+			case 6: checkBox6.setGraphic(null);
+			break;
+			case 7: checkBox7.setGraphic(null);
+			break;
+			case 8: checkBox8.setGraphic(null);
+			break;
+			default: break;
+		}
+			
+			playbackSpeedTracker = 0;
+			
+			playbackCustom.setOnMouseClicked((e) -> {
+				
+				switch(playbackSpeedTracker) {
+					case 1: checkBox1.setGraphic(null);
+					break;
+					case 2: checkBox2.setGraphic(null);
+					break;
+					case 3: checkBox3.setGraphic(null);
+					break;
+					case 4: checkBox4.setGraphic(null);
+					break;
+					case 5: checkBox5.setGraphic(null);
+					break;
+					case 6: checkBox6.setGraphic(null);
+					break;
+					case 7: checkBox7.setGraphic(null);
+					break;
+					case 8: checkBox8.setGraphic(null);
+					break;
+					default: break;
+				}
+				
+				playbackSpeedTracker = 0;
+				playbackCustomCheck.setGraphic(new ImageView(check));
+				mediaPlayer.setRate(formattedValue);
+				playbackValueLabel.setText(df.format(formattedValue));
+			});
+			
+			playbackCustom.setOnMouseEntered((e) -> {
+				hoverEffectOn(playbackCustom);
+			});
+			
+			playbackCustom.setOnMouseExited((e) -> {
+				hoverEffectOff(playbackCustom);
+			});
+			
+			playbackCustomText.setTextFill(Color.WHITE);
+			playbackCustomText.setFont(new Font(15));
+			playbackCustomText.setPrefHeight(50);
+			playbackCustomText.setPrefWidth(186);
+			playbackCustomText.setText(df.format(formattedValue) + " (custom)");
+			
+			playbackValueLabel.setText(df.format(formattedValue));
+			
+			
+			
+			playbackCustom.getChildren().addAll(playbackCustomCheck, playbackCustomText);
+			playbackSpeedPage.getChildren().add(2, playbackCustom);
+			
+			System.out.println("OHYEAH!");
+			
+		}
+		else if(playbackCustom != null){
+			playbackCustomText.setText(df.format(formattedValue) + " (custom)");
+			playbackValueLabel.setText(df.format(formattedValue));
+		}
+
+		
+
+		
+		
+		settingsBackgroundPane.prefHeightProperty().unbind();
+		
+		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), customSpeedBuffer);
+		translateTransition1.setFromX(0);
+		translateTransition1.setToX(settingsBackgroundPane.getWidth());
+		translateTransition1.setCycleCount(1);
+		translateTransition1.setInterpolator(Interpolator.LINEAR);
+		
+		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(100), playbackSpeedScroll);
+		translateTransition2.setFromX(-settingsBackgroundPane.getWidth());
+		translateTransition2.setToX(0);
+		translateTransition2.setCycleCount(1);
+		translateTransition2.setInterpolator(Interpolator.LINEAR);
+
+		Timeline settingsTimeline1 = new Timeline();
+
+		settingsTimeline1.setCycleCount(1);
+		settingsTimeline1.setAutoReverse(false);
+		settingsTimeline1.getKeyFrames()
+				.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsBackgroundPane.prefHeightProperty(), mediaView.sceneProperty().get().getHeight() < 587 ? mediaView.sceneProperty().get().getHeight() - 100 : 487, Interpolator.LINEAR)));
+
+		ParallelTransition parallelTransition = new ParallelTransition();
+		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline1);
+		parallelTransition.setCycleCount(1);
+		parallelTransition.play();
 		
 	}
 

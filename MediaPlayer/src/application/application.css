@@ -7,3 +7,32 @@
 .playbackSpeedScroll > .viewport {
    -fx-background-color: transparent;
 }
+
+.customSpeedSlider .track {
+	
+	-fx-background-color: null;
+}
+
+
+.customSpeedTrack {
+	-fx-accent: white;
+}
+
+.customSpeedTrack > .track {
+	-fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-text-box-border: transparent;
+    -fx-control-inner-background: transparent;
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.customSpeedTrack > .bar {
+	-fx-padding: 1px;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+.customSpeedSlider > .thumb {
+	-fx-background-color: white;
+	-fx-padding: 10;
+}
