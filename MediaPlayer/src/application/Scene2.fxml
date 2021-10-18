@@ -196,9 +196,9 @@
                   </StackPane>
                </children>
             </StackPane>
-            <ScrollPane fx:id="playbackSpeedScroll" focusTraversable="false" hbarPolicy="NEVER" maxHeight="487.0" maxWidth="235.0" minHeight="170.0" minWidth="235.0" prefHeight="487.0" prefWidth="235.0" styleClass="playbackSpeedScroll" stylesheets="@application.css" translateX="235.0">
+            <ScrollPane fx:id="playbackSpeedScroll" focusTraversable="false" hbarPolicy="NEVER" maxHeight="537.0" maxWidth="235.0" minHeight="170.0" minWidth="235.0" prefHeight="487.0" prefWidth="235.0" styleClass="playbackSpeedScroll" stylesheets="@application.css" translateX="235.0">
                <content>
-                  <VBox fx:id="playbackSpeedPage" alignment="BOTTOM_LEFT" minHeight="170.0" minWidth="235.0" prefWidth="235.0">
+                  <VBox fx:id="playbackSpeedPage" alignment="BOTTOM_LEFT" maxHeight="537.0" minHeight="170.0" minWidth="235.0" prefHeight="484.0" prefWidth="235.0">
                      <padding>
                         <Insets bottom="10.0" top="10.0" />
                      </padding>

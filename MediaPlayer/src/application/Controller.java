@@ -124,6 +124,7 @@ public class Controller implements Initializable {
 	double volumeValue;
 	
 	double formattedValue;
+	double formattedValue2;
 	DecimalFormat df;
 
 	private Image start;
@@ -384,6 +385,8 @@ public class Controller implements Initializable {
 
 				formattedValue = Math.floor(newValue.doubleValue()* 20) / 20; // floors the new slider value to 2 decimal points with the last decimal being only 5 or 0.
 				
+				
+				
 				mediaPlayer.setRate(formattedValue);
 				
 				double progress = (newValue.doubleValue() - 0.25) * 1/1.75; // adjust the slider scale ( 0.25 - 2 ) to match with the progress bar scale ( 0 - 1 )
@@ -393,9 +396,374 @@ public class Controller implements Initializable {
 				df = new DecimalFormat("#.##"); // makes it so that only the minimum amount of digits wil be displayed, eg. 2 not 2.00
 				
 				customSpeedLabel.setText(df.format(formattedValue) + "x");
-
-
 				
+				if(playbackCustom == null && customSpeedChanged) {
+					
+					switch(df.format(formattedValue)) {
+					case "0.25": {
+						playbackSpeedTracker = 1;
+						checkBox2.setGraphic(null);
+						checkBox3.setGraphic(null);
+						checkBox4.setGraphic(null);
+						checkBox5.setGraphic(null);
+						checkBox6.setGraphic(null);
+						checkBox7.setGraphic(null);
+						checkBox8.setGraphic(null);
+						checkBox1.setGraphic(new ImageView(check));
+						playbackSpeedScroll.setVvalue(0);
+
+					}
+					break;
+					case "0.5": {
+						playbackSpeedTracker = 2;
+
+						checkBox1.setGraphic(null);
+						checkBox3.setGraphic(null);
+						checkBox4.setGraphic(null);
+						checkBox5.setGraphic(null);
+						checkBox6.setGraphic(null);
+						checkBox7.setGraphic(null);
+						checkBox8.setGraphic(null);
+						checkBox2.setGraphic(new ImageView(check));
+						playbackSpeedScroll.setVvalue(148/playbackSpeedPage.getHeight());
+					}
+					break;
+					case "0.75": {
+						playbackSpeedTracker = 3;
+						
+						checkBox1.setGraphic(null);
+						checkBox2.setGraphic(null);
+						checkBox4.setGraphic(null);
+						checkBox5.setGraphic(null);
+						checkBox6.setGraphic(null);
+						checkBox7.setGraphic(null);
+						checkBox8.setGraphic(null);
+						checkBox3.setGraphic(new ImageView(check));
+						playbackSpeedScroll.setVvalue(198/playbackSpeedPage.getHeight());
+					}
+					break;
+					case "1": {
+						playbackSpeedTracker = 4;
+						
+						checkBox1.setGraphic(null);
+						checkBox2.setGraphic(null);
+						checkBox3.setGraphic(null);
+						checkBox5.setGraphic(null);
+						checkBox6.setGraphic(null);
+						checkBox7.setGraphic(null);
+						checkBox8.setGraphic(null);
+						checkBox4.setGraphic(new ImageView(check));
+						playbackSpeedScroll.setVvalue(248/playbackSpeedPage.getHeight());
+					}
+					break;
+					case "1.25": {
+						playbackSpeedTracker = 5;
+						
+						checkBox1.setGraphic(null);
+						checkBox2.setGraphic(null);
+						checkBox3.setGraphic(null);
+						checkBox4.setGraphic(null);
+						checkBox6.setGraphic(null);
+						checkBox7.setGraphic(null);
+						checkBox8.setGraphic(null);
+						checkBox5.setGraphic(new ImageView(check));
+						playbackSpeedScroll.setVvalue(298/playbackSpeedPage.getHeight());
+					}
+					break;
+					case "1.5": {
+						playbackSpeedTracker = 6;
+						
+						checkBox1.setGraphic(null);
+						checkBox2.setGraphic(null);
+						checkBox3.setGraphic(null);
+						checkBox4.setGraphic(null);
+						checkBox5.setGraphic(null);
+						checkBox7.setGraphic(null);
+						checkBox8.setGraphic(null);
+						checkBox6.setGraphic(new ImageView(check));
+						playbackSpeedScroll.setVvalue(348/playbackSpeedPage.getHeight());
+					}
+					break;
+					case "1.75": {
+						playbackSpeedTracker = 7;
+						
+						checkBox1.setGraphic(null);
+						checkBox2.setGraphic(null);
+						checkBox3.setGraphic(null);
+						checkBox4.setGraphic(null);
+						checkBox5.setGraphic(null);
+						checkBox6.setGraphic(null);
+						checkBox8.setGraphic(null);
+						checkBox7.setGraphic(new ImageView(check));
+						playbackSpeedScroll.setVvalue(398/playbackSpeedPage.getHeight());
+					}
+					break;
+					case "2": {
+						playbackSpeedTracker = 8;
+						
+						checkBox1.setGraphic(null);
+						checkBox2.setGraphic(null);
+						checkBox3.setGraphic(null);
+						checkBox4.setGraphic(null);
+						checkBox5.setGraphic(null);
+						checkBox6.setGraphic(null);
+						checkBox7.setGraphic(null);
+						checkBox8.setGraphic(new ImageView(check));
+						playbackSpeedScroll.setVvalue(448/playbackSpeedPage.getHeight());
+					}
+					break;
+					default: {
+
+						formattedValue2 = formattedValue;
+						playbackCustom = new HBox();
+						playbackCustomCheck = new Label();
+						playbackCustomText = new Label();
+						
+						playbackCustom.setPrefWidth(235);
+						playbackCustom.setPrefHeight(50);
+						playbackCustom.setPadding(new Insets(0, 10, 0, 10));
+						
+						playbackCustomCheck.setPrefHeight(50);
+						playbackCustomCheck.setPrefWidth(29);
+						playbackCustomCheck.setPadding(new Insets(0, 5, 0, 0));
+						playbackCustomCheck.setGraphic(new ImageView(check));
+						
+						switch(playbackSpeedTracker) {
+						case 1: checkBox1.setGraphic(null);
+						break;
+						case 2: checkBox2.setGraphic(null);
+						break;
+						case 3: checkBox3.setGraphic(null);
+						break;
+						case 4: checkBox4.setGraphic(null);
+						break;
+						case 5: checkBox5.setGraphic(null);
+						break;
+						case 6: checkBox6.setGraphic(null);
+						break;
+						case 7: checkBox7.setGraphic(null);
+						break;
+						case 8: checkBox8.setGraphic(null);
+						break;
+						default: break;
+					}
+						
+						playbackSpeedTracker = 0;
+						
+						playbackCustom.setOnMouseClicked((e) -> {
+							
+							switch(playbackSpeedTracker) {
+								case 1: checkBox1.setGraphic(null);
+								break;
+								case 2: checkBox2.setGraphic(null);
+								break;
+								case 3: checkBox3.setGraphic(null);
+								break;
+								case 4: checkBox4.setGraphic(null);
+								break;
+								case 5: checkBox5.setGraphic(null);
+								break;
+								case 6: checkBox6.setGraphic(null);
+								break;
+								case 7: checkBox7.setGraphic(null);
+								break;
+								case 8: checkBox8.setGraphic(null);
+								break;
+								default: break;
+							}
+							
+							playbackSpeedTracker = 0;
+							playbackCustomCheck.setGraphic(new ImageView(check));
+							mediaPlayer.setRate(formattedValue2);
+							playbackValueLabel.setText(df.format(formattedValue2));
+						});
+						
+						playbackCustom.setOnMouseEntered((e) -> {
+							hoverEffectOn(playbackCustom);
+						});
+						
+						playbackCustom.setOnMouseExited((e) -> {
+							hoverEffectOff(playbackCustom);
+						});
+						
+						playbackCustomText.setTextFill(Color.WHITE);
+						playbackCustomText.setFont(new Font(15));
+						playbackCustomText.setPrefHeight(50);
+						playbackCustomText.setPrefWidth(186);
+						playbackCustomText.setText("Custom " + "("+df.format(formattedValue2)+")");
+						
+						playbackValueLabel.setText(df.format(formattedValue2));
+						
+						playbackSpeedScroll.setVvalue(0);
+						
+						
+						
+						playbackCustom.getChildren().addAll(playbackCustomCheck, playbackCustomText);
+						playbackSpeedPage.getChildren().add(2, playbackCustom);
+						
+					}
+					break;
+				}
+
+				}
+				else if(playbackCustom != null){
+					
+					switch(df.format(formattedValue)) {
+						case "0.25": {
+							playbackCustomCheck.setGraphic(null);
+							playbackSpeedTracker = 1;
+							
+							checkBox2.setGraphic(null);
+							checkBox3.setGraphic(null);
+							checkBox4.setGraphic(null);
+							checkBox5.setGraphic(null);
+							checkBox6.setGraphic(null);
+							checkBox7.setGraphic(null);
+							checkBox8.setGraphic(null);
+							checkBox1.setGraphic(new ImageView(check));
+							playbackSpeedScroll.setVvalue(148/playbackSpeedPage.getHeight());
+							playbackValueLabel.setText(df.format(formattedValue));
+
+						}
+						break;
+						case "0.5": {
+							playbackCustomCheck.setGraphic(null);
+							playbackSpeedTracker = 2;
+							
+							checkBox1.setGraphic(null);
+							checkBox3.setGraphic(null);
+							checkBox4.setGraphic(null);
+							checkBox5.setGraphic(null);
+							checkBox6.setGraphic(null);
+							checkBox7.setGraphic(null);
+							checkBox8.setGraphic(null);
+							checkBox2.setGraphic(new ImageView(check));
+							playbackSpeedScroll.setVvalue(198/playbackSpeedPage.getHeight());
+							playbackValueLabel.setText(df.format(formattedValue));
+						}
+						break;
+						case "0.75": {
+							playbackCustomCheck.setGraphic(null);
+							playbackSpeedTracker = 3;
+							
+							checkBox1.setGraphic(null);
+							checkBox2.setGraphic(null);
+							checkBox4.setGraphic(null);
+							checkBox5.setGraphic(null);
+							checkBox6.setGraphic(null);
+							checkBox7.setGraphic(null);
+							checkBox8.setGraphic(null);
+							checkBox3.setGraphic(new ImageView(check));
+							playbackSpeedScroll.setVvalue(248/playbackSpeedPage.getHeight());
+							playbackValueLabel.setText(df.format(formattedValue));
+						}
+						break;
+						case "1": {
+							playbackCustomCheck.setGraphic(null);
+							playbackSpeedTracker = 4;
+							
+							checkBox1.setGraphic(null);
+							checkBox2.setGraphic(null);
+							checkBox3.setGraphic(null);
+							checkBox5.setGraphic(null);
+							checkBox6.setGraphic(null);
+							checkBox7.setGraphic(null);
+							checkBox8.setGraphic(null);
+							checkBox4.setGraphic(new ImageView(check));
+							playbackSpeedScroll.setVvalue(298/playbackSpeedPage.getHeight());
+							playbackValueLabel.setText(df.format(formattedValue));
+						}
+						break;
+						case "1.25": {
+							playbackCustomCheck.setGraphic(null);
+							playbackSpeedTracker = 5;
+							
+							checkBox1.setGraphic(null);
+							checkBox2.setGraphic(null);
+							checkBox3.setGraphic(null);
+							checkBox4.setGraphic(null);
+							checkBox6.setGraphic(null);
+							checkBox7.setGraphic(null);
+							checkBox8.setGraphic(null);
+							checkBox5.setGraphic(new ImageView(check));
+							playbackSpeedScroll.setVvalue(348/playbackSpeedPage.getHeight());
+							playbackValueLabel.setText(df.format(formattedValue));
+						}
+						break;
+						case "1.5": {
+							playbackCustomCheck.setGraphic(null);
+							playbackSpeedTracker = 6;
+							
+							checkBox1.setGraphic(null);
+							checkBox2.setGraphic(null);
+							checkBox3.setGraphic(null);
+							checkBox4.setGraphic(null);
+							checkBox5.setGraphic(null);
+							checkBox7.setGraphic(null);
+							checkBox8.setGraphic(null);
+							checkBox6.setGraphic(new ImageView(check));
+							playbackSpeedScroll.setVvalue(398/playbackSpeedPage.getHeight());
+							playbackValueLabel.setText(df.format(formattedValue));
+						}
+						break;
+						case "1.75": {
+							playbackCustomCheck.setGraphic(null);
+							playbackSpeedTracker = 7;
+							
+							checkBox1.setGraphic(null);
+							checkBox2.setGraphic(null);
+							checkBox3.setGraphic(null);
+							checkBox4.setGraphic(null);
+							checkBox5.setGraphic(null);
+							checkBox6.setGraphic(null);
+							checkBox8.setGraphic(null);
+							checkBox7.setGraphic(new ImageView(check));
+							playbackSpeedScroll.setVvalue(448/playbackSpeedPage.getHeight());
+							playbackValueLabel.setText(df.format(formattedValue));
+						}
+						break;
+						case "2": {
+							playbackCustomCheck.setGraphic(null);
+							playbackSpeedTracker = 8;
+							
+							checkBox1.setGraphic(null);
+							checkBox2.setGraphic(null);
+							checkBox3.setGraphic(null);
+							checkBox4.setGraphic(null);
+							checkBox5.setGraphic(null);
+							checkBox6.setGraphic(null);
+							checkBox7.setGraphic(null);
+							checkBox8.setGraphic(new ImageView(check));
+							playbackSpeedScroll.setVvalue(498/playbackSpeedPage.getHeight());
+							playbackValueLabel.setText(df.format(formattedValue));
+						}
+						break;
+						default: {
+							
+							formattedValue2 = formattedValue;
+
+							
+							checkBox1.setGraphic(null);
+							checkBox2.setGraphic(null);
+							checkBox3.setGraphic(null);
+							checkBox4.setGraphic(null);
+							checkBox5.setGraphic(null);
+							checkBox6.setGraphic(null);
+							checkBox7.setGraphic(null);
+							checkBox8.setGraphic(null);
+							
+							playbackCustomCheck.setGraphic(new ImageView(check));
+							playbackSpeedTracker = 0;
+							playbackCustomText.setText("Custom " + "("+df.format(formattedValue2)+")");
+							playbackValueLabel.setText(df.format(formattedValue2));
+							
+							playbackSpeedScroll.setVvalue(0);
+						}
+						break;
+					}
+					
+				}
+
 			}
 			
 		});
@@ -1714,8 +2082,17 @@ public class Controller implements Initializable {
 
 		settingsTimeline1.setCycleCount(1);
 		settingsTimeline1.setAutoReverse(false);
+		
+		double toHeight;
+		if(playbackCustom != null) {
+			toHeight = mediaView.sceneProperty().get().getHeight() < 637 ? mediaView.sceneProperty().get().getHeight() - 100 : 537;
+		}
+		else {
+			toHeight = mediaView.sceneProperty().get().getHeight() < 587 ? mediaView.sceneProperty().get().getHeight() - 100 : 487;
+		}
+		
 		settingsTimeline1.getKeyFrames()
-				.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsBackgroundPane.prefHeightProperty(), mediaView.sceneProperty().get().getHeight() < 587 ? mediaView.sceneProperty().get().getHeight() - 100 : 487, Interpolator.LINEAR )));
+				.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsBackgroundPane.prefHeightProperty(), toHeight, Interpolator.LINEAR )));
 
 		/*settingsTimeline.setOnFinished((e) -> {
 			settingsTimeline.stop();
@@ -1874,105 +2251,7 @@ public class Controller implements Initializable {
 	public void closeCustomSpeed() {
 		customSpeedOpen = false;
 		
-		
-		if(playbackCustom == null && customSpeedChanged) {
-			
-			playbackCustom = new HBox();
-			playbackCustomCheck = new Label();
-			playbackCustomText = new Label();
-			
-			playbackCustom.setPrefWidth(235);
-			playbackCustom.setPrefHeight(50);
-			playbackCustom.setPadding(new Insets(0, 10, 0, 10));
-			
-			playbackCustomCheck.setPrefHeight(50);
-			playbackCustomCheck.setPrefWidth(29);
-			playbackCustomCheck.setPadding(new Insets(0, 5, 0, 0));
-			playbackCustomCheck.setGraphic(new ImageView(check));
-			
-			switch(playbackSpeedTracker) {
-			case 1: checkBox1.setGraphic(null);
-			break;
-			case 2: checkBox2.setGraphic(null);
-			break;
-			case 3: checkBox3.setGraphic(null);
-			break;
-			case 4: checkBox4.setGraphic(null);
-			break;
-			case 5: checkBox5.setGraphic(null);
-			break;
-			case 6: checkBox6.setGraphic(null);
-			break;
-			case 7: checkBox7.setGraphic(null);
-			break;
-			case 8: checkBox8.setGraphic(null);
-			break;
-			default: break;
-		}
-			
-			playbackSpeedTracker = 0;
-			
-			playbackCustom.setOnMouseClicked((e) -> {
-				
-				switch(playbackSpeedTracker) {
-					case 1: checkBox1.setGraphic(null);
-					break;
-					case 2: checkBox2.setGraphic(null);
-					break;
-					case 3: checkBox3.setGraphic(null);
-					break;
-					case 4: checkBox4.setGraphic(null);
-					break;
-					case 5: checkBox5.setGraphic(null);
-					break;
-					case 6: checkBox6.setGraphic(null);
-					break;
-					case 7: checkBox7.setGraphic(null);
-					break;
-					case 8: checkBox8.setGraphic(null);
-					break;
-					default: break;
-				}
-				
-				playbackSpeedTracker = 0;
-				playbackCustomCheck.setGraphic(new ImageView(check));
-				mediaPlayer.setRate(formattedValue);
-				playbackValueLabel.setText(df.format(formattedValue));
-			});
-			
-			playbackCustom.setOnMouseEntered((e) -> {
-				hoverEffectOn(playbackCustom);
-			});
-			
-			playbackCustom.setOnMouseExited((e) -> {
-				hoverEffectOff(playbackCustom);
-			});
-			
-			playbackCustomText.setTextFill(Color.WHITE);
-			playbackCustomText.setFont(new Font(15));
-			playbackCustomText.setPrefHeight(50);
-			playbackCustomText.setPrefWidth(186);
-			playbackCustomText.setText(df.format(formattedValue) + " (custom)");
-			
-			playbackValueLabel.setText(df.format(formattedValue));
-			
-			
-			
-			playbackCustom.getChildren().addAll(playbackCustomCheck, playbackCustomText);
-			playbackSpeedPage.getChildren().add(2, playbackCustom);
-			
-			System.out.println("OHYEAH!");
-			
-		}
-		else if(playbackCustom != null){
-			playbackCustomText.setText(df.format(formattedValue) + " (custom)");
-			playbackValueLabel.setText(df.format(formattedValue));
-		}
 
-		
-
-		
-		
 		settingsBackgroundPane.prefHeightProperty().unbind();
 		
 		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), customSpeedBuffer);
@@ -1991,13 +2270,26 @@ public class Controller implements Initializable {
 
 		settingsTimeline1.setCycleCount(1);
 		settingsTimeline1.setAutoReverse(false);
+		
+		double toHeight;
+		if(playbackCustom != null) {
+			toHeight = mediaView.sceneProperty().get().getHeight() < 637 ? mediaView.sceneProperty().get().getHeight() - 100 : 537;
+		}
+		else {
+			toHeight = mediaView.sceneProperty().get().getHeight() < 587 ? mediaView.sceneProperty().get().getHeight() - 100 : 487;
+		}
+		
 		settingsTimeline1.getKeyFrames()
-				.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsBackgroundPane.prefHeightProperty(), mediaView.sceneProperty().get().getHeight() < 587 ? mediaView.sceneProperty().get().getHeight() - 100 : 487, Interpolator.LINEAR)));
+				.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsBackgroundPane.prefHeightProperty(), toHeight, Interpolator.LINEAR)));
 
 		ParallelTransition parallelTransition = new ParallelTransition();
 		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline1);
 		parallelTransition.setCycleCount(1);
 		parallelTransition.play();
+		
+		parallelTransition.setOnFinished((e) -> {
+			settingsBackgroundPane.prefHeightProperty().bind(playbackSpeedScroll.heightProperty());
+		});
 		
 	}
 
