@@ -9,6 +9,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
 
+import com.jfoenix.controls.JFXToggleButton;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
@@ -63,10 +64,10 @@ public class Controller implements Initializable {
 	public MediaView mediaView;
 
 	@FXML
-	VBox controlBar, settingsHome, playbackSpeedPage, customSpeedBox;
+	VBox controlBar, settingsHome, playbackSpeedPage, customSpeedBox, playbackOptionsVBox;
 
 	@FXML
-	HBox playbackSpeedBox, playbackOptionsBox, directoryBox, durationSliderBox, playbackSpeedTitle, playbackSpeed1, playbackSpeed2, playbackSpeed3, playbackSpeed4, playbackSpeed5, playbackSpeed6, playbackSpeed7, playbackSpeed8, customSpeedTitle;
+	HBox playbackSpeedBox, playbackOptionsBox, directoryBox, durationSliderBox, playbackSpeedTitle, playbackSpeed1, playbackSpeed2, playbackSpeed3, playbackSpeed4, playbackSpeed5, playbackSpeed6, playbackSpeed7, playbackSpeed8, customSpeedTitle, shuffleBox, loopBox, autoplayBox;
 
 	@FXML
 	Button fullScreenButton, playButton, volumeButton, settingsButton, menuButton, nextVideoButton;
@@ -75,7 +76,7 @@ public class Controller implements Initializable {
 	ImageView playLogo, fullScreenIcon, volumeIcon, settingsIcon, nextVideoIcon;
 
 	@FXML
-	StackPane pane, settingsPane, bufferPane, customSpeedBuffer, customSpeedPane;
+	StackPane pane, settingsPane, bufferPane, customSpeedBuffer, customSpeedPane, playbackOptionsBuffer, playbackOptionsPane;
 
 
 	@FXML
@@ -92,11 +93,14 @@ public class Controller implements Initializable {
 	FlowPane volumeSliderPane;
 
 	@FXML
-	Label durationLabel, playbackValueLabel, changeDirectoryLabel, playbackOptionsArrow, playbackSpeedArrow, playbackSpeedTitleLabel, playbackSpeedCustom, checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7, checkBox8, customSpeedArrow, customSpeedTitleLabel, customSpeedLabel;
+	Label durationLabel, playbackValueLabel, changeDirectoryLabel, playbackOptionsArrow, playbackSpeedArrow, playbackSpeedTitleLabel, playbackSpeedCustom, checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7, checkBox8, customSpeedArrow, customSpeedTitleLabel, customSpeedLabel, playbackOptionsTitleArrow, playbackOptionsTitleText, shuffleLabel, loopLabel, autoplayLabel;
 
 	
 	@FXML
 	ScrollPane playbackSpeedScroll;
+	
+	@FXML
+	JFXToggleButton shuffleSwitch, loopSwitch, autoplaySwitch;
 	
 	//TODO: Create custom playback speed selector inside the scrollpane using these objects.
 	HBox playbackCustom;
@@ -106,7 +110,15 @@ public class Controller implements Initializable {
 	private File file;
 	Media media;
 	MediaPlayer mediaPlayer;
-
+	
+	
+	//TODO: Continue work on playback options menu
+	boolean shuffleOn = false;
+	boolean loopOn = false;
+	boolean autoplayOn = false;
+	
+	
+	
 	boolean playing = false;
 	boolean wasPlaying = false;
 
@@ -290,6 +302,8 @@ public class Controller implements Initializable {
 		playbackSpeedScroll.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 		
 		customSpeedPane.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
+		
+		playbackOptionsPane.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 
 		
 		menuButton.setBackground(Background.EMPTY);
@@ -325,6 +339,8 @@ public class Controller implements Initializable {
 		playbackOptionsArrow.setGraphic(new ImageView(rightArrow));
 		
 		playbackSpeedArrow.setGraphic(new ImageView(leftArrow));
+		
+		playbackOptionsTitleArrow.setGraphic(new ImageView(leftArrow));
 		
 		checkBox4.setGraphic(new ImageView(check));
 		
@@ -1122,6 +1138,34 @@ public class Controller implements Initializable {
 		
 		
 		
+		
+		
+		shuffleBox.setOnMouseEntered((e) -> {
+			hoverEffectOn(shuffleBox);
+		});
+		
+		shuffleBox.setOnMouseExited((e) -> {
+			hoverEffectOff(shuffleBox);
+		});
+		
+		loopBox.setOnMouseEntered((e) -> {
+			hoverEffectOn(loopBox);
+		});
+		
+		loopBox.setOnMouseExited((e) -> {
+			hoverEffectOff(loopBox);
+		});
+		
+		autoplayBox.setOnMouseEntered((e) -> {
+			hoverEffectOn(autoplayBox);
+		});
+		
+		autoplayBox.setOnMouseExited((e) -> {
+			hoverEffectOff(autoplayBox);
+		});
+		
+		
+		
 
 		settingsBackgroundPane.setPickOnBounds(false);
 		//////////////////////////////////////////////////
@@ -1133,7 +1177,13 @@ public class Controller implements Initializable {
 		customSpeedBuffer.prefWidthProperty().bind(settingsBackgroundPane.widthProperty());
 
 		
-		playbackSpeedScroll.prefHeightProperty().bind(Bindings.min(487, Bindings.subtract(mediaViewHeight, 100)));
+		if(playbackCustom != null) {
+			playbackSpeedScroll.prefHeightProperty().bind(Bindings.min(537, Bindings.subtract(mediaViewHeight, 100)));
+		}
+		else {
+			playbackSpeedScroll.prefHeightProperty().bind(Bindings.min(487, Bindings.subtract(mediaViewHeight, 100)));
+		}
+		
 		playbackSpeedScroll.translateYProperty().bind(Bindings.subtract(settingsBackgroundPane.heightProperty(), playbackSpeedScroll.heightProperty()));
 		
 		
@@ -1665,7 +1715,7 @@ public class Controller implements Initializable {
 					bufferPane.setTranslateX(0);
 					settingsBackgroundPane.setPrefHeight(170);
 					playbackSpeedScroll.setTranslateY(settingsBackgroundPane.getHeight() - playbackSpeedScroll.getHeight());
-					playbackSpeedScroll.setOpacity(0.8f);
+					playbackSpeedScroll.setOpacity(1);
 					playbackSpeedScroll.translateYProperty().bind(Bindings.subtract(settingsBackgroundPane.heightProperty(), playbackSpeedScroll.heightProperty()));
 					bufferPane.setTranslateY(bufferPane.getHeight());
 					
@@ -2252,7 +2302,7 @@ public class Controller implements Initializable {
 		customSpeedOpen = false;
 		
 
-		settingsBackgroundPane.prefHeightProperty().unbind();
+		//settingsBackgroundPane.prefHeightProperty().unbind();
 		
 		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), customSpeedBuffer);
 		translateTransition1.setFromX(0);
