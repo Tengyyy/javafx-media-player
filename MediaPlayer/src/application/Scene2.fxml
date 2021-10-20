@@ -114,12 +114,12 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Pane fx:id="settingsBackgroundPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="170.0" prefWidth="235.0" StackPane.alignment="BOTTOM_RIGHT">
+      <Pane fx:id="settingsBackgroundPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="170.0" minWidth="235.0" prefHeight="170.0" prefWidth="235.0" StackPane.alignment="BOTTOM_RIGHT">
          <StackPane.margin>
             <Insets bottom="60.0" right="10.0" />
          </StackPane.margin>
          <children>
-            <StackPane fx:id="bufferPane" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="170.0" minWidth="235.0" prefHeight="170.0" prefWidth="235.0">
+            <StackPane fx:id="bufferPane" alignment="BOTTOM_CENTER" prefHeight="170.0" prefWidth="235.0">
                <children>
                   <StackPane fx:id="settingsPane" alignment="BOTTOM_CENTER" maxWidth="-Infinity" prefHeight="170.0" prefWidth="235.0" StackPane.alignment="BOTTOM_CENTER">
                      <children>
@@ -197,7 +197,7 @@
                   </StackPane>
                </children>
             </StackPane>
-            <ScrollPane fx:id="playbackSpeedScroll" focusTraversable="false" hbarPolicy="NEVER" maxHeight="537.0" maxWidth="235.0" minHeight="170.0" minWidth="235.0" prefHeight="487.0" prefWidth="235.0" styleClass="playbackSpeedScroll" stylesheets="@application.css" translateX="235.0">
+            <ScrollPane fx:id="playbackSpeedScroll" focusTraversable="false" hbarPolicy="NEVER" maxHeight="537.0" maxWidth="235.0" minHeight="170.0" minWidth="235.0" prefHeight="487.0" prefWidth="235.0" styleClass="playbackSpeedScroll" stylesheets="@application.css">
                <content>
                   <VBox fx:id="playbackSpeedPage" alignment="BOTTOM_LEFT" maxHeight="537.0" minHeight="170.0" minWidth="235.0" prefHeight="484.0" prefWidth="235.0">
                      <padding>
@@ -431,7 +431,7 @@
             </ScrollPane>
             <StackPane fx:id="customSpeedBuffer" alignment="BOTTOM_CENTER" prefHeight="170.0" prefWidth="235.0" translateX="235.0">
                <children>
-                  <StackPane fx:id="customSpeedPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="130.0" prefWidth="235.0" StackPane.alignment="BOTTOM_CENTER">
+                  <StackPane fx:id="customSpeedPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="130.0" minWidth="235.0" prefHeight="130.0" prefWidth="235.0" StackPane.alignment="BOTTOM_CENTER">
                      <children>
                         <VBox fx:id="customSpeedBox" alignment="TOP_CENTER" prefHeight="130.0" prefWidth="235.0">
                            <children>
@@ -479,7 +479,7 @@
                      </children></StackPane>
                </children>
             </StackPane>
-            <StackPane fx:id="playbackOptionsBuffer" prefHeight="230.0" prefWidth="235.0">
+            <StackPane fx:id="playbackOptionsBuffer" alignment="BOTTOM_CENTER" prefHeight="230.0" prefWidth="235.0">
                <children>
                   <StackPane fx:id="playbackOptionsPane" prefHeight="230.0" prefWidth="235.0">
                      <children>
@@ -491,22 +491,19 @@
                                        <font>
                                           <Font size="15.0" />
                                        </font>
-                                       <cursor>
-                                          <Cursor fx:constant="HAND" />
-                                       </cursor>
                                     </Label>
                                     <Label fx:id="playbackOptionsTitleText" prefHeight="50.0" prefWidth="191.0" text="Playback options" textFill="WHITE">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
-                                       <cursor>
-                                          <Cursor fx:constant="HAND" />
-                                       </cursor>
                                     </Label>
                                  </children>
                                  <padding>
                                     <Insets left="10.0" right="10.0" />
-                                 </padding></HBox>
+                                 </padding>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor></HBox>
                               <Separator prefWidth="200.0">
                                  <VBox.margin>
                                     <Insets bottom="3.3333333333333" top="3.333333333" />
@@ -518,25 +515,19 @@
                                        <font>
                                           <Font size="15.0" />
                                        </font>
-                                       <cursor>
-                                          <Cursor fx:constant="HAND" />
-                                       </cursor>
                                     </Label>
-                                    <JFXToggleButton fx:id="shuffleSwitch" contentDisplay="RIGHT" maxHeight="50.0" prefHeight="50.0" prefWidth="50.0" style="-fx-padding: 0;" textFill="WHITE" toggleColor="RED" toggleLineColor="#be4040" unToggleLineColor="#535151">
+                                    <JFXToggleButton fx:id="shuffleSwitch" alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxHeight="50.0" prefHeight="50.0" prefWidth="50.0" style="-fx-padding: 0;" textFill="WHITE" toggleColor="RED" toggleLineColor="#be4040" unToggleLineColor="#535151">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
-                                       <HBox.margin>
-                                          <Insets />
-                                       </HBox.margin>
-                                       <cursor>
-                                          <Cursor fx:constant="HAND" />
-                                       </cursor>
                                     </JFXToggleButton>
                                  </children>
                                  <padding>
                                     <Insets left="10.0" right="10.0" />
                                  </padding>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </HBox>
                               <HBox fx:id="loopBox" prefHeight="50.0" prefWidth="235.0">
                                  <children>

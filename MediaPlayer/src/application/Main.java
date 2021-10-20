@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
@@ -40,11 +41,19 @@ public class Main extends Application {
 			
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());	
 			
+			Screen screen = Screen.getPrimary();
+			
+			double scaleY = screen.getOutputScaleY();
+			
+			
+			primaryStage.setMinHeight(325);
+			primaryStage.setMinWidth(400);
 			
 			Main.stage = primaryStage;
 			
 			primaryStage.setFullScreenExitHint("Press Esc to exit fullscreen mode");
 			//primaryStage.setFullScreenExitKeyCombination(KeyCombination.);
+			
 			
 			primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
 				
