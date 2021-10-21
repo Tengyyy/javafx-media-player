@@ -364,14 +364,84 @@ public class Controller implements Initializable {
 			closePlaybackOptions();
 		});
 		
+		//shuffleBox.addEventFilter(null, null)
+		
+		
 		shuffleBox.setOnMouseClicked((e) -> {
 			shuffleSwitch.fire();
+			
+			//shuffleSwitch.requestFocus();
+			
+			if(loopSwitch.isSelected()) { // turns other switches off if this one is toggled on. makes it so only one switch can be selected
+				loopSwitch.fire();
+			}
+			
+			if(autoplaySwitch.isSelected()) {
+				autoplaySwitch.fire();
+			}
+			
 		});
 		loopBox.setOnMouseClicked((e) -> {
 			loopSwitch.fire();
+			
+			//loopSwitch.requestFocus();
+			
+			if(shuffleSwitch.isSelected()) {
+				shuffleSwitch.fire();
+			}
+			
+			if(autoplaySwitch.isSelected()) {
+				autoplaySwitch.fire();
+			}
 		});
 		autoplayBox.setOnMouseClicked((e) -> {
 			autoplaySwitch.fire();
+			
+			//autoplaySwitch.requestFocus();
+			
+			if(loopSwitch.isSelected()) {
+				loopSwitch.fire();
+			}
+			
+			if(shuffleSwitch.isSelected()) {
+				shuffleSwitch.fire();
+			}
+		});
+		
+		
+		shuffleSwitch.setOnMouseClicked((e) -> { // in addition to the hbox, also add same logic to the switch itself (minus the .fire() part cause in that case the switch would toggle twice in a row) 
+			//shuffleSwitch.fire();
+			
+			if(loopSwitch.isSelected()) { 
+				loopSwitch.fire();
+			}
+			
+			if(autoplaySwitch.isSelected()) {
+				autoplaySwitch.fire();
+			}
+			
+		});
+		loopSwitch.setOnMouseClicked((e) -> {
+			//loopSwitch.fire();
+			
+			if(shuffleSwitch.isSelected()) {
+				shuffleSwitch.fire();
+			}
+			
+			if(autoplaySwitch.isSelected()) {
+				autoplaySwitch.fire();
+			}
+		});
+		autoplaySwitch.setOnMouseClicked((e) -> {
+			//autoplaySwitch.fire();
+			
+			if(loopSwitch.isSelected()) {
+				loopSwitch.fire();
+			}
+			
+			if(shuffleSwitch.isSelected()) {
+				shuffleSwitch.fire();
+			}
 		});
 		
 		shuffleSwitch.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -2220,24 +2290,32 @@ public class Controller implements Initializable {
 	
 	public void endMedia() {
 		
-		//System.out.println("TEST");
 
-		durationSlider.setValue(durationSlider.getMax());
-
-		if (!durationLabel.textProperty().getValue().equals(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()))) {
-
-			durationLabel.textProperty().unbind();
-			durationLabel.setText(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()));
-			
+		if(!shuffleOn && !loopOn && !autoplayOn) {
+			durationSlider.setValue(durationSlider.getMax());
+			if (!durationLabel.textProperty().getValue().equals(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()))) {
+				durationLabel.textProperty().unbind();
+				durationLabel.setText(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()));
+			}
+			playLogo.setImage(new Image(replayFile.toURI().toString()));
+			playButton.setTooltip(replay);
+			playButton.setOnAction((e) -> playButtonClick2());
 		}
-
-		playLogo.setImage(new Image(replayFile.toURI().toString()));
-		
-		playButton.setTooltip(replay);
-
-		playButton.setOnAction((e) -> playButtonClick2());
+		else if(loopOn) {
+			// restart current video
 
 
+			durationSlider.setValue(0);
+			
+
+		}
+		else if(shuffleOn) {
+			// randomly select next video to play from current directory
+		}
+		else if(autoplayOn) {
+			//play next song in queue/directory
+		}
+	
 	}
 	
 	public void openPlaybackSpeedPage() {
