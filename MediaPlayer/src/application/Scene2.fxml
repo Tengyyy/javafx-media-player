@@ -150,12 +150,12 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                                  <children>
-                                    <Label contentDisplay="RIGHT" focusTraversable="false" prefHeight="50.0" prefWidth="125.0" text="Change directory" textFill="WHITE">
+                                    <Label contentDisplay="RIGHT" focusTraversable="false" prefHeight="50.0" prefWidth="115.0" text="Change directory" textFill="WHITE">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="changeDirectoryLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" focusTraversable="false" prefHeight="50.0" prefWidth="90.0" text="Videos" textFill="WHITE">
+                                    <Label fx:id="changeDirectoryLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" focusTraversable="false" prefHeight="50.0" prefWidth="100.0" textFill="WHITE">
                                        <font>
                                           <Font size="15.0" />
                                        </font>

@@ -1,9 +1,13 @@
 package application;
 	
+import java.io.File;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -25,6 +29,8 @@ public class Main extends Application {
 	public EventHandler<KeyEvent> eventHandler;
 	
 	static boolean fullScreen;
+	
+	static DirectoryChooser directoryChooser;
 
 	
 	@Override
@@ -54,6 +60,9 @@ public class Main extends Application {
 			primaryStage.setFullScreenExitHint("Press Esc to exit fullscreen mode");
 			//primaryStage.setFullScreenExitKeyCombination(KeyCombination.);
 			
+			
+			directoryChooser = new DirectoryChooser();
+
 			
 			primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
 				
@@ -177,8 +186,8 @@ public class Main extends Application {
 					
 					case LEFT: {
 						if(!controller.volumeSlider.isFocused()) {
+							controller.seekedToEnd = false;
 							if(controller.atEnd) {
-								controller.seekedToEnd = false;
 								controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
 
 							}
@@ -221,10 +230,9 @@ public class Main extends Application {
 					
 					case J: {
 						if(!controller.volumeSlider.isFocused()) {
+							controller.seekedToEnd = false;
 							if(controller.atEnd) {
-								controller.seekedToEnd = false;
 								controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 10000));
-
 							}
 							
 							else {

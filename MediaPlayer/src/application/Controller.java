@@ -55,6 +55,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -198,6 +199,12 @@ public class Controller implements Initializable {
 	//TODO: Finish creating these tooltips.
 	Tooltip openMenu;
 	Tooltip closeMenu;
+	
+	Tooltip directoryTooltip;
+	
+	
+	FileChooser fileChooser;
+	File selectedFolder;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -489,6 +496,24 @@ public class Controller implements Initializable {
 			}
 			
 		});
+		
+		
+		directoryBox.setOnMouseClicked((e) -> {
+			selectedFolder = Main.directoryChooser.showDialog(Main.stage);
+			
+			if(selectedFolder != null) {
+				String title = selectedFolder.getName();
+				System.out.println(title);
+				changeDirectoryLabel.setText(title);
+				
+				directoryTooltip = new Tooltip(selectedFolder.getAbsolutePath());
+				
+				Tooltip.install(directoryBox, directoryTooltip); // installing tooltip to directoryBox (.setTooltip() is not available for nodes)
+			}
+		});
+		
+		
+
 
 		
 		volumeSlider.valueChangingProperty().addListener(new ChangeListener<Boolean>() {
@@ -1180,7 +1205,8 @@ public class Controller implements Initializable {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-
+					System.out.println("2");
+					
 					endMedia();
 			}
 			
@@ -1644,8 +1670,7 @@ public class Controller implements Initializable {
 			
 			playbackValueLabel.setText("2");
 		});
-		
-
+	
 	}
 
 	public void mediaClick() {
@@ -1696,7 +1721,7 @@ public class Controller implements Initializable {
 		playing = true;
 		atEnd = false;
 		playLogo.setImage(new Image(pauseImageFile.toURI().toString()));
-		
+		seekedToEnd = false;
 		playButton.setTooltip(pause);
 
 		// startTimer();
@@ -2241,6 +2266,7 @@ public class Controller implements Initializable {
 
 		if (atEnd) {
 			atEnd = false;
+			seekedToEnd = false;
 
 			if (wasPlaying) {
 				playLogo.setImage(new Image(pauseImageFile.toURI().toString()));
@@ -2261,23 +2287,22 @@ public class Controller implements Initializable {
 			});
 		} else if (newValue >= durationSlider.getMax()) {
 			//durationSlider.setValue(durationSlider.getMax());
-			atEnd = true;
+			
+			if(durationSlider.isValueChanging()) {
+				seekedToEnd = true;
+				
+				System.out.println("1");
+			}
 			
 			
+				atEnd = true;
 				//endMedia();
-				seekedToEnd = false;
-			tempBool = true;
-
-
-			playing = false;
-
-			mediaPlayer.pause();
-
-			playLogo.setImage(new Image(replayFile.toURI().toString()));
-			
-			playButton.setTooltip(replay);
-
-			playButton.setOnAction((e) -> playButtonClick2());
+				tempBool = true;
+				playing = false;
+				mediaPlayer.pause();
+				playLogo.setImage(new Image(replayFile.toURI().toString()));
+				playButton.setTooltip(replay);
+				playButton.setOnAction((e) -> playButtonClick2());
 		}
 
 		if (Math.abs(mediaPlayer.getCurrentTime().toSeconds() - newValue) > 0.5) {
@@ -2285,13 +2310,13 @@ public class Controller implements Initializable {
 
 
 		}
-
 	}
 	
 	public void endMedia() {
 		
-
-		if(!shuffleOn && !loopOn && !autoplayOn) {
+		
+		if((!shuffleOn && !loopOn && !autoplayOn) || (loopOn && seekedToEnd)) {
+			System.out.println("lol");
 			durationSlider.setValue(durationSlider.getMax());
 			if (!durationLabel.textProperty().getValue().equals(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()))) {
 				durationLabel.textProperty().unbind();
@@ -2301,13 +2326,12 @@ public class Controller implements Initializable {
 			playButton.setTooltip(replay);
 			playButton.setOnAction((e) -> playButtonClick2());
 		}
-		else if(loopOn) {
+		else if(loopOn && !seekedToEnd) {
 			// restart current video
 
-
-			durationSlider.setValue(0);
+			System.out.println(seekedToEnd);
+			mediaPlayer.seek(Duration.ZERO);
 			
-
 		}
 		else if(shuffleOn) {
 			// randomly select next video to play from current directory
@@ -2471,6 +2495,7 @@ public class Controller implements Initializable {
 		}
 		else {
 			replayMedia();
+			seekedToEnd = false;
 		}
 	}
 	
