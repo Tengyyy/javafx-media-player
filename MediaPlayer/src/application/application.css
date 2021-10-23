@@ -36,3 +36,7 @@
 	-fx-background-color: white;
 	-fx-padding: 10;
 }
+
+.videoListScroll > .viewport {
+   -fx-background-color: transparent;
+}

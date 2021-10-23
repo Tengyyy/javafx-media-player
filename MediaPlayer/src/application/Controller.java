@@ -9,6 +9,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
 
+import com.jfoenix.controls.JFXScrollPane;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
 
 import javafx.animation.FadeTransition;
@@ -36,6 +38,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -51,13 +54,17 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.media.SubtitleTrack;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+
 
 public class Controller implements Initializable {
 
@@ -65,19 +72,19 @@ public class Controller implements Initializable {
 	public MediaView mediaView;
 
 	@FXML
-	VBox controlBar, settingsHome, playbackSpeedPage, customSpeedBox, playbackOptionsVBox;
+	VBox controlBar, settingsHome, playbackSpeedPage, customSpeedBox, playbackOptionsVBox, videoListBox;
 
 	@FXML
-	HBox playbackSpeedBox, playbackOptionsBox, directoryBox, durationSliderBox, playbackSpeedTitle, playbackSpeed1, playbackSpeed2, playbackSpeed3, playbackSpeed4, playbackSpeed5, playbackSpeed6, playbackSpeed7, playbackSpeed8, customSpeedTitle, shuffleBox, loopBox, autoplayBox, playbackOptionsTitle;
+	HBox playbackSpeedBox, playbackOptionsBox, subtitlesBox, durationSliderBox, playbackSpeedTitle, playbackSpeed1, playbackSpeed2, playbackSpeed3, playbackSpeed4, playbackSpeed5, playbackSpeed6, playbackSpeed7, playbackSpeed8, customSpeedTitle, shuffleBox, loopBox, autoplayBox, playbackOptionsTitle, menuSearchBox;
 
 	@FXML
-	Button fullScreenButton, playButton, volumeButton, settingsButton, menuButton, nextVideoButton;
+	Button fullScreenButton, playButton, volumeButton, settingsButton, menuButton, nextVideoButton, directoryChooserButton;
 
 	@FXML
-	ImageView playLogo, fullScreenIcon, volumeIcon, settingsIcon, nextVideoIcon;
+	ImageView playLogo, fullScreenIcon, volumeIcon, settingsIcon, nextVideoIcon, menuIcon, movieImageView, directoryChooserIcon;
 
 	@FXML
-	StackPane pane, settingsPane, bufferPane, customSpeedBuffer, customSpeedPane, playbackOptionsBuffer, playbackOptionsPane;
+	StackPane pane, settingsPane, bufferPane, customSpeedBuffer, customSpeedPane, playbackOptionsBuffer, playbackOptionsPane, menuPane;
 
 
 	@FXML
@@ -94,11 +101,14 @@ public class Controller implements Initializable {
 	FlowPane volumeSliderPane;
 
 	@FXML
-	Label durationLabel, playbackValueLabel, changeDirectoryLabel, playbackOptionsArrow, playbackSpeedArrow, playbackSpeedTitleLabel, playbackSpeedCustom, checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7, checkBox8, customSpeedArrow, customSpeedTitleLabel, customSpeedLabel, playbackOptionsTitleArrow, playbackOptionsTitleText, shuffleLabel, loopLabel, autoplayLabel;
+	Label durationLabel, playbackValueLabel, subtitlesLabel, playbackOptionsArrow, playbackSpeedArrow, playbackSpeedTitleLabel, playbackSpeedCustom, checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7, checkBox8, customSpeedArrow, customSpeedTitleLabel, customSpeedLabel, playbackOptionsTitleArrow, playbackOptionsTitleText, shuffleLabel, loopLabel, autoplayLabel;
 
 	
 	@FXML
-	ScrollPane playbackSpeedScroll;
+	ScrollPane playbackSpeedScroll, videoListScroll;
+
+	@FXML
+	TextField directoryChooserField;
 	
 	@FXML
 	JFXToggleButton shuffleSwitch, loopSwitch, autoplaySwitch;
@@ -132,7 +142,7 @@ public class Controller implements Initializable {
 	private DoubleProperty mediaViewWidth;
 	private DoubleProperty mediaViewHeight;
 
-	Image maximize, minimize, volumeUp, volumeDown, volumeMute, settingsEnter, settingsExit, settingsImage, rightArrow, nextVideo, leftArrow, check;
+	Image maximize, minimize, volumeUp, volumeDown, volumeMute, settingsEnter, settingsExit, settingsImage, rightArrow, nextVideo, leftArrow, check, menu, menuClose, movieImage, folderImage;
 
 	double volumeValue;
 	
@@ -144,7 +154,7 @@ public class Controller implements Initializable {
 
 	private File maximizeFile, minimizeFile, playFile, pauseFile, startFile, volumeUpFile, volumeDownFile,
 			volumeMuteFile, pauseImageFile, settingsEnterFile, settingsExitFile, settingsImageFile,
-			rightArrowFile, nextVideoFile, leftArrowFile, checkFile;
+			rightArrowFile, nextVideoFile, leftArrowFile, checkFile, menuFile, menuCloseFile, movieFile, folderFile;
 	
 	File replayFile;
 
@@ -206,8 +216,14 @@ public class Controller implements Initializable {
 	FileChooser fileChooser;
 	File selectedFolder;
 	
+	SubtitleTrack subtitles;
+	
+	DirectoryChooser directoryChooser;
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		
+		//subtitles = new SubtitleTrack();
 		
 		play = new Tooltip("Play (k)");
 		pause = new Tooltip("Pause (k)");
@@ -268,6 +284,14 @@ public class Controller implements Initializable {
 		
 		nextVideoFile = new File("src/application/nextMedia.png");
 		
+		menuFile = new File("src/application/menu.png");
+		menuCloseFile = new File("src/application/menuClose.png");
+		
+		
+		movieFile  = new File("src/application/movie.png");
+		
+		folderFile  = new File("src/application/folder.png");
+		
 		nextVideo = new Image(nextVideoFile.toURI().toString());
 
 		maximize = new Image(maximizeFile.toURI().toString());
@@ -284,13 +308,38 @@ public class Controller implements Initializable {
 		check = new Image(checkFile.toURI().toString());
 
 		settingsImage = new Image(settingsImageFile.toURI().toString());
+		
+		menu = new Image(menuFile.toURI().toString());
+		menuClose = new Image(menuCloseFile.toURI().toString());
+		
+		movieImage = new Image(movieFile.toURI().toString());
 
+		folderImage = new Image(folderFile.toURI().toString());
+		
+		movieImageView.setImage(movieImage);
+
+		directoryChooserIcon.setImage(folderImage);
+		
+		directoryChooser = new DirectoryChooser();
+		
+		
+		directoryChooserButton.setOnAction((e) -> {
+			File selectedDirectory = directoryChooser.showDialog(Main.stage);
+			if(selectedDirectory != null) {
+				directoryChooserField.setText(selectedDirectory.getAbsolutePath());
+			}
+		});
+		
 		// Make mediaView adjust to frame size
 		mediaViewWidth = mediaView.fitWidthProperty();
 		mediaViewHeight = mediaView.fitHeightProperty();
 		mediaViewWidth.bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
 		mediaViewHeight.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
 		mediaView.setPreserveRatio(true);
+		
+		menuPane.prefHeightProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
+		
+		videoListScroll.prefHeightProperty().bind(Bindings.subtract(menuPane.prefHeightProperty(), 66.7));
 
 		mediaView.setMediaPlayer(mediaPlayer);
 		playing = false;
@@ -302,12 +351,19 @@ public class Controller implements Initializable {
 		
 		settingsPane.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 
+		videoListScroll.setStyle("-fx-background-color: rgba(35,35,35,1)");
+		//videoListBox.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 
+		menuSearchBox.setStyle("-fx-background-color: rgba(35,35,35,1)");
 		
 		//playbackSpeedPage.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 		
 		
 		playbackSpeedScroll.setBackground(Background.EMPTY);
+		
+		
+		//menuSearchBox.setBackground(Background.EMPTY);
+
 		
 		playbackSpeedScroll.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 		
@@ -330,6 +386,10 @@ public class Controller implements Initializable {
 		nextVideoButton.setTooltip(next);
 		nextVideoIcon.setImage(nextVideo);
 
+		
+		
+		menuIcon.setImage(menu);
+
 		playButton.setOnAction((e) -> playButtonClick1());
 
 		fullScreenIcon.setImage(maximize);
@@ -346,7 +406,7 @@ public class Controller implements Initializable {
 
 		playbackValueLabel.setGraphic(new ImageView(rightArrow));
 
-		changeDirectoryLabel.setGraphic(new ImageView(rightArrow));
+		subtitlesLabel.setGraphic(new ImageView(rightArrow));
 
 		playbackOptionsArrow.setGraphic(new ImageView(rightArrow));
 		
@@ -357,6 +417,12 @@ public class Controller implements Initializable {
 		checkBox4.setGraphic(new ImageView(check));
 		
 		customSpeedArrow.setGraphic(new ImageView(leftArrow));
+		
+		
+		directoryChooserField.setPromptText("Select a directory");
+		
+		videoListBox.prefHeightProperty().bind(Bindings.subtract(videoListScroll.heightProperty(), 5));
+		
 		
 		volumeSlider.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> volumeSlider.setValueChanging(true));
 		volumeSlider.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> volumeSlider.setValueChanging(false));
@@ -498,18 +564,8 @@ public class Controller implements Initializable {
 		});
 		
 		
-		directoryBox.setOnMouseClicked((e) -> {
-			selectedFolder = Main.directoryChooser.showDialog(Main.stage);
-			
-			if(selectedFolder != null) {
-				String title = selectedFolder.getName();
-				System.out.println(title);
-				changeDirectoryLabel.setText(title);
-				
-				directoryTooltip = new Tooltip(selectedFolder.getAbsolutePath());
-				
-				Tooltip.install(directoryBox, directoryTooltip); // installing tooltip to directoryBox (.setTooltip() is not available for nodes)
-			}
+		subtitlesBox.setOnMouseClicked((e) -> {
+			// opening subtitle settings
 		});
 		
 		
@@ -1228,11 +1284,11 @@ public class Controller implements Initializable {
 			hoverEffectOff(playbackOptionsBox);
 		});
 
-		directoryBox.setOnMouseEntered((e) -> {
-			hoverEffectOn(directoryBox);
+		subtitlesBox.setOnMouseEntered((e) -> {
+			hoverEffectOn(subtitlesBox);
 		});
-		directoryBox.setOnMouseExited((e) -> {
-			hoverEffectOff(directoryBox);
+		subtitlesBox.setOnMouseExited((e) -> {
+			hoverEffectOff(subtitlesBox);
 		});
 		
 		// On-hover effect for playback speed items
@@ -2448,10 +2504,34 @@ public class Controller implements Initializable {
 				if(menuOpen) {
 					menuOpen = false;
 					menuButton.setTooltip(openMenu);
+					menuIcon.setImage(menu);
+					
+					//CLOSE MENU ANIMATION HERE
+					
+					TranslateTransition translate = new TranslateTransition(Duration.millis(100), menuPane);
+					translate.setFromX(0);
+					translate.setToX(-216);
+					translate.setCycleCount(1);
+					translate.setInterpolator(Interpolator.LINEAR);
+					translate.play();
+					
+					
 				}
 				else {
 					menuOpen = true;
 					menuButton.setTooltip(closeMenu);
+					menuIcon.setImage(menuClose);
+					
+					//OPEN MENU ANIMATION HERE
+					
+					TranslateTransition translate = new TranslateTransition(Duration.millis(100), menuPane);
+					translate.setFromX(-216);
+					translate.setToX(0);
+					translate.setCycleCount(1);
+					translate.setInterpolator(Interpolator.LINEAR);
+					translate.play();
+
+					
 				}
 			}
 	}

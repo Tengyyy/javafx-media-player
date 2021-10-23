@@ -10,7 +10,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Slider?>
-<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
@@ -102,18 +102,6 @@
             </HBox>
          </children>
       </VBox>
-      <Button fx:id="menuButton" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#openCloseMenu" prefHeight="64.0" prefWidth="64.0" style="-fx-padding: 0;" styleClass="focusableProperty" StackPane.alignment="TOP_LEFT">
-         <graphic>
-            <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@menu.png" />
-               </image>
-            </ImageView>
-         </graphic>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </Button>
       <Pane fx:id="settingsBackgroundPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="170.0" minWidth="235.0" prefHeight="170.0" prefWidth="235.0" StackPane.alignment="BOTTOM_RIGHT">
          <StackPane.margin>
             <Insets bottom="60.0" right="10.0" />
@@ -145,17 +133,17 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </HBox>
-                              <HBox fx:id="directoryBox" alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="235.0">
+                              <HBox fx:id="subtitlesBox" alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="235.0">
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                                  <children>
-                                    <Label contentDisplay="RIGHT" focusTraversable="false" prefHeight="50.0" prefWidth="115.0" text="Change directory" textFill="WHITE">
+                                    <Label contentDisplay="RIGHT" focusTraversable="false" prefHeight="50.0" prefWidth="115.0" text="Subtitles" textFill="WHITE">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="changeDirectoryLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" focusTraversable="false" prefHeight="50.0" prefWidth="100.0" textFill="WHITE">
+                                    <Label fx:id="subtitlesLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" focusTraversable="false" prefHeight="50.0" prefWidth="100.0" text="OFF" textFill="WHITE">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
@@ -592,5 +580,54 @@
             </StackPane>
          </children>
       </Pane>
+      <StackPane fx:id="menuPane" maxHeight="-Infinity" maxWidth="-Infinity" pickOnBounds="false" prefHeight="400.0" prefWidth="281.6" translateX="-216.0" StackPane.alignment="CENTER_LEFT">
+         <children>
+            <VBox maxWidth="-Infinity" prefHeight="400.0" prefWidth="215.0" StackPane.alignment="TOP_LEFT">
+               <children>
+                  <HBox fx:id="menuSearchBox" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="66.7" prefWidth="215.0" style="-fx-background-color: white;">
+                     <children>
+                        <Button fx:id="directoryChooserButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" style="-fx-padding: 0;">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <graphic>
+                              <ImageView fx:id="directoryChooserIcon" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
+                           </graphic>
+                        </Button>
+                        <TextField fx:id="directoryChooserField" prefHeight="30.0" prefWidth="150.0" />
+                     </children>
+                  </HBox>
+                  <ScrollPane fx:id="videoListScroll" hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="333.3" prefWidth="215.0" styleClass="videoListScroll" stylesheets="@application.css">
+                     <content>
+                        <VBox fx:id="videoListBox" alignment="CENTER" prefWidth="214.0">
+                           <children>
+                              <Label prefHeight="50.0" text="Select a directory" textFill="WHITE">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                              <ImageView fx:id="movieImageView" fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </VBox>
+                     </content>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </ScrollPane>
+               </children>
+            </VBox>
+            <Button fx:id="menuButton" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#openCloseMenu" prefHeight="66.0" prefWidth="66.0" style="-fx-padding: 0;" styleClass="focusableProperty" StackPane.alignment="TOP_RIGHT">
+               <graphic>
+                  <ImageView fx:id="menuIcon" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true" />
+               </graphic>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+         </children>
+      </StackPane>
    </children>
 </StackPane>
