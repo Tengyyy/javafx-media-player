@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXToggleButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Rectangle2D?>
@@ -10,7 +11,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
@@ -18,6 +19,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.media.MediaView?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
 <StackPane fx:id="pane" focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@focusStyles.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
@@ -46,7 +48,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                            <graphic>
-                              <ImageView fx:id="playLogo" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="playLogo" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />
                            </graphic></Button>
                         <Button fx:id="nextVideoButton" layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" mnemonicParsing="false" onAction="#playNextMedia" prefHeight="36.0" prefWidth="52.0" style="-fx-padding: 0;" styleClass="focusableProperty">
                            <cursor>
@@ -81,9 +83,26 @@
                   </HBox>
                   <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" prefHeight="36.0" prefWidth="250.0" HBox.hgrow="ALWAYS">
                      <children>
+                        <Button fx:id="captionsButton" mnemonicParsing="false" onAction="#openCloseCaptions" prefHeight="38.6" prefWidth="46.0" style="-fx-padding: 0;">
+                           <graphic>
+                              <StackPane>
+                                 <children>
+                                    <ImageView fx:id="captionsIcon" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />
+                                    <Line fx:id="captionLine" endX="10.0" scaleX="0.0" startX="-10.0" stroke="RED" strokeLineCap="ROUND" strokeWidth="3.0" StackPane.alignment="BOTTOM_CENTER">
+                                       <StackPane.margin>
+                                          <Insets bottom="3.0" />
+                                       </StackPane.margin>
+                                    </Line>
+                                 </children>
+                              </StackPane>
+                           </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
                         <Button fx:id="settingsButton" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#openCloseSettings" prefHeight="36.0" prefWidth="46.0" style="-fx-padding: 0;" styleClass="focusableProperty">
                            <graphic>
-                              <ImageView fx:id="settingsIcon" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="settingsIcon" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />
                            </graphic>
                            <cursor>
                               <Cursor fx:constant="HAND" />
@@ -133,17 +152,17 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </HBox>
-                              <HBox fx:id="subtitlesBox" alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="235.0">
+                              <HBox fx:id="videoBox" alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="235.0">
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                                  <children>
-                                    <Label contentDisplay="RIGHT" focusTraversable="false" prefHeight="50.0" prefWidth="115.0" text="Subtitles" textFill="WHITE">
+                                    <Label contentDisplay="RIGHT" focusTraversable="false" prefHeight="50.0" prefWidth="80.0" text="Select video" textFill="WHITE">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="subtitlesLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" focusTraversable="false" prefHeight="50.0" prefWidth="100.0" text="OFF" textFill="WHITE">
+                                    <Label fx:id="videoNameLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" focusTraversable="false" prefHeight="50.0" prefWidth="135.0" text="Cars (2006)" textFill="WHITE">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
@@ -580,54 +599,57 @@
             </StackPane>
          </children>
       </Pane>
-      <StackPane fx:id="menuPane" maxHeight="-Infinity" maxWidth="-Infinity" pickOnBounds="false" prefHeight="400.0" prefWidth="281.6" translateX="-216.0" StackPane.alignment="CENTER_LEFT">
+      <Button fx:id="menuButton" mnemonicParsing="false" onAction="#openMenu" prefHeight="60.0" prefWidth="60.0" style="-fx-padding: 0;" StackPane.alignment="TOP_LEFT">
+         <graphic>
+            <ImageView fx:id="menuIcon" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true" />
+         </graphic>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
+      <StackPane fx:id="menuPane" maxHeight="-Infinity" maxWidth="-Infinity" opacity="0.0" pickOnBounds="false" prefHeight="400.0" prefWidth="215.0" translateX="-216.0" StackPane.alignment="CENTER_LEFT">
          <children>
-            <VBox maxWidth="-Infinity" prefHeight="400.0" prefWidth="215.0" StackPane.alignment="TOP_LEFT">
-               <children>
-                  <HBox fx:id="menuSearchBox" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="66.7" prefWidth="215.0" style="-fx-background-color: white;">
+            <ScrollPane fx:id="menuScroll" hbarPolicy="NEVER" prefHeight="400.0" prefWidth="215.0" style="-fx-background-color: rgba(50,50,50,1);" styleClass="menuScroll" stylesheets="@application.css">
+               <content>
+                  <VBox fx:id="menuVBox" prefWidth="215.0">
                      <children>
-                        <Button fx:id="directoryChooserButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" style="-fx-padding: 0;">
-                           <HBox.margin>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </HBox.margin>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                           <graphic>
-                              <ImageView fx:id="directoryChooserIcon" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
-                           </graphic>
-                        </Button>
-                        <TextField fx:id="directoryChooserField" prefHeight="30.0" prefWidth="150.0" />
-                     </children>
-                  </HBox>
-                  <ScrollPane fx:id="videoListScroll" hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="333.3" prefWidth="215.0" styleClass="videoListScroll" stylesheets="@application.css">
-                     <content>
-                        <VBox fx:id="videoListBox" alignment="CENTER" prefWidth="214.0">
+                        <HBox alignment="BOTTOM_CENTER" prefHeight="150.0" prefWidth="215.0">
                            <children>
-                              <Label prefHeight="50.0" text="Select a directory" textFill="WHITE">
+                              <JFXButton fx:id="directoryChooserButton" buttonType="RAISED" onAction="#openDirectoryChooser" prefHeight="70.0" prefWidth="150.0" ripplerFill="WHITE" style="-fx-background-color: #D32105;" text="Select directory" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </JFXButton>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <Label text="Open a directory containing mp4-files to fill this menu with videos" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
                               </Label>
-                              <ImageView fx:id="movieImageView" fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true" />
                            </children>
-                        </VBox>
-                     </content>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </ScrollPane>
-               </children>
-            </VBox>
-            <Button fx:id="menuButton" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#openCloseMenu" prefHeight="66.0" prefWidth="66.0" style="-fx-padding: 0;" styleClass="focusableProperty" StackPane.alignment="TOP_RIGHT">
+                        </HBox>
+                     </children></VBox>
+               </content>
+            </ScrollPane>
+            <Button fx:id="menuCloseButton" mnemonicParsing="false" onAction="#closeMenu" prefHeight="40.0" prefWidth="40.0" style="-fx-padding: 0; -fx-background-color: red; -fx-border-radius: 30; -fx-background-radius: 30;" StackPane.alignment="TOP_RIGHT">
+               <StackPane.margin>
+                  <Insets right="10.0" top="5.0" />
+               </StackPane.margin>
                <graphic>
-                  <ImageView fx:id="menuIcon" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="menuCloseIcon" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />
                </graphic>
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
          </children>
-      </StackPane>
+         <effect>
+            <DropShadow blurType="GAUSSIAN" height="5.93" radius="64.7325" spread="0.35" width="255.0" />
+         </effect></StackPane>
    </children>
 </StackPane>

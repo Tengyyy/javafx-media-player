@@ -13,3 +13,7 @@
 
 }*/
 
+.menuButton {
+	-fx-border-radius: 0;
+	-fx-background-radius: 0;
+}

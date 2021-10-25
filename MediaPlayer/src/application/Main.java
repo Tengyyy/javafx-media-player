@@ -329,25 +329,13 @@ public class Main extends Application {
 					}
 					break;
 					
-					case Q: {
-						if(controller.menuOpen) {
-							controller.menuOpen = false;
-							controller.menuButton.setTooltip(controller.openMenu);
-						}
-						else {
-							controller.menuOpen = true;
-							controller.menuButton.setTooltip(controller.closeMenu);
-						}
-					}
-					break;
-					
 					default: break;
 				}
 			});
 			
 			
 			primaryStage.setScene(scene);
-			primaryStage.setTitle("Media Player");
+			primaryStage.setTitle("MP4 Player");
 			primaryStage.show();
 			
 			primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>(){

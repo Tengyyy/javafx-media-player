@@ -9,6 +9,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXScrollPane;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
@@ -56,10 +57,12 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.media.SubtitleTrack;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -72,16 +75,20 @@ public class Controller implements Initializable {
 	public MediaView mediaView;
 
 	@FXML
-	VBox controlBar, settingsHome, playbackSpeedPage, customSpeedBox, playbackOptionsVBox, videoListBox;
+	VBox controlBar, settingsHome, playbackSpeedPage, customSpeedBox, playbackOptionsVBox, menuVBox;
 
 	@FXML
-	HBox playbackSpeedBox, playbackOptionsBox, subtitlesBox, durationSliderBox, playbackSpeedTitle, playbackSpeed1, playbackSpeed2, playbackSpeed3, playbackSpeed4, playbackSpeed5, playbackSpeed6, playbackSpeed7, playbackSpeed8, customSpeedTitle, shuffleBox, loopBox, autoplayBox, playbackOptionsTitle, menuSearchBox;
+	HBox playbackSpeedBox, playbackOptionsBox, videoBox, durationSliderBox, playbackSpeedTitle, playbackSpeed1, playbackSpeed2, playbackSpeed3, playbackSpeed4, playbackSpeed5, playbackSpeed6, playbackSpeed7, playbackSpeed8, customSpeedTitle, shuffleBox, loopBox, autoplayBox, playbackOptionsTitle;
 
 	@FXML
-	Button fullScreenButton, playButton, volumeButton, settingsButton, menuButton, nextVideoButton, directoryChooserButton;
-
+	Button fullScreenButton, playButton, volumeButton, settingsButton, nextVideoButton, captionsButton, menuButton, menuCloseButton;
+	
+	
 	@FXML
-	ImageView playLogo, fullScreenIcon, volumeIcon, settingsIcon, nextVideoIcon, menuIcon, movieImageView, directoryChooserIcon;
+	JFXButton directoryChooserButton;
+	
+	@FXML
+	ImageView playLogo, fullScreenIcon, volumeIcon, settingsIcon, nextVideoIcon, captionsIcon, menuIcon, menuCloseIcon;
 
 	@FXML
 	StackPane pane, settingsPane, bufferPane, customSpeedBuffer, customSpeedPane, playbackOptionsBuffer, playbackOptionsPane, menuPane;
@@ -101,17 +108,17 @@ public class Controller implements Initializable {
 	FlowPane volumeSliderPane;
 
 	@FXML
-	Label durationLabel, playbackValueLabel, subtitlesLabel, playbackOptionsArrow, playbackSpeedArrow, playbackSpeedTitleLabel, playbackSpeedCustom, checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7, checkBox8, customSpeedArrow, customSpeedTitleLabel, customSpeedLabel, playbackOptionsTitleArrow, playbackOptionsTitleText, shuffleLabel, loopLabel, autoplayLabel;
+	Label durationLabel, playbackValueLabel, videoNameLabel, playbackOptionsArrow, playbackSpeedArrow, playbackSpeedTitleLabel, playbackSpeedCustom, checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7, checkBox8, customSpeedArrow, customSpeedTitleLabel, customSpeedLabel, playbackOptionsTitleArrow, playbackOptionsTitleText, shuffleLabel, loopLabel, autoplayLabel;
 
 	
 	@FXML
-	ScrollPane playbackSpeedScroll, videoListScroll;
-
-	@FXML
-	TextField directoryChooserField;
+	ScrollPane playbackSpeedScroll, menuScroll;
 	
 	@FXML
 	JFXToggleButton shuffleSwitch, loopSwitch, autoplaySwitch;
+	
+	@FXML
+	Line captionLine;
 	
 	//TODO: Create custom playback speed selector inside the scrollpane using these objects.
 	HBox playbackCustom;
@@ -142,7 +149,7 @@ public class Controller implements Initializable {
 	private DoubleProperty mediaViewWidth;
 	private DoubleProperty mediaViewHeight;
 
-	Image maximize, minimize, volumeUp, volumeDown, volumeMute, settingsEnter, settingsExit, settingsImage, rightArrow, nextVideo, leftArrow, check, menu, menuClose, movieImage, folderImage;
+	Image maximize, minimize, volumeUp, volumeDown, volumeMute, settingsEnter, settingsExit, settingsImage, rightArrow, nextVideo, leftArrow, check, captionsImage, menuImage, menuCloseImage;
 
 	double volumeValue;
 	
@@ -154,7 +161,7 @@ public class Controller implements Initializable {
 
 	private File maximizeFile, minimizeFile, playFile, pauseFile, startFile, volumeUpFile, volumeDownFile,
 			volumeMuteFile, pauseImageFile, settingsEnterFile, settingsExitFile, settingsImageFile,
-			rightArrowFile, nextVideoFile, leftArrowFile, checkFile, menuFile, menuCloseFile, movieFile, folderFile;
+			rightArrowFile, nextVideoFile, leftArrowFile, checkFile, captionsFile, menuFile, menuCloseFile;
 	
 	File replayFile;
 
@@ -176,7 +183,8 @@ public class Controller implements Initializable {
 	
 	boolean customSpeedChanged = false;
 	
-	boolean menuOpen = false;
+	boolean captionsOpen = false;
+
 
 	boolean sliderFocus = false;
 
@@ -207,23 +215,30 @@ public class Controller implements Initializable {
 	Tooltip next;
 	
 	//TODO: Finish creating these tooltips.
-	Tooltip openMenu;
-	Tooltip closeMenu;
+
 	
 	Tooltip directoryTooltip;
 	
+	Tooltip captionsTooltip;
+	
 	
 	FileChooser fileChooser;
-	File selectedFolder;
-	
-	SubtitleTrack subtitles;
+	File selectedFile;
 	
 	DirectoryChooser directoryChooser;
+	File selectedDirectory;
+	
+	
+	SubtitleTrack subtitles;
+
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		
-		//subtitles = new SubtitleTrack();
+		fileChooser = new FileChooser();
+		
+		
+		directoryChooser = new DirectoryChooser();
 		
 		play = new Tooltip("Play (k)");
 		pause = new Tooltip("Pause (k)");
@@ -236,11 +251,16 @@ public class Controller implements Initializable {
 		
 		enterFullScreen = new Tooltip("Full screen (f)");
 		exitFullScreen = new Tooltip("Exit full screen (f)");
-		
-		openMenu = new Tooltip("Open menu (q)");
-		closeMenu = new Tooltip("Close menu (q)");
+
 		
 		next = new Tooltip("Next video (SHIFT + N)");
+		
+		captionsTooltip = new Tooltip("Subtitles/closed captions (c)");
+		
+		captionsButton.setTooltip(captionsTooltip);
+
+		
+		
 
 		volumeSliderPane.setClip(new Rectangle(60, 17));
 
@@ -284,13 +304,13 @@ public class Controller implements Initializable {
 		
 		nextVideoFile = new File("src/application/nextMedia.png");
 		
+		captionsFile = new File("src/application/captions.png");
+
 		menuFile = new File("src/application/menu.png");
+
 		menuCloseFile = new File("src/application/menuClose.png");
+
 		
-		
-		movieFile  = new File("src/application/movie.png");
-		
-		folderFile  = new File("src/application/folder.png");
 		
 		nextVideo = new Image(nextVideoFile.toURI().toString());
 
@@ -308,27 +328,15 @@ public class Controller implements Initializable {
 		check = new Image(checkFile.toURI().toString());
 
 		settingsImage = new Image(settingsImageFile.toURI().toString());
-		
-		menu = new Image(menuFile.toURI().toString());
-		menuClose = new Image(menuCloseFile.toURI().toString());
-		
-		movieImage = new Image(movieFile.toURI().toString());
 
-		folderImage = new Image(folderFile.toURI().toString());
-		
-		movieImageView.setImage(movieImage);
+		captionsImage = new Image(captionsFile.toURI().toString());
 
-		directoryChooserIcon.setImage(folderImage);
 		
-		directoryChooser = new DirectoryChooser();
-		
-		
-		directoryChooserButton.setOnAction((e) -> {
-			File selectedDirectory = directoryChooser.showDialog(Main.stage);
-			if(selectedDirectory != null) {
-				directoryChooserField.setText(selectedDirectory.getAbsolutePath());
-			}
-		});
+		menuImage = new Image(menuFile.toURI().toString());
+
+		menuCloseImage = new Image(menuCloseFile.toURI().toString());
+
+
 		
 		// Make mediaView adjust to frame size
 		mediaViewWidth = mediaView.fitWidthProperty();
@@ -337,24 +345,23 @@ public class Controller implements Initializable {
 		mediaViewHeight.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
 		mediaView.setPreserveRatio(true);
 		
+		
 		menuPane.prefHeightProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
 		
-		videoListScroll.prefHeightProperty().bind(Bindings.subtract(menuPane.prefHeightProperty(), 66.7));
+		menuScroll.prefHeightProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
+
+
 
 		mediaView.setMediaPlayer(mediaPlayer);
 		playing = false;
 
-		pane.setStyle("-fx-background-color: rgb(24,24,24)");
+		pane.setStyle("-fx-background-color: rgb(0,0,0)");
 
 		bufferPane.setBackground(Background.EMPTY);
 		settingsPane.setBackground(Background.EMPTY);
 		
 		settingsPane.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 
-		videoListScroll.setStyle("-fx-background-color: rgba(35,35,35,1)");
-		//videoListBox.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
-
-		menuSearchBox.setStyle("-fx-background-color: rgba(35,35,35,1)");
 		
 		//playbackSpeedPage.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 		
@@ -373,9 +380,7 @@ public class Controller implements Initializable {
 		
 		//settingsBackgroundPane.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 
-		
-		menuButton.setBackground(Background.EMPTY);
-		menuButton.setTooltip(openMenu);
+
 
 		playLogo.setImage(start);
 		playButton.setBackground(Background.EMPTY);
@@ -386,9 +391,6 @@ public class Controller implements Initializable {
 		nextVideoButton.setTooltip(next);
 		nextVideoIcon.setImage(nextVideo);
 
-		
-		
-		menuIcon.setImage(menu);
 
 		playButton.setOnAction((e) -> playButtonClick1());
 
@@ -403,10 +405,20 @@ public class Controller implements Initializable {
 		volumeButton.setBackground(Background.EMPTY);
 		volumeButton.setTooltip(mute);
 		volumeIcon.setImage(volumeUp);
+		
+		captionsButton.setBackground(Background.EMPTY);
+		captionsIcon.setImage(captionsImage);
+		
+		menuButton.setBackground(Background.EMPTY);
+		menuIcon.setImage(menuImage);
+		
+		//menuCloseButton.setBackground(Background.EMPTY);
+		menuCloseIcon.setImage(menuCloseImage);
+		
 
 		playbackValueLabel.setGraphic(new ImageView(rightArrow));
 
-		subtitlesLabel.setGraphic(new ImageView(rightArrow));
+		videoNameLabel.setGraphic(new ImageView(rightArrow));
 
 		playbackOptionsArrow.setGraphic(new ImageView(rightArrow));
 		
@@ -417,11 +429,7 @@ public class Controller implements Initializable {
 		checkBox4.setGraphic(new ImageView(check));
 		
 		customSpeedArrow.setGraphic(new ImageView(leftArrow));
-		
-		
-		directoryChooserField.setPromptText("Select a directory");
-		
-		videoListBox.prefHeightProperty().bind(Bindings.subtract(videoListScroll.heightProperty(), 5));
+
 		
 		
 		volumeSlider.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> volumeSlider.setValueChanging(true));
@@ -436,6 +444,13 @@ public class Controller implements Initializable {
 		playbackOptionsTitle.setOnMouseClicked((e) -> {
 			closePlaybackOptions();
 		});
+		
+		
+		videoBox.setOnMouseClicked((e) -> {
+			openVideoChooser();
+		});
+		
+		
 		
 		//shuffleBox.addEventFilter(null, null)
 		
@@ -562,11 +577,7 @@ public class Controller implements Initializable {
 			}
 			
 		});
-		
-		
-		subtitlesBox.setOnMouseClicked((e) -> {
-			// opening subtitle settings
-		});
+
 		
 		
 
@@ -1213,15 +1224,7 @@ public class Controller implements Initializable {
 				focusNodeTracker = 7;
 			}
 		});
-		
-		menuButton.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-			if(!newValue) {
-				menuButton.setStyle("-fx-border-color: transparent;");
-			}
-			else {
-				focusNodeTracker = 8;
-			}
-		});
+
 		
 		
 		//TODO: Add focuslisteners for all 9 traversable nodes
@@ -1284,11 +1287,11 @@ public class Controller implements Initializable {
 			hoverEffectOff(playbackOptionsBox);
 		});
 
-		subtitlesBox.setOnMouseEntered((e) -> {
-			hoverEffectOn(subtitlesBox);
+		videoBox.setOnMouseEntered((e) -> {
+			hoverEffectOn(videoBox);
 		});
-		subtitlesBox.setOnMouseExited((e) -> {
-			hoverEffectOff(subtitlesBox);
+		videoBox.setOnMouseExited((e) -> {
+			hoverEffectOff(videoBox);
 		});
 		
 		// On-hover effect for playback speed items
@@ -2176,7 +2179,7 @@ public class Controller implements Initializable {
 		
 			// mediaView
 			case 0: {
-				menuButton.setStyle("-fx-border-color: transparent;");
+
 				mediaView.setStyle("-fx-border-color: blue;");
 			}
 				break;
@@ -2233,7 +2236,6 @@ public class Controller implements Initializable {
 			// menuButton
 			case 8: {
 				fullScreenButton.setStyle("-fx-border-color: transparent;");
-				menuButton.setStyle("-fx-border-color: blue;");
 			}
 			break;
 			
@@ -2298,7 +2300,6 @@ public class Controller implements Initializable {
 			
 			// fullscreenButton
 			case 7: {
-				menuButton.setStyle("-fx-border-color: transparent;");
 				fullScreenButton.setStyle("-fx-border-color: blue;");
 			}
 			break;
@@ -2306,7 +2307,6 @@ public class Controller implements Initializable {
 			// menuButton
 			case 8: {
 				mediaView.setStyle("-fx-border-color: transparent;");
-				menuButton.setStyle("-fx-border-color: blue;");
 			}
 			break;
 			
@@ -2495,46 +2495,7 @@ public class Controller implements Initializable {
 		});
 
 	}
-	
-	public void openCloseMenu() {
-			if(settingsOpen) {
-				openCloseSettings();
-			}
-			else {
-				if(menuOpen) {
-					menuOpen = false;
-					menuButton.setTooltip(openMenu);
-					menuIcon.setImage(menu);
-					
-					//CLOSE MENU ANIMATION HERE
-					
-					TranslateTransition translate = new TranslateTransition(Duration.millis(100), menuPane);
-					translate.setFromX(0);
-					translate.setToX(-216);
-					translate.setCycleCount(1);
-					translate.setInterpolator(Interpolator.LINEAR);
-					translate.play();
-					
-					
-				}
-				else {
-					menuOpen = true;
-					menuButton.setTooltip(closeMenu);
-					menuIcon.setImage(menuClose);
-					
-					//OPEN MENU ANIMATION HERE
-					
-					TranslateTransition translate = new TranslateTransition(Duration.millis(100), menuPane);
-					translate.setFromX(-216);
-					translate.setToX(0);
-					translate.setCycleCount(1);
-					translate.setInterpolator(Interpolator.LINEAR);
-					translate.play();
 
-					
-				}
-			}
-	}
 	
 	public void playNextMedia() {
 		if(settingsOpen) {
@@ -2723,6 +2684,98 @@ public class Controller implements Initializable {
 		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline1);
 		parallelTransition.setCycleCount(1);
 		parallelTransition.play();
+	}
+	
+	
+	public void openCloseCaptions(){
+		if(captionsOpen) {
+			//CLOSE CAPTIONS
+			captionsOpen = false;
+			
+			ScaleTransition scale = new ScaleTransition(Duration.millis(100), captionLine);
+			scale.setFromX(1);
+			scale.setToX(0);
+			scale.setCycleCount(1);
+			scale.setInterpolator(Interpolator.LINEAR);
+			scale.play();
+
+			
+		}
+		else {
+			// OPEN CAPTIONS
+			captionsOpen = true;
+			
+			ScaleTransition scale = new ScaleTransition(Duration.millis(100), captionLine);
+			scale.setFromX(0);
+			scale.setToX(1);
+			scale.setCycleCount(1);
+			scale.setInterpolator(Interpolator.LINEAR);
+			scale.play();
+
+		}
+	}
+	
+	public void openVideoChooser() {
+		selectedFile = fileChooser.showOpenDialog(Main.stage);
+		
+		if(selectedFile != null) {
+			videoNameLabel.setText(selectedFile.getName());
+		}
+		
+	}
+	
+	
+	public void openMenu() {
+		//opening animation
+		
+		menuPane.setOpacity(1);
+
+		
+		TranslateTransition translate = new TranslateTransition(Duration.millis(200), menuPane);
+		translate.setFromX(-216);
+		translate.setToX(0);
+		translate.setCycleCount(1);
+		translate.setInterpolator(Interpolator.LINEAR);
+		translate.play();
+		
+		/*FadeTransition fade = new FadeTransition(Duration.millis(200), menuPane);
+		fade.setFromValue(0);
+		fade.setToValue(1);
+		fade.setCycleCount(1);
+		fade.setInterpolator(Interpolator.LINEAR);
+		
+		ParallelTransition parallel = new ParallelTransition(translate,fade);
+		parallel.play();*/
+	}
+	
+	public void closeMenu() {
+		//closing animation
+		TranslateTransition translate = new TranslateTransition(Duration.millis(200), menuPane);
+		translate.setFromX(0);
+		translate.setToX(-215);
+		translate.setCycleCount(1);
+		translate.setInterpolator(Interpolator.LINEAR);
+		translate.play();
+		
+		translate.setOnFinished((e) -> {
+			menuPane.setOpacity(0);
+		});
+		
+		/*FadeTransition fade = new FadeTransition(Duration.millis(200), menuPane);
+		fade.setFromValue(1);
+		fade.setToValue(0);
+		fade.setCycleCount(1);
+		fade.setInterpolator(Interpolator.LINEAR);
+		fade.play();
+		
+		ParallelTransition parallel = new ParallelTransition(translate,fade);
+		parallel.play();*/
+	}
+	
+	
+	
+	public void openDirectoryChooser() {
+		selectedDirectory = directoryChooser.showDialog(Main.stage);
 	}
 	
 }

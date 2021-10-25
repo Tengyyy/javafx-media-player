@@ -37,6 +37,7 @@
 	-fx-padding: 10;
 }
 
-.videoListScroll > .viewport {
+.menuScroll > .viewport {
    -fx-background-color: transparent;
 }
+
