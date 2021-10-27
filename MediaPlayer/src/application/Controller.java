@@ -3,6 +3,7 @@ package application;
 import java.io.File;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.ResourceBundle;
 import java.util.Timer;
@@ -78,7 +79,7 @@ public class Controller implements Initializable {
 	VBox controlBar, settingsHome, playbackSpeedPage, customSpeedBox, playbackOptionsVBox, menuVBox;
 
 	@FXML
-	HBox playbackSpeedBox, playbackOptionsBox, videoBox, durationSliderBox, playbackSpeedTitle, playbackSpeed1, playbackSpeed2, playbackSpeed3, playbackSpeed4, playbackSpeed5, playbackSpeed6, playbackSpeed7, playbackSpeed8, customSpeedTitle, shuffleBox, loopBox, autoplayBox, playbackOptionsTitle;
+	HBox playbackSpeedBox, playbackOptionsBox, videoBox, durationSliderBox, playbackSpeedTitle, playbackSpeed1, playbackSpeed2, playbackSpeed3, playbackSpeed4, playbackSpeed5, playbackSpeed6, playbackSpeed7, playbackSpeed8, customSpeedTitle, shuffleBox, loopBox, autoplayBox, playbackOptionsTitle, currentDirectoryHBox, directoryPathHBox, menuStartHBox;
 
 	@FXML
 	Button fullScreenButton, playButton, volumeButton, settingsButton, nextVideoButton, captionsButton, menuButton, menuCloseButton;
@@ -232,6 +233,11 @@ public class Controller implements Initializable {
 	SubtitleTrack subtitles;
 
 	
+	File[] videos;
+	ArrayList<File> filteredVideos;
+	
+	
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		
@@ -347,9 +353,20 @@ public class Controller implements Initializable {
 		
 		
 		menuPane.prefHeightProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
+		menuPane.prefWidthProperty().bind(Bindings.max(Bindings.multiply(Bindings.selectDouble(mediaView.sceneProperty(), "width"), 0.36), 215));
+		menuPane.translateXProperty().bind(menuPane.prefWidthProperty());
 		
-		menuScroll.prefHeightProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
+		
+		menuScroll.prefHeightProperty().bind(menuPane.heightProperty());
+		menuScroll.prefWidthProperty().bind(menuPane.widthProperty());
 
+		
+		menuVBox.prefWidthProperty().bind(menuPane.widthProperty());
+		
+		directoryChooserButton.prefWidthProperty().bind(Bindings.multiply(menuVBox.widthProperty(), 0.6));
+		directoryChooserButton.prefHeightProperty().bind(Bindings.multiply(menuPane.heightProperty(), 0.15));
+
+		
 
 
 		mediaView.setMediaPlayer(mediaPlayer);
@@ -2730,35 +2747,34 @@ public class Controller implements Initializable {
 		
 		menuPane.setOpacity(1);
 
+		menuPane.translateXProperty().unbind();
+		
+		
 		
 		TranslateTransition translate = new TranslateTransition(Duration.millis(200), menuPane);
-		translate.setFromX(-216);
+		translate.setFromX(-menuPane.getWidth());
 		translate.setToX(0);
 		translate.setCycleCount(1);
 		translate.setInterpolator(Interpolator.LINEAR);
 		translate.play();
-		
-		/*FadeTransition fade = new FadeTransition(Duration.millis(200), menuPane);
-		fade.setFromValue(0);
-		fade.setToValue(1);
-		fade.setCycleCount(1);
-		fade.setInterpolator(Interpolator.LINEAR);
-		
-		ParallelTransition parallel = new ParallelTransition(translate,fade);
-		parallel.play();*/
+
 	}
 	
 	public void closeMenu() {
+		
+		menuPane.translateXProperty().unbind();
+		
 		//closing animation
 		TranslateTransition translate = new TranslateTransition(Duration.millis(200), menuPane);
 		translate.setFromX(0);
-		translate.setToX(-215);
+		translate.setToX(-menuPane.getWidth());
 		translate.setCycleCount(1);
 		translate.setInterpolator(Interpolator.LINEAR);
 		translate.play();
 		
 		translate.setOnFinished((e) -> {
 			menuPane.setOpacity(0);
+			menuPane.translateXProperty().bind(menuPane.widthProperty());
 		});
 		
 		/*FadeTransition fade = new FadeTransition(Duration.millis(200), menuPane);
@@ -2776,6 +2792,41 @@ public class Controller implements Initializable {
 	
 	public void openDirectoryChooser() {
 		selectedDirectory = directoryChooser.showDialog(Main.stage);
+		
+		if(selectedDirectory != null) {
+			videos = selectedDirectory.listFiles();
+			
+			filteredVideos = new ArrayList<File>();
+			
+			//System.out.println(videos[0].getAbsolutePath());
+			
+			menuVBox.getChildren().remove(1);
+			
+			//currentDirectoryHBox.getChildren().add(new Label("Current directory:"));
+			//directoryPathHBox.getChildren().add(new Label(selectedDirectory.getAbsolutePath()));
+
+			
+			for(File video : videos) {
+				String fileName = video.getName();
+				//System.out.println(fileName);
+
+			      int index = fileName.lastIndexOf('.');
+			     // System.out.println(index);
+			      
+			      if(index > 0) { // this means that the file is an actual file not a directory
+			        String extension = fileName.substring(index);
+			        
+			        if(extension.contains(".mp4")){ // adds mp4 files to a new filtered arraylist
+			        	
+			        	filteredVideos.add(video);
+			        	
+			        }
+			    }
+			}
+			
+			System.out.println(filteredVideos);
+			
+		}
 	}
 	
 }

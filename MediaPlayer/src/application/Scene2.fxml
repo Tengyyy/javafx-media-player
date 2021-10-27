@@ -606,15 +606,15 @@
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <StackPane fx:id="menuPane" maxHeight="-Infinity" maxWidth="-Infinity" opacity="0.0" pickOnBounds="false" prefHeight="400.0" prefWidth="215.0" translateX="-216.0" StackPane.alignment="CENTER_LEFT">
+      <StackPane fx:id="menuPane" maxHeight="-Infinity" maxWidth="-Infinity" opacity="0.0" pickOnBounds="false" prefHeight="400.0" prefWidth="215.0" StackPane.alignment="CENTER_LEFT">
          <children>
-            <ScrollPane fx:id="menuScroll" hbarPolicy="NEVER" prefHeight="400.0" prefWidth="215.0" style="-fx-background-color: rgba(50,50,50,1);" styleClass="menuScroll" stylesheets="@application.css">
+            <ScrollPane fx:id="menuScroll" hbarPolicy="NEVER" style="-fx-background-color: rgba(50,50,50,1);" styleClass="menuScroll" stylesheets="@application.css">
                <content>
-                  <VBox fx:id="menuVBox" prefWidth="215.0">
+                  <VBox fx:id="menuVBox">
                      <children>
-                        <HBox alignment="BOTTOM_CENTER" prefHeight="150.0" prefWidth="215.0">
+                        <HBox fx:id="directoryChooserHBox" alignment="BOTTOM_CENTER" minHeight="100.0" minWidth="215.0" prefHeight="150.0">
                            <children>
-                              <JFXButton fx:id="directoryChooserButton" buttonType="RAISED" onAction="#openDirectoryChooser" prefHeight="70.0" prefWidth="150.0" ripplerFill="WHITE" style="-fx-background-color: #D32105;" text="Select directory" textFill="WHITE">
+                              <JFXButton fx:id="directoryChooserButton" buttonType="RAISED" minHeight="70.0" minWidth="150.0" onAction="#openDirectoryChooser" ripplerFill="WHITE" style="-fx-background-color: #D32105;" text="Select directory" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -624,15 +624,20 @@
                               </JFXButton>
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0">
+                        <HBox fx:id="menuStartHBox" alignment="CENTER" minHeight="100.0" minWidth="215.0" prefHeight="200.0" prefWidth="215.0">
                            <children>
                               <Label text="Open a directory containing mp4-files to fill this menu with videos" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
+                                 <HBox.margin>
+                                    <Insets left="20.0" right="20.0" />
+                                 </HBox.margin>
                               </Label>
                            </children>
                         </HBox>
+                        <HBox fx:id="currentDirectoryHBox" prefWidth="200.0" />
+                        <HBox fx:id="directoryPathHBox" />
                      </children></VBox>
                </content>
             </ScrollPane>
