@@ -34,6 +34,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -185,6 +187,8 @@ public class Controller implements Initializable {
 	boolean customSpeedChanged = false;
 	
 	boolean captionsOpen = false;
+	
+	boolean currDicSelected = false;
 
 
 	boolean sliderFocus = false;
@@ -341,8 +345,8 @@ public class Controller implements Initializable {
 		menuImage = new Image(menuFile.toURI().toString());
 
 		menuCloseImage = new Image(menuCloseFile.toURI().toString());
-
-
+		
+		
 		
 		// Make mediaView adjust to frame size
 		mediaViewWidth = mediaView.fitWidthProperty();
@@ -354,12 +358,12 @@ public class Controller implements Initializable {
 		
 		menuPane.prefHeightProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
 		menuPane.prefWidthProperty().bind(Bindings.max(Bindings.multiply(Bindings.selectDouble(mediaView.sceneProperty(), "width"), 0.36), 215));
-		menuPane.translateXProperty().bind(menuPane.prefWidthProperty());
+		menuPane.translateXProperty().bind(Bindings.multiply(menuPane.prefWidthProperty(), -1));
 		
 		
 		menuScroll.prefHeightProperty().bind(menuPane.heightProperty());
 		menuScroll.prefWidthProperty().bind(menuPane.widthProperty());
-
+		
 		
 		menuVBox.prefWidthProperty().bind(menuPane.widthProperty());
 		
@@ -2639,7 +2643,7 @@ public class Controller implements Initializable {
 	}
 	
 	public void openPlaybackOptions() {
-		
+			
 			playbackOptionsOpen = true;
 			
 			//OPENING ANIMATION GOES HERE//
@@ -2659,19 +2663,19 @@ public class Controller implements Initializable {
 			translateTransition2.setInterpolator(Interpolator.LINEAR);
 			
 			Timeline settingsTimeline1 = new Timeline();
-
+			
 			settingsTimeline1.setCycleCount(1);
 			settingsTimeline1.setAutoReverse(false);
 			settingsTimeline1.getKeyFrames()
 					.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsBackgroundPane.prefHeightProperty(), 230, Interpolator.LINEAR)));
-
+			
 			ParallelTransition parallelTransition = new ParallelTransition();
 			parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline1);
 			parallelTransition.setCycleCount(1);
 			parallelTransition.play();
 			
 	}
-
+			
 	public void closePlaybackOptions() {
 		
 		playbackOptionsOpen = false;
@@ -2691,12 +2695,12 @@ public class Controller implements Initializable {
 		translateTransition2.setInterpolator(Interpolator.LINEAR);
 		
 		Timeline settingsTimeline1 = new Timeline();
-
+		
 		settingsTimeline1.setCycleCount(1);
 		settingsTimeline1.setAutoReverse(false);
 		settingsTimeline1.getKeyFrames()
 				.add(new KeyFrame(Duration.millis(100), new KeyValue(settingsBackgroundPane.prefHeightProperty(), 170, Interpolator.LINEAR)));
-
+		
 		ParallelTransition parallelTransition = new ParallelTransition();
 		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline1);
 		parallelTransition.setCycleCount(1);
@@ -2774,7 +2778,7 @@ public class Controller implements Initializable {
 		
 		translate.setOnFinished((e) -> {
 			menuPane.setOpacity(0);
-			menuPane.translateXProperty().bind(menuPane.widthProperty());
+			menuPane.translateXProperty().bind(Bindings.multiply(menuPane.prefWidthProperty(), -1));
 		});
 		
 		/*FadeTransition fade = new FadeTransition(Duration.millis(200), menuPane);
@@ -2802,9 +2806,31 @@ public class Controller implements Initializable {
 			
 			menuVBox.getChildren().remove(1);
 			
-			//currentDirectoryHBox.getChildren().add(new Label("Current directory:"));
-			//directoryPathHBox.getChildren().add(new Label(selectedDirectory.getAbsolutePath()));
+			HBox currentDirectoryHBox = new HBox();
+			currentDirectoryHBox.setPadding(new Insets(20,0,0,10));
+			Label currDic = new Label();
+			currDic.setText("Current directory:");
+			currDic.setFont(Font.font(15));
+			currDic.setTextFill(Color.WHITE);
+			currentDirectoryHBox.getChildren().add(currDic);
 
+			menuVBox.getChildren().add(1, currentDirectoryHBox);
+			
+			if(currDicSelected) {
+				menuVBox.getChildren().remove(2);
+			}
+			HBox currentDirectoryPathHBox = new HBox();
+			currentDirectoryPathHBox.setPadding(new Insets(10,10,30,10));
+			Label currPath = new Label();
+			currPath.setText(selectedDirectory.getAbsolutePath());
+			currPath.setFont(Font.font(15));
+			currPath.setTextFill(Color.WHITE);
+			currPath.setWrapText(true);
+			currentDirectoryPathHBox.getChildren().add(currPath);
+
+			menuVBox.getChildren().add(2, currentDirectoryPathHBox);
+			
+			currDicSelected = true;
 			
 			for(File video : videos) {
 				String fileName = video.getName();
@@ -2819,6 +2845,56 @@ public class Controller implements Initializable {
 			        if(extension.contains(".mp4")){ // adds mp4 files to a new filtered arraylist
 			        	
 			        	filteredVideos.add(video);
+			        	
+			        	HBox videoBox = new HBox();
+			        	videoBox.setPadding(new Insets(0,10,0,10));
+			        	videoBox.setPrefHeight(30);
+			        	videoBox.setCursor(Cursor.HAND);
+			        	videoBox.setAlignment(Pos.CENTER_LEFT);
+			        	
+			        	videoBox.setOnMouseEntered((e) -> {
+			    			hoverEffectOn(videoBox);
+			    		});
+			    		
+			        	videoBox.setOnMouseExited((e) -> {
+			    			hoverEffectOff(videoBox);
+			    		});
+			        	
+			        	videoBox.setOnMouseClicked((e) -> {
+			        		mediaPlayer.dispose();
+			        		playing = false;
+			        		
+			        		media = new Media(video.toURI().toString());
+
+			        		mediaPlayer = new MediaPlayer(media);
+			        		
+			        		//mediaView = new MediaView(mediaPlayer);
+			        		mediaView.setMediaPlayer(mediaPlayer);
+			        		
+			        		mediaPlayer.setOnReady(new Runnable() {
+
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+									
+					        		playOrPause();
+
+									
+								}
+
+			        		});
+			        	});
+			        	
+			        	Label videoLabel = new Label();
+			        	videoLabel.setFont(Font.font(15));
+			        	videoLabel.setTextFill(Color.WHITE);
+			        	videoLabel.setText(video.getName());
+			        	
+			        	videoBox.getChildren().add(videoLabel);
+			        	
+			        	menuVBox.getChildren().add(menuVBox.getChildren().size(), videoBox);
+			        	
+			        	
 			        	
 			        }
 			    }

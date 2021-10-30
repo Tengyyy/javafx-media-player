@@ -486,7 +486,7 @@
                      </children></StackPane>
                </children>
             </StackPane>
-            <StackPane fx:id="playbackOptionsBuffer" alignment="BOTTOM_CENTER" prefHeight="230.0" prefWidth="235.0">
+            <StackPane fx:id="playbackOptionsBuffer" alignment="BOTTOM_CENTER" prefHeight="230.0" prefWidth="235.0" translateY="-60.0">
                <children>
                   <StackPane fx:id="playbackOptionsPane" prefHeight="230.0" prefWidth="235.0">
                      <children>
@@ -636,7 +636,6 @@
                               </Label>
                            </children>
                         </HBox>
-                        <HBox fx:id="currentDirectoryHBox" prefWidth="200.0" />
                         <HBox fx:id="directoryPathHBox" />
                      </children></VBox>
                </content>
@@ -654,7 +653,7 @@
             </Button>
          </children>
          <effect>
-            <DropShadow blurType="GAUSSIAN" height="5.93" radius="64.7325" spread="0.35" width="255.0" />
+            <DropShadow blurType="GAUSSIAN" height="130.0" radius="95.75" spread="0.35" width="255.0" />
          </effect></StackPane>
    </children>
 </StackPane>
