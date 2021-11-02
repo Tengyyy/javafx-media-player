@@ -124,7 +124,7 @@ public class Controller implements Initializable {
 	@FXML
 	Line captionLine;
 	
-	//TODO: Create custom playback speed selector inside the scrollpane using these objects.
+
 	HBox playbackCustom;
 	Label playbackCustomCheck;
 	Label playbackCustomText;
@@ -133,18 +133,24 @@ public class Controller implements Initializable {
 	Media media;
 	MediaPlayer mediaPlayer;
 	
-	
-	//TODO: Continue work on playback options menu
+
 	boolean shuffleOn = false;
 	boolean loopOn = false;
 	boolean autoplayOn = false;
 	
-	boolean playing = false;
-	boolean atEnd = false;
-	boolean seekedToEnd = false;
 	
-	boolean tempBool = false;
-	boolean wasPlaying = false;
+	
+	// Variables to keep track of mediaplayer status
+	boolean playing = false; // is mediaplayer currently playing
+	boolean wasPlaying = false; // was mediaplayer playing before a seeking action occurred
+	boolean atEnd = false; // is mediaplayer at the end of the video
+	boolean seekedToEnd = false; // true = video was seeked to the end; false = video naturally reached the end or the video is still playing
+	boolean wasAtEnd = false; // did the mediaplayer reach the end before user started a seeking action
+	////////////////////////////
+	
+	
+	
+	
 
 	private DoubleProperty mediaViewWidth;
 	private DoubleProperty mediaViewHeight;
@@ -184,15 +190,13 @@ public class Controller implements Initializable {
 	
 	boolean captionsOpen = false;
 	
-	boolean currDicSelected = false;
+	boolean currDirSelected = false;
 
 
 	boolean sliderFocus = false;
 
 	boolean running = false; // media running status
 
-	int videoLength;
-	int currLength = 0;
 	
 	int focusNodeTracker = 0;
 	
@@ -242,8 +246,16 @@ public class Controller implements Initializable {
 	ArrayList<HBox> filteredMenu;
 	int activeMedia;
 	
+	
+	HBox[] playbackSpeedBoxesArray;
+	
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		
+		
+		playbackSpeedBoxesArray = new HBox[]{playbackSpeed1, playbackSpeed2, playbackSpeed3, playbackSpeed4, playbackSpeed5, playbackSpeed6, playbackSpeed7, playbackSpeed8};
+
 		
 		fileChooser = new FileChooser();
 		
@@ -1039,15 +1051,15 @@ public class Controller implements Initializable {
 				
 				if (wasPlaying) {
 
-					if (!newValue && tempBool && !atEnd) {
+					if (!newValue && wasAtEnd && !atEnd) {
 						mediaPlayer.play();
 						playing = true;
 						playLogo.setImage(new Image(pauseImageFile.toURI().toString()));
-						tempBool = false;
+						wasAtEnd = false;
 						playButton.setTooltip(pause);
 					}
 
-					else if (newValue && tempBool) {
+					else if(newValue && wasAtEnd) {
 
 						Platform.runLater(new Runnable() {
 							@Override
@@ -1080,7 +1092,7 @@ public class Controller implements Initializable {
 						playLogo.setImage(new Image(playFile.toURI().toString()));
 						playButton.setTooltip(pause);
 					}
-					else if(newValue && tempBool) {
+					else if(newValue && wasAtEnd) {
 						Platform.runLater(new Runnable() {
 
 							@Override
@@ -1224,71 +1236,22 @@ public class Controller implements Initializable {
 		
 		// On-hover effect for playback speed items
 		//////////////////////////////////////////////////
-		playbackSpeed1.setOnMouseEntered((e) -> {
-			hoverEffectOn(playbackSpeed1);
-		});
 		
-		playbackSpeed1.setOnMouseExited((e) -> {
-			hoverEffectOff(playbackSpeed1);
-		});
-
-		playbackSpeed2.setOnMouseEntered((e) -> {
-			hoverEffectOn(playbackSpeed2);
-		});
 		
-		playbackSpeed2.setOnMouseExited((e) -> {
-			hoverEffectOff(playbackSpeed2);
-		});
+		for(int i=0; i<playbackSpeedBoxesArray.length; i++) {
+			
+			final int j = i;
+			
+			playbackSpeedBoxesArray[i].setOnMouseEntered((e) -> {
+				hoverEffectOn(playbackSpeedBoxesArray[j]);
+			});
+			
+			playbackSpeedBoxesArray[i].setOnMouseExited((e) -> {
+				hoverEffectOff(playbackSpeedBoxesArray[j]);
+			});
+			
+		}
 		
-		playbackSpeed3.setOnMouseEntered((e) -> {
-			hoverEffectOn(playbackSpeed3);
-		});
-		
-		playbackSpeed3.setOnMouseExited((e) -> {
-			hoverEffectOff(playbackSpeed3);
-		});
-		
-		playbackSpeed4.setOnMouseEntered((e) -> {
-			hoverEffectOn(playbackSpeed4);
-		});
-		
-		playbackSpeed4.setOnMouseExited((e) -> {
-			hoverEffectOff(playbackSpeed4);
-		});
-		
-		playbackSpeed5.setOnMouseEntered((e) -> {
-			hoverEffectOn(playbackSpeed5);
-		});
-		
-		playbackSpeed5.setOnMouseExited((e) -> {
-			hoverEffectOff(playbackSpeed5);
-		});
-		
-		playbackSpeed6.setOnMouseEntered((e) -> {
-			hoverEffectOn(playbackSpeed6);
-		});
-		
-		playbackSpeed6.setOnMouseExited((e) -> {
-			hoverEffectOff(playbackSpeed6);
-		});
-		
-		playbackSpeed7.setOnMouseEntered((e) -> {
-			hoverEffectOn(playbackSpeed7);
-		});
-		
-		playbackSpeed7.setOnMouseExited((e) -> {
-			hoverEffectOff(playbackSpeed7);
-		});
-		
-		playbackSpeed8.setOnMouseEntered((e) -> {
-			hoverEffectOn(playbackSpeed8);
-		});
-		
-		playbackSpeed8.setOnMouseExited((e) -> {
-			hoverEffectOff(playbackSpeed8);
-		});
-		
-
 		/////////////////////////////////////////////////////////////
 		////// Hover effect for playback options page ///////////////
 		shuffleBox.setOnMouseEntered((e) -> {
@@ -2274,7 +2237,7 @@ public class Controller implements Initializable {
 			
 			
 				atEnd = true;
-				tempBool = true;
+				wasAtEnd = true;
 				playing = false;
 				mediaPlayer.pause();
 				playLogo.setImage(new Image(replayFile.toURI().toString()));
@@ -2313,9 +2276,10 @@ public class Controller implements Initializable {
 					
 			mediaPlayer.dispose();
     		
+			//reset all variables that keep track of mediaplayer state
 			wasPlaying = false;
     		playing = false;
-    		tempBool = false;
+    		wasAtEnd = false;
     		atEnd = false;
     		seekedToEnd = false;
  
@@ -2803,7 +2767,7 @@ public class Controller implements Initializable {
 				activeQueue = new ArrayList<File>();
 			}
 			
-			if(!currDicSelected) {
+			if(!currDirSelected) {
 				
 				filteredVideos = new ArrayList<File>();
 				
@@ -2814,11 +2778,11 @@ public class Controller implements Initializable {
 				
 				HBox currentDirectoryHBox = new HBox();
 				currentDirectoryHBox.setPadding(new Insets(20,0,0,10));
-				Label currDic = new Label();
-				currDic.setText("Current directory:");
-				currDic.setFont(Font.font(15));
-				currDic.setTextFill(Color.WHITE);
-				currentDirectoryHBox.getChildren().add(currDic);
+				Label currDir = new Label();
+				currDir.setText("Current directory:");
+				currDir.setFont(Font.font(15));
+				currDir.setTextFill(Color.WHITE);
+				currentDirectoryHBox.getChildren().add(currDir);
 
 				menuVBox.getChildren().add(currentDirectoryHBox);
 				
@@ -2835,7 +2799,7 @@ public class Controller implements Initializable {
 				menuVBox.getChildren().add(currentDirectoryPathHBox);
 				
 				
-				currDicSelected = true;
+				currDirSelected = true;
 			}
 			else {
 				menuVBox.getChildren().remove(2);
@@ -2909,7 +2873,7 @@ public class Controller implements Initializable {
 				        		
 			        			wasPlaying = false;
 				        		playing = false;
-				        		tempBool = false;
+				        		wasAtEnd = false;
 				        		atEnd = false;
 				        		seekedToEnd = false;
 				        		
@@ -2929,7 +2893,7 @@ public class Controller implements Initializable {
 					        		
 			        				wasPlaying = false;
 					        		playing = false;
-					        		tempBool = false;
+					        		wasAtEnd = false;
 					        		atEnd = false;
 					        		seekedToEnd = false;
 					        		
