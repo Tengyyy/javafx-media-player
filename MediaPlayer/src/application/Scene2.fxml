@@ -599,7 +599,7 @@
             </StackPane>
          </children>
       </Pane>
-      <Button fx:id="menuButton" mnemonicParsing="false" onAction="#openMenu" prefHeight="60.0" prefWidth="60.0" style="-fx-padding: 0;" StackPane.alignment="TOP_LEFT">
+      <Button fx:id="menuButton" mnemonicParsing="false" onAction="#openMenu" prefHeight="60.0" prefWidth="60.0" style="-fx-padding: 0;" StackPane.alignment="TOP_LEFT" styleClass="focusableProperty">
          <graphic>
             <ImageView fx:id="menuIcon" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true" />
          </graphic>
@@ -636,7 +636,6 @@
                               </Label>
                            </children>
                         </HBox>
-                        <HBox fx:id="directoryPathHBox" />
                      </children></VBox>
                </content>
             </ScrollPane>

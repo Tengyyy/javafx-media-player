@@ -58,7 +58,7 @@ public class Main extends Application {
 			Main.stage = primaryStage;
 			
 			primaryStage.setFullScreenExitHint("Press Esc to exit fullscreen mode");
-			//primaryStage.setFullScreenExitKeyCombination(KeyCombination.);
+
 			
 			
 			directoryChooser = new DirectoryChooser();
@@ -67,63 +67,7 @@ public class Main extends Application {
 			primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
 				
 				switch(event.getCode()) {
-					case F11: controller.fullScreen();
-					break;
-					case F: {
-						controller.fullScreen();
-
-					}
-					break;
-					case ESCAPE: {
-						controller.fullScreenIcon.setImage(controller.maximize);
-						primaryStage.setFullScreen(false);
-						controller.fullScreenButton.setTooltip(controller.enterFullScreen);
-					}
-					break;
-					case SPACE:	{
 					
-						if(!controller.playButton.isFocused()) {
-							if(controller.atEnd) {
-								controller.replayMedia();
-							}
-							else {
-								controller.playOrPause();
-							}
-						}
-					
-					}
-					break;
-				
-					case RIGHT: {
-						/*if(!controller.atEnd) {
-						
-							if(controller.durationSlider.getValue() + 5 >= controller.durationSlider.getMax()) {
-							controller.durationSlider.setValue(controller.durationSlider.getMax());
-							}
-							else {
-								controller.durationSlider.setValue(controller.durationSlider.getValue() + 5);
-							}
-						
-						}*/
-					
-					}
-					break;
-				
-					case LEFT: {
-
-						
-						/*if(controller.mediaPlayer.getCurrentTime().toSeconds() > 5.0) {
-							controller.durationSlider.setValue(controller.durationSlider.getValue() - 5);
-
-						}
-						else {
-							controller.durationSlider.setValue(0);
-						}*/
-
-					}
-					break;
-						default:
-							break;
 				
 				}
 				
@@ -145,10 +89,7 @@ public class Main extends Application {
 							}
 							else {
 								controller.focusNodeTracker--;
-
 							}
-
-							
 							controller.traverseFocusBackwards();
 						}
 						else {
@@ -207,6 +148,10 @@ public class Main extends Application {
 							controller.openCloseSettings();
 						}
 						fullScreen = false;
+						
+						controller.fullScreenIcon.setImage(controller.maximize);
+						primaryStage.setFullScreen(false);
+						controller.fullScreenButton.setTooltip(controller.enterFullScreen);
 					}
 					break;
 					
@@ -326,6 +271,28 @@ public class Main extends Application {
 
 							controller.volumeSlider.setValue(controller.volumeValue);
 						}
+					}
+					break;
+					
+					case F11: controller.fullScreen();
+					break;
+					case F: {
+						controller.fullScreen();
+
+					}
+					break;
+					
+					case SPACE:	{
+					
+						if(!controller.playButton.isFocused()) {
+							if(controller.atEnd) {
+								controller.replayMedia();
+							}
+							else {
+								controller.playOrPause();
+							}
+						}
+					
 					}
 					break;
 					

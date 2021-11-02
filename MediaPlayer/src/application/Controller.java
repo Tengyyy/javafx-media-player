@@ -5,6 +5,7 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -138,16 +139,12 @@ public class Controller implements Initializable {
 	boolean loopOn = false;
 	boolean autoplayOn = false;
 	
-	
-	
 	boolean playing = false;
-	boolean wasPlaying = false;
-
-	boolean tempBool = false;
-
 	boolean atEnd = false;
-	
 	boolean seekedToEnd = false;
+	
+	boolean tempBool = false;
+	boolean wasPlaying = false;
 
 	private DoubleProperty mediaViewWidth;
 	private DoubleProperty mediaViewHeight;
@@ -183,8 +180,7 @@ public class Controller implements Initializable {
 	boolean playbackOptionsOpen = false;
 	
 	boolean customSpeedOpen = false;
-	
-	boolean customSpeedChanged = false;
+
 	
 	boolean captionsOpen = false;
 	
@@ -238,9 +234,13 @@ public class Controller implements Initializable {
 
 	
 	File[] videos;
-	ArrayList<File> filteredVideos;
+	ArrayList<File> filteredVideos; // results displayed in menu
 	
+	String activePath;
+	ArrayList<File> activeQueue; // current active directory - if shuffle play is selected, the next video will be randomly selected from this arrayList
 	
+	ArrayList<HBox> filteredMenu;
+	int activeMedia;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -279,14 +279,10 @@ public class Controller implements Initializable {
 
 		durationLabel.setTranslateX(-60);
 
-		// volumeSlider.setFocusTraversable(false);
 
 		file = new File("hey.mp4");
-		media = new Media(file.toURI().toString());
-
-		mediaPlayer = new MediaPlayer(media);
-
-		// mediaPlayer.get
+		
+		createMediaPlayer(file);
 
 		// declaring media control images
 		maximizeFile = new File("src/application/maximize.png");
@@ -365,16 +361,10 @@ public class Controller implements Initializable {
 		menuScroll.prefWidthProperty().bind(menuPane.widthProperty());
 		
 		
-		menuVBox.prefWidthProperty().bind(menuPane.widthProperty());
+		menuVBox.prefWidthProperty().bind(menuScroll.prefWidthProperty());
 		
 		directoryChooserButton.prefWidthProperty().bind(Bindings.multiply(menuVBox.widthProperty(), 0.6));
 		directoryChooserButton.prefHeightProperty().bind(Bindings.multiply(menuPane.heightProperty(), 0.15));
-
-		
-
-
-		mediaView.setMediaPlayer(mediaPlayer);
-		playing = false;
 
 		pane.setStyle("-fx-background-color: rgb(0,0,0)");
 
@@ -383,23 +373,13 @@ public class Controller implements Initializable {
 		
 		settingsPane.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 
-		
-		//playbackSpeedPage.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
-		
-		
 		playbackSpeedScroll.setBackground(Background.EMPTY);
-		
-		
-		//menuSearchBox.setBackground(Background.EMPTY);
 
-		
 		playbackSpeedScroll.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 		
 		customSpeedPane.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 		
 		playbackOptionsPane.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
-		
-		//settingsBackgroundPane.setStyle("-fx-background-color: rgba(35,35,35,0.8)");
 
 
 
@@ -471,16 +451,11 @@ public class Controller implements Initializable {
 			openVideoChooser();
 		});
 		
-		
-		
-		//shuffleBox.addEventFilter(null, null)
-		
-		
+
 		shuffleBox.setOnMouseClicked((e) -> {
 			shuffleSwitch.fire();
 			
-			//shuffleSwitch.requestFocus();
-			
+
 			if(loopSwitch.isSelected()) { // turns other switches off if this one is toggled on. makes it so only one switch can be selected
 				loopSwitch.fire();
 			}
@@ -492,9 +467,7 @@ public class Controller implements Initializable {
 		});
 		loopBox.setOnMouseClicked((e) -> {
 			loopSwitch.fire();
-			
-			//loopSwitch.requestFocus();
-			
+
 			if(shuffleSwitch.isSelected()) {
 				shuffleSwitch.fire();
 			}
@@ -505,8 +478,6 @@ public class Controller implements Initializable {
 		});
 		autoplayBox.setOnMouseClicked((e) -> {
 			autoplaySwitch.fire();
-			
-			//autoplaySwitch.requestFocus();
 			
 			if(loopSwitch.isSelected()) {
 				loopSwitch.fire();
@@ -519,7 +490,6 @@ public class Controller implements Initializable {
 		
 		
 		shuffleSwitch.setOnMouseClicked((e) -> { // in addition to the hbox, also add same logic to the switch itself (minus the .fire() part cause in that case the switch would toggle twice in a row) 
-			//shuffleSwitch.fire();
 			
 			if(loopSwitch.isSelected()) { 
 				loopSwitch.fire();
@@ -531,7 +501,6 @@ public class Controller implements Initializable {
 			
 		});
 		loopSwitch.setOnMouseClicked((e) -> {
-			//loopSwitch.fire();
 			
 			if(shuffleSwitch.isSelected()) {
 				shuffleSwitch.fire();
@@ -542,7 +511,6 @@ public class Controller implements Initializable {
 			}
 		});
 		autoplaySwitch.setOnMouseClicked((e) -> {
-			//autoplaySwitch.fire();
 			
 			if(loopSwitch.isSelected()) {
 				loopSwitch.fire();
@@ -650,12 +618,9 @@ public class Controller implements Initializable {
 
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				
-				customSpeedChanged = true;
+
 
 				formattedValue = Math.floor(newValue.doubleValue()* 20) / 20; // floors the new slider value to 2 decimal points with the last decimal being only 5 or 0.
-				
-				
 				
 				mediaPlayer.setRate(formattedValue);
 				
@@ -667,7 +632,7 @@ public class Controller implements Initializable {
 				
 				customSpeedLabel.setText(df.format(formattedValue) + "x");
 				
-				if(playbackCustom == null && customSpeedChanged) {
+				if(playbackCustom == null) {
 					
 					switch(df.format(formattedValue)) {
 					case "0.25": {
@@ -1039,26 +1004,6 @@ public class Controller implements Initializable {
 		});
 
 
-		/**
-		 * totalDurationProperty() - the total amount of play time if allowed to play
-		 * until finished. This checks how long the the video attached to the media
-		 * player is. If the media attached to the media player changes then the max of
-		 * the slider will change as well.
-		 */
-		mediaPlayer.totalDurationProperty().addListener(new ChangeListener<Duration>() {
-			@Override
-			public void changed(ObservableValue<? extends Duration> observableValue, Duration oldDuration,
-					Duration newDuration) {
-
-				// Note that duration is originally in milliseconds.
-				// newDuration is the time of the current video, oldDuration is the duration of
-				// the previous video.
-
-				durationSlider.setMax(newDuration.toSeconds());
-				// labelTotalTime.setText(getTime(newDuration));
-
-			}
-		});
 
 		durationSlider.addEventFilter(MouseEvent.DRAG_DETECTED, e -> durationSlider.setValueChanging(true));
 		durationSlider.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> durationSlider.setValueChanging(false));
@@ -1124,9 +1069,7 @@ public class Controller implements Initializable {
 
 						playing = false;
 						playLogo.setImage(new Image(pauseFile.toURI().toString()));
-
 						playButton.setTooltip(play);						
-						// mediaPlayer.seek(Duration.seconds(durationSlider.getValue()));
 
 					} else if (!newValue && !atEnd) {
 						mediaPlayer.play();
@@ -1134,30 +1077,20 @@ public class Controller implements Initializable {
 						playLogo.setImage(new Image(playFile.toURI().toString()));
 						playButton.setTooltip(pause);
 					}
-
-					else if (newValue && tempBool) {
-
+					else if(newValue && tempBool) {
 						Platform.runLater(new Runnable() {
+
 							@Override
 							public void run() {
 								// TODO Auto-generated method stub
 								mediaPlayer.pause();
 							}
-
+							
 						});
 					}
 				}
 
-				else {
-					if (newValue) {
-
-						// playLogo.setImage(new Image(pauseFile.toURI().toString()));
-
-						// mediaPlayer.seek(Duration.seconds(durationSlider.getValue()));
-					}
-
-				}
-
+				// can maybe comment this out
 				mediaPlayer.seek(Duration.seconds(durationSlider.getValue()));
 
 			}
@@ -1245,51 +1178,14 @@ public class Controller implements Initializable {
 				focusNodeTracker = 7;
 			}
 		});
-
 		
-		
-		//TODO: Add focuslisteners for all 9 traversable nodes
-
-		mediaPlayer.setOnReady(new Runnable() {
-
-			@Override
-			public void run() {
-
-				durationSlider.setMax(media.getDuration().toSeconds());
-
-				bindCurrentTimeLabel();
-
-				//dont know why this works
-				mediaPlayer.play();
-				mediaPlayer.pause();
-
-				// startTimer();
-
+		menuButton.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+			if(!newValue) {
+				menuButton.setStyle("-fx-border-color: transparent;");
 			}
-
-		});
-
-		mediaPlayer.currentTimeProperty().addListener(new ChangeListener<Duration>() {
-			@Override
-			public void changed(ObservableValue<? extends Duration> observableValue, Duration oldTime,
-					Duration newTime) {
-				bindCurrentTimeLabel();
-				if (!durationSlider.isValueChanging()) {
-					durationSlider.setValue(newTime.toSeconds());
-				}
+			else {
+				focusNodeTracker = 8;
 			}
-		});
-
-		mediaPlayer.setOnEndOfMedia(new Runnable() {
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-					System.out.println("2");
-					
-					endMedia();
-			}
-			
 		});
 
 		// On-hover effect for setting tab items
@@ -1315,10 +1211,10 @@ public class Controller implements Initializable {
 			hoverEffectOff(videoBox);
 		});
 		
+		
+		
 		// On-hover effect for playback speed items
 		//////////////////////////////////////////////////
-
-		
 		playbackSpeed1.setOnMouseEntered((e) -> {
 			hoverEffectOn(playbackSpeed1);
 		});
@@ -1383,10 +1279,9 @@ public class Controller implements Initializable {
 			hoverEffectOff(playbackSpeed8);
 		});
 		
-		
-		
-		
-		
+
+		/////////////////////////////////////////////////////////////
+		////// Hover effect for playback options page ///////////////
 		shuffleBox.setOnMouseEntered((e) -> {
 			hoverEffectOn(shuffleBox);
 		});
@@ -1790,11 +1685,8 @@ public class Controller implements Initializable {
 
 		}
 
-		wasPlaying = playing;
 	}
 
-	// TODO: Fix bug when using duration slider to scroll back in the video after
-	// the video has already ended.
 	public void replayMedia() {
 		mediaPlayer.seek(Duration.ZERO);
 		mediaPlayer.play();
@@ -2363,7 +2255,6 @@ public class Controller implements Initializable {
 				playButtonClick1();
 			});
 		} else if (newValue >= durationSlider.getMax()) {
-			//durationSlider.setValue(durationSlider.getMax());
 			
 			if(durationSlider.isValueChanging()) {
 				seekedToEnd = true;
@@ -2373,7 +2264,6 @@ public class Controller implements Initializable {
 			
 			
 				atEnd = true;
-				//endMedia();
 				tempBool = true;
 				playing = false;
 				mediaPlayer.pause();
@@ -2384,8 +2274,6 @@ public class Controller implements Initializable {
 
 		if (Math.abs(mediaPlayer.getCurrentTime().toSeconds() - newValue) > 0.5) {
 			mediaPlayer.seek(Duration.seconds(newValue));
-
-
 		}
 	}
 	
@@ -2411,7 +2299,23 @@ public class Controller implements Initializable {
 			
 		}
 		else if(shuffleOn) {
-			// randomly select next video to play from current directory
+			Random random = new Random();
+					
+			mediaPlayer.dispose();
+    		
+			wasPlaying = false;
+    		playing = false;
+    		tempBool = false;
+    		atEnd = false;
+    		seekedToEnd = false;
+ 
+
+    		int	newSong = random.nextInt(activeQueue.size());
+
+    		
+    		createMediaPlayer(activeQueue.get(newSong));
+    		
+
 		}
 		else if(autoplayOn) {
 			//play next song in queue/directory
@@ -2780,16 +2684,100 @@ public class Controller implements Initializable {
 			menuPane.setOpacity(0);
 			menuPane.translateXProperty().bind(Bindings.multiply(menuPane.prefWidthProperty(), -1));
 		});
+
+	}
+	
+	
+	public void createMediaPlayer(File file) {
 		
-		/*FadeTransition fade = new FadeTransition(Duration.millis(200), menuPane);
-		fade.setFromValue(1);
-		fade.setToValue(0);
-		fade.setCycleCount(1);
-		fade.setInterpolator(Interpolator.LINEAR);
-		fade.play();
+		durationSlider.setValue(0);
 		
-		ParallelTransition parallel = new ParallelTransition(translate,fade);
-		parallel.play();*/
+		media = new Media(file.toURI().toString());
+		mediaPlayer = new MediaPlayer(media);
+		mediaView.setMediaPlayer(mediaPlayer);
+		
+		
+		mediaPlayer.currentTimeProperty().addListener(new ChangeListener<Duration>() {
+			@Override
+			public void changed(ObservableValue<? extends Duration> observableValue, Duration oldTime,
+					Duration newTime) {
+				bindCurrentTimeLabel();
+				if (!durationSlider.isValueChanging()) {
+					durationSlider.setValue(newTime.toSeconds());
+				}
+				
+				
+				
+			}
+		});
+
+		mediaPlayer.setOnEndOfMedia(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+					System.out.println("2");
+					
+					endMedia();
+			}
+			
+		});
+		
+		
+		mediaPlayer.setOnReady(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+
+				
+				mediaPlayer.setVolume(volumeSlider.getValue() / 100);
+
+				playOrPause();
+				
+				durationSlider.setMax(media.getDuration().toSeconds());
+
+				bindCurrentTimeLabel();
+
+        		
+				TimerTask setRate = new TimerTask() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						switch(playbackSpeedTracker) {
+						case 0: mediaPlayer.setRate(formattedValue);
+						break;
+						case 1: mediaPlayer.setRate(0.25);
+						break;
+						case 2: mediaPlayer.setRate(0.5);
+						break;
+						case 3: mediaPlayer.setRate(0.75);
+						break;
+						case 4: mediaPlayer.setRate(1);
+						break;
+						case 5: mediaPlayer.setRate(1.25);
+						break;
+						case 6: mediaPlayer.setRate(1.5);
+						break;
+						case 7: mediaPlayer.setRate(1.75);
+						break;
+						case 8: mediaPlayer.setRate(2);
+						break;
+						default: break;
+					}
+					}
+					
+				};
+				
+				Timer timer = new Timer();
+				
+				// this is mega stupid but it works
+				timer.schedule(setRate, 100);
+			}
+			
+		});
+
 	}
 	
 	
@@ -2799,39 +2787,71 @@ public class Controller implements Initializable {
 		
 		if(selectedDirectory != null) {
 			videos = selectedDirectory.listFiles();
-			
-			filteredVideos = new ArrayList<File>();
-			
-			//System.out.println(videos[0].getAbsolutePath());
-			
-			menuVBox.getChildren().remove(1);
-			
-			HBox currentDirectoryHBox = new HBox();
-			currentDirectoryHBox.setPadding(new Insets(20,0,0,10));
-			Label currDic = new Label();
-			currDic.setText("Current directory:");
-			currDic.setFont(Font.font(15));
-			currDic.setTextFill(Color.WHITE);
-			currentDirectoryHBox.getChildren().add(currDic);
 
-			menuVBox.getChildren().add(1, currentDirectoryHBox);
 			
-			if(currDicSelected) {
-				menuVBox.getChildren().remove(2);
+			if(activeQueue == null) {
+				activeQueue = new ArrayList<File>();
 			}
-			HBox currentDirectoryPathHBox = new HBox();
-			currentDirectoryPathHBox.setPadding(new Insets(10,10,30,10));
-			Label currPath = new Label();
-			currPath.setText(selectedDirectory.getAbsolutePath());
-			currPath.setFont(Font.font(15));
-			currPath.setTextFill(Color.WHITE);
-			currPath.setWrapText(true);
-			currentDirectoryPathHBox.getChildren().add(currPath);
+			
+			if(!currDicSelected) {
+				
+				filteredVideos = new ArrayList<File>();
+				
+				filteredMenu = new ArrayList<HBox>();
+				
+				menuVBox.getChildren().remove(1);
+				
+				
+				HBox currentDirectoryHBox = new HBox();
+				currentDirectoryHBox.setPadding(new Insets(20,0,0,10));
+				Label currDic = new Label();
+				currDic.setText("Current directory:");
+				currDic.setFont(Font.font(15));
+				currDic.setTextFill(Color.WHITE);
+				currentDirectoryHBox.getChildren().add(currDic);
 
-			menuVBox.getChildren().add(2, currentDirectoryPathHBox);
-			
-			currDicSelected = true;
-			
+				menuVBox.getChildren().add(currentDirectoryHBox);
+				
+				
+				HBox currentDirectoryPathHBox = new HBox();
+				currentDirectoryPathHBox.setPadding(new Insets(10,10,30,10));
+				Label currPath = new Label();
+				currPath.setText(selectedDirectory.getAbsolutePath());
+				currPath.setFont(Font.font(15));
+				currPath.setTextFill(Color.WHITE);
+				currPath.setWrapText(true);
+				currentDirectoryPathHBox.getChildren().add(currPath);
+
+				menuVBox.getChildren().add(currentDirectoryPathHBox);
+				
+				
+				currDicSelected = true;
+			}
+			else {
+				menuVBox.getChildren().remove(2);
+				
+				HBox currentDirectoryPathHBox = new HBox();
+				currentDirectoryPathHBox.setPadding(new Insets(10,10,30,10));
+				Label currPath = new Label();
+				currPath.setText(selectedDirectory.getAbsolutePath());
+				currPath.setFont(Font.font(15));
+				currPath.setTextFill(Color.WHITE);
+				currPath.setWrapText(true);
+				currentDirectoryPathHBox.getChildren().add(currPath);
+
+				menuVBox.getChildren().add(2, currentDirectoryPathHBox);
+				
+				if(filteredVideos.size() > 0) {
+
+					
+					menuVBox.getChildren().remove(3, menuVBox.getChildren().size());
+					
+					filteredVideos.clear();
+					filteredMenu.clear();
+					
+				}
+			}
+
 			for(File video : videos) {
 				String fileName = video.getName();
 				//System.out.println(fileName);
@@ -2845,6 +2865,7 @@ public class Controller implements Initializable {
 			        if(extension.contains(".mp4")){ // adds mp4 files to a new filtered arraylist
 			        	
 			        	filteredVideos.add(video);
+
 			        	
 			        	HBox videoBox = new HBox();
 			        	videoBox.setPadding(new Insets(0,10,0,10));
@@ -2861,28 +2882,55 @@ public class Controller implements Initializable {
 			    		});
 			        	
 			        	videoBox.setOnMouseClicked((e) -> {
-			        		mediaPlayer.dispose();
-			        		playing = false;
+
 			        		
-			        		media = new Media(video.toURI().toString());
+			        		if(selectedDirectory.getAbsolutePath() != activePath) {
+			        			
+			        			System.out.println("oh yeah");
+			        			
+			        			activePath = selectedDirectory.getAbsolutePath();
+			        			
+			        			activeQueue.clear();
+			        			
+			        			activeQueue.addAll(filteredVideos);
+			        			
+			        			
+			        			mediaPlayer.dispose();
+				        		
+			        			wasPlaying = false;
+				        		playing = false;
+				        		tempBool = false;
+				        		atEnd = false;
+				        		seekedToEnd = false;
+				        		
+				        		
+				        		createMediaPlayer(video);
+			        		}
+			        		else {
 
-			        		mediaPlayer = new MediaPlayer(media);
-			        		
-			        		//mediaView = new MediaView(mediaPlayer);
-			        		mediaView.setMediaPlayer(mediaPlayer);
-			        		
-			        		mediaPlayer.setOnReady(new Runnable() {
-
-								@Override
-								public void run() {
-									// TODO Auto-generated method stub
-									
-					        		playOrPause();
-
-									
-								}
-
-			        		});
+			        			if(activeMedia == filteredMenu.indexOf(videoBox)) {
+			        				playOrPause();
+			        			}
+			        			else {
+			        				
+			        			System.out.println("oh no");
+			        				
+			        				mediaPlayer.dispose();
+					        		
+			        				wasPlaying = false;
+					        		playing = false;
+					        		tempBool = false;
+					        		atEnd = false;
+					        		seekedToEnd = false;
+					        		
+					        		
+					        		createMediaPlayer(video);
+			        			}
+			        			
+			        			activeMedia = filteredMenu.indexOf(videoBox);
+			        			
+			        		}
+			        	
 			        	});
 			        	
 			        	Label videoLabel = new Label();
@@ -2892,15 +2940,16 @@ public class Controller implements Initializable {
 			        	
 			        	videoBox.getChildren().add(videoLabel);
 			        	
-			        	menuVBox.getChildren().add(menuVBox.getChildren().size(), videoBox);
+			        	filteredMenu.add(videoBox);
+			        	
+			        	menuVBox.getChildren().add(videoBox);
 			        	
 			        	
 			        	
 			        }
 			    }
 			}
-			
-			System.out.println(filteredVideos);
+
 			
 		}
 	}
