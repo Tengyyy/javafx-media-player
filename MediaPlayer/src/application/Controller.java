@@ -365,6 +365,8 @@ public class Controller implements Initializable {
 		
 		directoryChooserButton.prefWidthProperty().bind(Bindings.multiply(menuVBox.widthProperty(), 0.6));
 		directoryChooserButton.prefHeightProperty().bind(Bindings.multiply(menuPane.heightProperty(), 0.15));
+		
+		playing = false;
 
 		pane.setStyle("-fx-background-color: rgb(0,0,0)");
 
@@ -1028,7 +1030,7 @@ public class Controller implements Initializable {
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				bindCurrentTimeLabel();
 				
-				if(!newValue) {
+				if(!newValue) { // close settings pane after user finishes seeking media
 						if(settingsOpen) {
 							openCloseSettings();
 						}
@@ -1071,7 +1073,8 @@ public class Controller implements Initializable {
 						playLogo.setImage(new Image(pauseFile.toURI().toString()));
 						playButton.setTooltip(play);						
 
-					} else if (!newValue && !atEnd) {
+					} 
+					else if (!newValue && !atEnd) {
 						mediaPlayer.play();
 						playing = true;
 						playLogo.setImage(new Image(playFile.toURI().toString()));
@@ -1087,6 +1090,12 @@ public class Controller implements Initializable {
 							}
 							
 						});
+					}
+				}
+				
+				else {
+					if(newValue) {
+						
 					}
 				}
 
@@ -1650,6 +1659,8 @@ public class Controller implements Initializable {
 
 	public void mediaClick() {
 
+		// Clicking on the mediaview node will close the settings tab if its open or otherwise play/pause/replay the video
+		
 		if(settingsOpen) {
 			openCloseSettings();
 		}
@@ -1668,7 +1679,7 @@ public class Controller implements Initializable {
 
 		// displayControls();
 
-		if (!playing) {
+		if (!playing) { // plays media
 			mediaPlayer.play();
 			playing = true;
 
@@ -1676,7 +1687,7 @@ public class Controller implements Initializable {
 			
 			playButton.setTooltip(pause);
 
-		} else {
+		} else { // pauses media
 			mediaPlayer.pause();
 			playing = false;
 			playLogo.setImage(new Image(pauseFile.toURI().toString()));
@@ -1684,6 +1695,8 @@ public class Controller implements Initializable {
 			playButton.setTooltip(play);
 
 		}
+		
+		wasPlaying = playing; // updates the value of wasPlaying variable - when this method is called the user really wants to play or pause the video and therefore the previous wasPlaying state does not have to be tracked
 
 	}
 
@@ -1695,9 +1708,6 @@ public class Controller implements Initializable {
 		playLogo.setImage(new Image(pauseImageFile.toURI().toString()));
 		seekedToEnd = false;
 		playButton.setTooltip(pause);
-
-		// startTimer();
-
 		playButton.setOnAction((e) -> playButtonClick1());
 
 	}
