@@ -232,12 +232,16 @@ public class Main extends Application {
 					break;
 					
 					case K: {
-						if(controller.atEnd) {
-							controller.replayMedia();
+						
+						if(!controller.durationSlider.isValueChanging()) {
+							if(controller.atEnd) {
+								controller.replayMedia();
+							}
+							else {
+								controller.playOrPause();
+							}
 						}
-						else {
-							controller.playOrPause();
-						}
+						
 					}
 					break;
 					
@@ -275,15 +279,17 @@ public class Main extends Application {
 					
 					case SPACE:	{
 					
-						if(!controller.playButton.isFocused()) {
-							if(controller.atEnd) {
-								controller.replayMedia();
-							}
-							else {
-								controller.playOrPause();
+						if(!controller.durationSlider.isValueChanging()) {
+							
+							if(!controller.playButton.isFocused()) {
+								if(controller.atEnd) {
+									controller.replayMedia();
+								}
+								else {
+									controller.playOrPause();
+								}
 							}
 						}
-					
 					}
 					break;
 					
