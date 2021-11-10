@@ -1007,17 +1007,14 @@ public class Controller implements Initializable {
 						mediaPlayer.pause();
 
 					}
+					else if(!newValue && atEnd) {
+						playLogo.setImage(new Image(replayFile.toURI().toString()));
+						playButton.setTooltip(replay);
+						playButton.setOnAction((e) -> playButtonClick2());
+					}
 
 					else if (newValue && !atEnd) {
-						// Platform.runLater(new Runnable() {
-						// @Override
-						// public void run() {
-						// TODO Auto-generated method stub
 						mediaPlayer.pause();
-						// }
-
-						// });
-
 						playing = false;
 						playLogo.setImage(new Image(pauseFile.toURI().toString()));
 						playButton.setTooltip(play);
@@ -1031,7 +1028,11 @@ public class Controller implements Initializable {
 
 				}
 				else {
-					
+					if(!newValue && atEnd) {
+						playLogo.setImage(new Image(replayFile.toURI().toString()));
+						playButton.setTooltip(replay);
+						playButton.setOnAction((e) -> playButtonClick2());
+					}	
 				}
 
 				
@@ -1923,16 +1924,17 @@ public class Controller implements Initializable {
 
 			if (durationSlider.isValueChanging()) {
 				seekedToEnd = true;
-
-				System.out.println("1");
 			}
 
 			atEnd = true;
 			playing = false;
 			mediaPlayer.pause();
-			playLogo.setImage(new Image(replayFile.toURI().toString()));
-			playButton.setTooltip(replay);
-			playButton.setOnAction((e) -> playButtonClick2());
+			
+			if(!durationSlider.isValueChanging()) {
+				playLogo.setImage(new Image(replayFile.toURI().toString()));
+				playButton.setTooltip(replay);
+				playButton.setOnAction((e) -> playButtonClick2());
+			}
 		}
 
 		if (Math.abs(mediaPlayer.getCurrentTime().toSeconds() - newValue) > 0.5) {
