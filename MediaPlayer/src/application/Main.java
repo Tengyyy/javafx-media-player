@@ -63,19 +63,7 @@ public class Main extends Application {
 			
 			directoryChooser = new DirectoryChooser();
 
-			
-			primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-				
-				switch(event.getCode()) {
-					
-				
-				}
-				
-			});
 
-			
-
-			
 			
 			//press F11 to set full screen
 			primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -110,6 +98,7 @@ public class Main extends Application {
 						if(!controller.volumeSlider.isFocused()) {
 							
 							
+							
 							if(controller.mediaPlayer.getCurrentTime().toSeconds() + 5 >= controller.media.getDuration().toSeconds()) {
 								controller.seekedToEnd = true;
 								controller.mediaPlayer.seek(controller.media.getDuration());
@@ -129,15 +118,16 @@ public class Main extends Application {
 						if(!controller.volumeSlider.isFocused()) {
 							controller.seekedToEnd = false;
 							if(controller.atEnd) {
+								System.out.println('h');
 								controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
 
 							}
 							
 							else {
-								controller.durationSlider.setValue(controller.durationSlider.getValue() - 5.0);
+								controller.durationSlider.setValue(controller.durationSlider.getValue() - 5);
 								//controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
 							}
-
+							event.consume();
 							
 						}
 					}
