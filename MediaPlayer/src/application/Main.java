@@ -99,13 +99,14 @@ public class Main extends Application {
 							
 							
 							
-							if(controller.mediaPlayer.getCurrentTime().toSeconds() + 5 >= controller.media.getDuration().toSeconds()) {
+							if(controller.mediaPlayer.getCurrentTime().toSeconds() + 5 >= controller.durationSlider.getMax()) {
 								controller.seekedToEnd = true;
-								controller.mediaPlayer.seek(controller.media.getDuration());
+								//controller.mediaPlayer.seek(controller.media.getDuration());
+								
+								controller.durationSlider.setValue(controller.durationSlider.getMax());
+
 							}
-							else {
 							controller.durationSlider.setValue(controller.durationSlider.getValue() + 5);
-							}
 							event.consume();
 							
 							
@@ -149,12 +150,12 @@ public class Main extends Application {
 						if(!controller.volumeSlider.isFocused()) {
 							
 							
-							if(controller.mediaPlayer.getCurrentTime().toSeconds() + 10 >= controller.media.getDuration().toSeconds()) {
+							if(controller.mediaPlayer.getCurrentTime().toSeconds() + 10 >= controller.durationSlider.getMax()) {
 								controller.seekedToEnd = true;
-								controller.mediaPlayer.seek(controller.media.getDuration());
+								controller.durationSlider.setValue(controller.durationSlider.getMax());
 							}
 							else {
-							controller.durationSlider.setValue(controller.durationSlider.getValue() + 10);
+								controller.durationSlider.setValue(controller.durationSlider.getValue() + 10);
 							}
 							event.consume();
 							
@@ -226,7 +227,7 @@ public class Main extends Application {
 					break;
 					case DIGIT0: {
 						controller.seekedToEnd = true;
-						controller.mediaPlayer.seek(controller.media.getDuration());
+						controller.durationSlider.setValue(controller.durationSlider.getMax());
 					}
 					break;
 					

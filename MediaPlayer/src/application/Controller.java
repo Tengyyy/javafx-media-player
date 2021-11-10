@@ -1004,6 +1004,8 @@ public class Controller implements Initializable {
 						playLogo.setImage(new Image(startFile.toURI().toString()));
 						startedDragFromEnd = true;
 
+						System.out.println("WE'RE HERE");
+						
 						mediaPlayer.pause();
 
 					}
@@ -1014,6 +1016,8 @@ public class Controller implements Initializable {
 					}
 
 					else if (newValue && !atEnd) {
+						
+						System.out.println("WE'RE HERE 2");
 						mediaPlayer.pause();
 						playing = false;
 						playLogo.setImage(new Image(pauseFile.toURI().toString()));
@@ -1896,10 +1900,11 @@ public class Controller implements Initializable {
 		if (atEnd) {
 			atEnd = false;
 			seekedToEnd = false;
+			
+			System.out.println("OLEME SIIN");
+			
 
 			if (wasPlaying) {
-				if(!startedDragFromEnd) {
-				}
 				if (!durationSlider.isValueChanging()) {
 					playLogo.setImage(new Image(pauseImageFile.toURI().toString()));
 
@@ -1907,7 +1912,6 @@ public class Controller implements Initializable {
 					mediaPlayer.play();
 					playButton.setTooltip(pause);
 
-					System.out.println("OLEME SIIN");
 				}
 			} else {
 				playLogo.setImage(new Image(startFile.toURI().toString()));
@@ -1929,13 +1933,17 @@ public class Controller implements Initializable {
 			atEnd = true;
 			playing = false;
 			mediaPlayer.pause();
-			
 			if(!durationSlider.isValueChanging()) {
-				playLogo.setImage(new Image(replayFile.toURI().toString()));
-				playButton.setTooltip(replay);
-				playButton.setOnAction((e) -> playButtonClick2());
+				//playLogo.setImage(new Image(replayFile.toURI().toString()));
+				//playButton.setTooltip(replay);
+				//playButton.setOnAction((e) -> playButtonClick2());
+				
+				System.out.println("activated");
+				endMedia();
+				
 			}
 		}
+		
 
 		if (Math.abs(mediaPlayer.getCurrentTime().toSeconds() - newValue) > 0.5) {
 			mediaPlayer.seek(Duration.seconds(newValue));
@@ -1944,23 +1952,31 @@ public class Controller implements Initializable {
 
 	public void endMedia() {
 
-		if ((!shuffleOn && !loopOn && !autoplayOn) || (loopOn && seekedToEnd) || (shuffleOn && seekedToEnd)) {
-			System.out.println("lol");
+		if ((!shuffleOn && !loopOn && !autoplayOn) || (loopOn && seekedToEnd)) {
 			durationSlider.setValue(durationSlider.getMax());
-			if (!durationLabel.textProperty().getValue()
-					.equals(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()))) {
+			
+			System.out.println("updated time");
+			
+			//if (!durationLabel.textProperty().getValue()
+					//.equals(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()))) {
 				durationLabel.textProperty().unbind();
-				durationLabel.setText(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()));
-			}
+				durationLabel.setText(getTime(new Duration(durationSlider.getMax() * 1000)) + "/" + getTime(media.getDuration()));
+				
+				
+			//}
 			playLogo.setImage(new Image(replayFile.toURI().toString()));
 			playButton.setTooltip(replay);
 			playButton.setOnAction((e) -> playButtonClick2());
+			
+			
+			
 		} else if (loopOn && !seekedToEnd) {
 			// restart current video
 
 			System.out.println(seekedToEnd);
-			mediaPlayer.seek(Duration.ZERO);
-
+			
+			mediaPlayer.stop();
+			
 		} else if (shuffleOn) {
 			Random random = new Random();
 
@@ -2362,9 +2378,10 @@ public class Controller implements Initializable {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				System.out.println("2");
+				
+				System.out.println("ended");
 
-				endMedia();
+				//endMedia();
 			}
 
 		});
@@ -2379,7 +2396,7 @@ public class Controller implements Initializable {
 
 				playOrPause();
 
-				durationSlider.setMax(media.getDuration().toSeconds());
+				durationSlider.setMax(Math.floor(media.getDuration().toSeconds()));
 
 				bindCurrentTimeLabel();
 
