@@ -68,6 +68,7 @@ import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -78,33 +79,68 @@ public class Controller implements Initializable {
 	public MediaView mediaView;
 
 	@FXML
-	VBox controlBar, settingsHome, playbackSpeedPage, customSpeedBox, playbackOptionsVBox, menuVBox;
+	VBox controlBar, settingsHome, playbackSpeedPage, customSpeedBox, playbackOptionsVBox;
 
 	@FXML
-	HBox playbackSpeedBox, playbackOptionsBox, videoBox, durationSliderBox, playbackSpeedTitle, playbackSpeed1,
-			playbackSpeed2, playbackSpeed3, playbackSpeed4, playbackSpeed5, playbackSpeed6, playbackSpeed7,
-			playbackSpeed8, customSpeedTitle, shuffleBox, loopBox, autoplayBox, playbackOptionsTitle,
-			currentDirectoryHBox, directoryPathHBox, menuStartHBox;
+	HBox playbackSpeedBox, playbackOptionsBox, videoBox, durationSliderBox, playbackSpeedTitle, playbackSpeed1, playbackSpeed2, playbackSpeed3, playbackSpeed4, playbackSpeed5, playbackSpeed6, playbackSpeed7, playbackSpeed8, customSpeedTitle, shuffleBox, loopBox, autoplayBox, playbackOptionsTitle;
 
 	@FXML
-	Button fullScreenButton, playButton, volumeButton, settingsButton, nextVideoButton, captionsButton, menuButton,
-			menuCloseButton;
+	public Button fullScreenButton;
 
 	@FXML
-	JFXButton directoryChooserButton;
+	public Button playButton;
 
 	@FXML
-	ImageView playLogo, fullScreenIcon, volumeIcon, settingsIcon, nextVideoIcon, captionsIcon, menuIcon, menuCloseIcon;
+	public Button volumeButton;
 
 	@FXML
-	StackPane pane, settingsPane, bufferPane, customSpeedBuffer, customSpeedPane, playbackOptionsBuffer,
-			playbackOptionsPane, menuPane;
+	Button settingsButton;
+
+	@FXML
+	Button nextVideoButton;
+
+	@FXML
+	Button captionsButton;
+
+	@FXML
+	Button menuButton;
+
+
+	@FXML
+	ImageView playLogo;
+
+	@FXML
+	public ImageView fullScreenIcon;
+
+	@FXML
+	public ImageView volumeIcon;
+
+	@FXML
+	ImageView settingsIcon;
+
+	@FXML
+	ImageView nextVideoIcon;
+
+	@FXML
+	ImageView captionsIcon;
+
+	@FXML
+	ImageView menuIcon;
+
+	@FXML
+	StackPane pane, settingsPane, bufferPane, customSpeedBuffer, customSpeedPane, playbackOptionsBuffer, playbackOptionsPane;
 
 	@FXML
 	Pane playPane, settingsBackgroundPane;
 
 	@FXML
-	Slider volumeSlider, durationSlider, customSpeedSlider;
+	public Slider volumeSlider;
+
+	@FXML
+	public Slider durationSlider;
+
+	@FXML
+	Slider customSpeedSlider;
 
 	@FXML
 	ProgressBar customSpeedTrack;
@@ -113,13 +149,10 @@ public class Controller implements Initializable {
 	FlowPane volumeSliderPane;
 
 	@FXML
-	Label durationLabel, playbackValueLabel, videoNameLabel, playbackOptionsArrow, playbackSpeedArrow,
-			playbackSpeedTitleLabel, playbackSpeedCustom, checkBox1, checkBox2, checkBox3, checkBox4, checkBox5,
-			checkBox6, checkBox7, checkBox8, customSpeedArrow, customSpeedTitleLabel, customSpeedLabel,
-			playbackOptionsTitleArrow, playbackOptionsTitleText, shuffleLabel, loopLabel, autoplayLabel;
+	Label durationLabel, playbackValueLabel, videoNameLabel, playbackOptionsArrow, playbackSpeedArrow, playbackSpeedTitleLabel, playbackSpeedCustom, checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7, checkBox8, customSpeedArrow, customSpeedTitleLabel, customSpeedLabel, playbackOptionsTitleArrow, playbackOptionsTitleText, shuffleLabel, loopLabel, autoplayLabel;
 
 	@FXML
-	ScrollPane playbackSpeedScroll, menuScroll;
+	ScrollPane playbackSpeedScroll;
 
 	@FXML
 	JFXToggleButton shuffleSwitch, loopSwitch, autoplaySwitch;
@@ -127,57 +160,83 @@ public class Controller implements Initializable {
 	@FXML
 	Line captionLine;
 
+	// custom playback speed selection box that will be created if the user selects a custom speed using the slider
 	HBox playbackCustom;
 	Label playbackCustomCheck;
 	Label playbackCustomText;
 
 	private File file;
-	Media media;
-	MediaPlayer mediaPlayer;
+	public Media media;
+	public MediaPlayer mediaPlayer;
 
+	
+	// variables to keep track of playback option toggles:
 	boolean shuffleOn = false;
 	boolean loopOn = false;
 	boolean autoplayOn = false;
-
+	/////////////////////////////////////////////////////
+	
+	
 	// Variables to keep track of mediaplayer status:
-
 	boolean playing = false; // is mediaplayer currently playing
 	boolean wasPlaying = false; // was mediaplayer playing before a seeking action occurred
-	boolean atEnd = false; // is mediaplayer at the end of the video
-	boolean seekedToEnd = false; // true = video was seeked to the end; false = video naturally reached the end
-									// or the video is still playing
-
+	public boolean atEnd = false; // is mediaplayer at the end of the video
+	public boolean seekedToEnd = false; // true = video was seeked to the end; false = video naturally reached the end or the video is still playing
 	////////////////////////////////////////////////
 
 	private DoubleProperty mediaViewWidth;
 	private DoubleProperty mediaViewHeight;
 
-	Image maximize, minimize, volumeUp, volumeDown, volumeMute, settingsEnter, settingsExit, settingsImage, rightArrow,
-			nextVideo, leftArrow, check, captionsImage, menuImage, menuCloseImage;
+	public Image maximize;
 
-	double volumeValue;
+	Image minimize;
+
+	public Image volumeUp;
+
+	Image volumeDown;
+
+	public Image volumeMute;
+
+	Image settingsEnter;
+
+	Image settingsExit;
+
+	Image settingsImage;
+
+	Image rightArrow;
+
+	Image nextVideo;
+
+	Image leftArrow;
+
+	Image check;
+
+	Image captionsImage;
+
+	Image menuImage;
+
+	Image menuCloseImage;
+
+	public double volumeValue;
 
 	double formattedValue;
 	double formattedValue2;
+	
 	DecimalFormat df;
 
 	private Image start;
 
-	private File maximizeFile, minimizeFile, playFile, pauseFile, startFile, volumeUpFile, volumeDownFile,
-			volumeMuteFile, pauseImageFile, settingsEnterFile, settingsExitFile, settingsImageFile, rightArrowFile,
-			nextVideoFile, leftArrowFile, checkFile, captionsFile, menuFile, menuCloseFile;
-
-	File replayFile;
+	private File maximizeFile, minimizeFile, playFile, pauseFile, startFile, volumeUpFile, volumeDownFile, volumeMuteFile, pauseImageFile, settingsEnterFile, settingsExitFile, settingsImageFile, rightArrowFile, nextVideoFile, leftArrowFile, checkFile, captionsFile, menuFile, menuCloseFile, replayFile;
 
 	Timeline fullscreenTimeline;
 
 	Timeline volume;
 
-	boolean muted = false;
+	public boolean muted = false;
 
 	boolean isExited = false;
 
-	boolean settingsOpen = false;
+	public boolean settingsOpen = false;
 
 	boolean playbackSpeedOpen = false;
 
@@ -187,16 +246,15 @@ public class Controller implements Initializable {
 
 	boolean captionsOpen = false;
 
-	boolean currDirSelected = false;
-
 	boolean sliderFocus = false;
 
 	boolean running = false; // media running status
-	
-	boolean startedDragFromEnd = false;
 
-	int focusNodeTracker = 0;
 
+	// counter to keep track of the current node that has focus (used for focus traversing with tab and shift+tab)
+	public int focusNodeTracker = 0;
+
+	// counter to keep track of which playback speed field is selected in the settings menu
 	int playbackSpeedTracker = 4;
 
 	Timer durationTimer;
@@ -205,55 +263,39 @@ public class Controller implements Initializable {
 	Tooltip play;
 	Tooltip pause;
 	Tooltip replay;
-
-	Tooltip mute;
-	Tooltip unmute;
-
+	public Tooltip mute;
+	public Tooltip unmute;
 	Tooltip settings;
-
-	Tooltip enterFullScreen;
+	public Tooltip enterFullScreen;
 	Tooltip exitFullScreen;
-
 	Tooltip next;
-
 	Tooltip directoryTooltip;
-
 	Tooltip captionsTooltip;
 
 	FileChooser fileChooser;
 	File selectedFile;
 
-	DirectoryChooser directoryChooser;
-	File selectedDirectory;
 
 	SubtitleTrack subtitles;
 
-	File[] videos;
-	ArrayList<File> filteredVideos; // results displayed in menu
 
-	String activePath;
-	ArrayList<File> activeQueue; // current active directory - if shuffle play is selected, the next video will
-									// be randomly selected from this arrayList
-
-	ArrayList<HBox> filteredMenu;
-	int activeMedia;
-
+	
+	
 	HBox[] playbackSpeedBoxesArray; // array containing playback speed selection fields
-
 	Label[] playbackSpeedCheckBoxesArray; // array containing checkmark fields inside playback speed tab
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
-		playbackSpeedBoxesArray = new HBox[] { playbackSpeed1, playbackSpeed2, playbackSpeed3, playbackSpeed4,
-				playbackSpeed5, playbackSpeed6, playbackSpeed7, playbackSpeed8 };
+		playbackSpeedBoxesArray = new HBox[] { playbackSpeed1, playbackSpeed2, playbackSpeed3, playbackSpeed4, playbackSpeed5, playbackSpeed6, playbackSpeed7, playbackSpeed8 };
 
-		playbackSpeedCheckBoxesArray = new Label[] { checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6,
-				checkBox7, checkBox8 };
+		playbackSpeedCheckBoxesArray = new Label[] { checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7, checkBox8 };
 
 		fileChooser = new FileChooser();
-
-		directoryChooser = new DirectoryChooser();
+		fileChooser.setTitle("Open video");
+		
+		
+		fileChooser.getExtensionFilters().add(new ExtensionFilter("Videos","*.mp4"));
 
 		// TOOLTIPS//
 		play = new Tooltip("Play (k)");
@@ -278,27 +320,27 @@ public class Controller implements Initializable {
 		file = new File("hey.mp4");
 
 		// declaring media control images
-		maximizeFile = new File("src/application/maximizeFile.png");
-		minimizeFile = new File("src/application/minimizeFile.png");
-		startFile = new File("src/application/startFile.png");
-		volumeUpFile = new File("src/application/volumeUpFile.png");
-		volumeDownFile = new File("src/application/volumeDownFile.png");
-		volumeMuteFile = new File("src/application/volumeMuteFile.png");
-		replayFile = new File("src/application/replayFile.png");
-		pauseImageFile = new File("src/application/pauseImageFile.png");
-		settingsImageFile = new File("src/application/settingsImageFile.png");
-		rightArrowFile = new File("src/application/rightArrowFile.png");
-		leftArrowFile = new File("src/application/leftArrowFile.png");
-		checkFile = new File("src/application/checkFile.png");
-		nextVideoFile = new File("src/application/nextVideoFile.png");
-		captionsFile = new File("src/application/captionsFile.png");
-		menuFile = new File("src/application/menuFile.png");
-		menuCloseFile = new File("src/application/menuCloseFile.png");
+		maximizeFile = new File("Resources/Images/maximizeFile.png");
+		minimizeFile = new File("Resources/Images/minimizeFile.png");
+		startFile = new File("Resources/Images/startFile.png");
+		volumeUpFile = new File("Resources/Images/volumeUpFile.png");
+		volumeDownFile = new File("Resources/Images/volumeDownFile.png");
+		volumeMuteFile = new File("Resources/Images/volumeMuteFile.png");
+		replayFile = new File("Resources/Images/replayFile.png");
+		pauseImageFile = new File("Resources/Images/pauseImageFile.png");
+		settingsImageFile = new File("Resources/Images/settingsImageFile.png");
+		rightArrowFile = new File("Resources/Images/rightArrowFile.png");
+		leftArrowFile = new File("Resources/Images/leftArrowFile.png");
+		checkFile = new File("Resources/Images/checkFile.png");
+		nextVideoFile = new File("Resources/Images/nextVideoFile.png");
+		captionsFile = new File("Resources/Images/captionsFile.png");
+		menuFile = new File("Resources/Images/menuFile.png");
+		menuCloseFile = new File("Resources/Images/menuCloseFile.png");
 
-		playFile = new File("src/application/playFile.gif");
-		pauseFile = new File("src/application/pauseFile.gif");
-		settingsEnterFile = new File("src/application/settingsEnterFile.gif");
-		settingsExitFile = new File("src/application/settingsExitFile.gif");
+		playFile = new File("Resources/Images/playFile.gif");
+		pauseFile = new File("Resources/Images/pauseFile.gif");
+		settingsEnterFile = new File("Resources/Images/settingsEnterFile.gif");
+		settingsExitFile = new File("Resources/Images/settingsExitFile.gif");
 
 		nextVideo = new Image(nextVideoFile.toURI().toString());
 		maximize = new Image(maximizeFile.toURI().toString());
@@ -322,18 +364,7 @@ public class Controller implements Initializable {
 		mediaViewHeight.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
 		mediaView.setPreserveRatio(true);
 
-		menuPane.prefHeightProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
-		menuPane.prefWidthProperty().bind(
-				Bindings.max(Bindings.multiply(Bindings.selectDouble(mediaView.sceneProperty(), "width"), 0.36), 215));
-		menuPane.translateXProperty().bind(Bindings.multiply(menuPane.prefWidthProperty(), -1));
 
-		menuScroll.prefHeightProperty().bind(menuPane.heightProperty());
-		menuScroll.prefWidthProperty().bind(menuPane.widthProperty());
-
-		menuVBox.prefWidthProperty().bind(menuScroll.prefWidthProperty());
-
-		directoryChooserButton.prefWidthProperty().bind(Bindings.multiply(menuVBox.widthProperty(), 0.6));
-		directoryChooserButton.prefHeightProperty().bind(Bindings.multiply(menuPane.heightProperty(), 0.15));
 
 		pane.setStyle("-fx-background-color: rgb(0,0,0)");
 
@@ -379,7 +410,6 @@ public class Controller implements Initializable {
 		menuButton.setBackground(Background.EMPTY);
 		menuIcon.setImage(menuImage);
 
-		menuCloseIcon.setImage(menuCloseImage);
 
 		playbackValueLabel.setGraphic(new ImageView(rightArrow));
 
@@ -1002,9 +1032,6 @@ public class Controller implements Initializable {
 					if (newValue && atEnd) {
 
 						playLogo.setImage(new Image(startFile.toURI().toString()));
-						startedDragFromEnd = true;
-
-						System.out.println("WE'RE HERE");
 						
 						mediaPlayer.pause();
 
@@ -1017,7 +1044,6 @@ public class Controller implements Initializable {
 
 					else if (newValue && !atEnd) {
 						
-						System.out.println("WE'RE HERE 2");
 						mediaPlayer.pause();
 						playing = false;
 						playLogo.setImage(new Image(pauseFile.toURI().toString()));
@@ -1043,7 +1069,6 @@ public class Controller implements Initializable {
 				if (!newValue) { // close settings pane after user finishes seeking media
 					if (settingsOpen) {
 						openCloseSettings();
-						startedDragFromEnd = false;
 					}
 					
 
@@ -1900,9 +1925,7 @@ public class Controller implements Initializable {
 		if (atEnd) {
 			atEnd = false;
 			seekedToEnd = false;
-			
-			System.out.println("OLEME SIIN");
-			
+						
 
 			if (wasPlaying) {
 				if (!durationSlider.isValueChanging()) {
@@ -1934,11 +1957,7 @@ public class Controller implements Initializable {
 			playing = false;
 			mediaPlayer.pause();
 			if(!durationSlider.isValueChanging()) {
-				//playLogo.setImage(new Image(replayFile.toURI().toString()));
-				//playButton.setTooltip(replay);
-				//playButton.setOnAction((e) -> playButtonClick2());
 				
-				System.out.println("activated");
 				endMedia();
 				
 			}
@@ -1954,16 +1973,11 @@ public class Controller implements Initializable {
 
 		if ((!shuffleOn && !loopOn && !autoplayOn) || (loopOn && seekedToEnd)) {
 			durationSlider.setValue(durationSlider.getMax());
-			
-			System.out.println("updated time");
-			
-			//if (!durationLabel.textProperty().getValue()
-					//.equals(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()))) {
+
 				durationLabel.textProperty().unbind();
 				durationLabel.setText(getTime(new Duration(durationSlider.getMax() * 1000)) + "/" + getTime(media.getDuration()));
 				
-				
-			//}
+
 			playLogo.setImage(new Image(replayFile.toURI().toString()));
 			playButton.setTooltip(replay);
 			playButton.setOnAction((e) -> playButtonClick2());
@@ -1973,24 +1987,11 @@ public class Controller implements Initializable {
 		} else if (loopOn && !seekedToEnd) {
 			// restart current video
 
-			System.out.println(seekedToEnd);
 			
 			mediaPlayer.stop();
 			
 		} else if (shuffleOn) {
-			Random random = new Random();
-
-			mediaPlayer.dispose();
-
-			// reset all variables that keep track of mediaplayer state
-			wasPlaying = false;
-			playing = false;
-			atEnd = false;
-			seekedToEnd = false;
-
-			int newSong = random.nextInt(activeQueue.size());
-
-			createMediaPlayer(activeQueue.get(newSong));
+		
 
 		} else if (autoplayOn) {
 			// play next song in queue/directory
@@ -2314,44 +2315,24 @@ public class Controller implements Initializable {
 
 		if (selectedFile != null) {
 			videoNameLabel.setText(selectedFile.getName());
+			
+			mediaPlayer.dispose();
+			
+			atEnd = false;
+			seekedToEnd = false;
+			playing = false;
+			wasPlaying = false;
+			
+			createMediaPlayer(selectedFile);
+
 		}
 
 	}
-
+	
 	public void openMenu() {
-		// opening animation
-
-		menuPane.setOpacity(1);
-
-		menuPane.translateXProperty().unbind();
-
-		TranslateTransition translate = new TranslateTransition(Duration.millis(200), menuPane);
-		translate.setFromX(-menuPane.getWidth());
-		translate.setToX(0);
-		translate.setCycleCount(1);
-		translate.setInterpolator(Interpolator.LINEAR);
-		translate.play();
-
+		
 	}
 
-	public void closeMenu() {
-
-		menuPane.translateXProperty().unbind();
-
-		// closing animation
-		TranslateTransition translate = new TranslateTransition(Duration.millis(200), menuPane);
-		translate.setFromX(0);
-		translate.setToX(-menuPane.getWidth());
-		translate.setCycleCount(1);
-		translate.setInterpolator(Interpolator.LINEAR);
-		translate.play();
-
-		translate.setOnFinished((e) -> {
-			menuPane.setOpacity(0);
-			menuPane.translateXProperty().bind(Bindings.multiply(menuPane.prefWidthProperty(), -1));
-		});
-
-	}
 
 	public void createMediaPlayer(File file) {
 
@@ -2373,18 +2354,6 @@ public class Controller implements Initializable {
 			}
 		});
 
-		mediaPlayer.setOnEndOfMedia(new Runnable() {
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				
-				System.out.println("ended");
-
-				//endMedia();
-			}
-
-		});
 
 		mediaPlayer.setOnReady(new Runnable() {
 
@@ -2404,7 +2373,7 @@ public class Controller implements Initializable {
 
 					@Override
 					public void run() {
-						// TODO Auto-generated method stub
+
 						switch (playbackSpeedTracker) {
 						case 0:
 							mediaPlayer.setRate(formattedValue);
@@ -2450,158 +2419,6 @@ public class Controller implements Initializable {
 
 	}
 
-	public void openDirectoryChooser() {
-		selectedDirectory = directoryChooser.showDialog(Main.stage);
 
-		if (selectedDirectory != null) {
-			videos = selectedDirectory.listFiles();
-
-			if (activeQueue == null) {
-				activeQueue = new ArrayList<File>();
-			}
-
-			if (!currDirSelected) {
-
-				filteredVideos = new ArrayList<File>();
-
-				filteredMenu = new ArrayList<HBox>();
-
-				menuVBox.getChildren().remove(1);
-
-				HBox currentDirectoryHBox = new HBox();
-				currentDirectoryHBox.setPadding(new Insets(20, 0, 0, 10));
-				Label currDir = new Label();
-				currDir.setText("Current directory:");
-				currDir.setFont(Font.font(15));
-				currDir.setTextFill(Color.WHITE);
-				currentDirectoryHBox.getChildren().add(currDir);
-
-				menuVBox.getChildren().add(currentDirectoryHBox);
-
-				HBox currentDirectoryPathHBox = new HBox();
-				currentDirectoryPathHBox.setPadding(new Insets(10, 10, 30, 10));
-				Label currPath = new Label();
-				currPath.setText(selectedDirectory.getAbsolutePath());
-				currPath.setFont(Font.font(15));
-				currPath.setTextFill(Color.WHITE);
-				currPath.setWrapText(true);
-				currentDirectoryPathHBox.getChildren().add(currPath);
-
-				menuVBox.getChildren().add(currentDirectoryPathHBox);
-
-				currDirSelected = true;
-			} else {
-				menuVBox.getChildren().remove(2);
-
-				HBox currentDirectoryPathHBox = new HBox();
-				currentDirectoryPathHBox.setPadding(new Insets(10, 10, 30, 10));
-				Label currPath = new Label();
-				currPath.setText(selectedDirectory.getAbsolutePath());
-				currPath.setFont(Font.font(15));
-				currPath.setTextFill(Color.WHITE);
-				currPath.setWrapText(true);
-				currentDirectoryPathHBox.getChildren().add(currPath);
-
-				menuVBox.getChildren().add(2, currentDirectoryPathHBox);
-
-				if (filteredVideos.size() > 0) {
-
-					menuVBox.getChildren().remove(3, menuVBox.getChildren().size());
-
-					filteredVideos.clear();
-					filteredMenu.clear();
-
-				}
-			}
-
-			for (File video : videos) {
-				String fileName = video.getName();
-				// System.out.println(fileName);
-
-				int index = fileName.lastIndexOf('.');
-				// System.out.println(index);
-
-				if (index > 0) { // this means that the file is an actual file not a directory
-					String extension = fileName.substring(index);
-
-					if (extension.contains(".mp4")) { // adds mp4 files to a new filtered arraylist
-
-						filteredVideos.add(video);
-
-						HBox videoBox = new HBox();
-						videoBox.setPadding(new Insets(0, 10, 0, 10));
-						videoBox.setPrefHeight(30);
-						videoBox.setCursor(Cursor.HAND);
-						videoBox.setAlignment(Pos.CENTER_LEFT);
-
-						videoBox.setOnMouseEntered((e) -> {
-							hoverEffectOn(videoBox);
-						});
-
-						videoBox.setOnMouseExited((e) -> {
-							hoverEffectOff(videoBox);
-						});
-
-						videoBox.setOnMouseClicked((e) -> {
-
-							if (selectedDirectory.getAbsolutePath() != activePath) {
-
-								System.out.println("oh yeah");
-
-								activePath = selectedDirectory.getAbsolutePath();
-
-								activeQueue.clear();
-
-								activeQueue.addAll(filteredVideos);
-
-								mediaPlayer.dispose();
-
-								wasPlaying = false;
-								playing = false;
-								atEnd = false;
-								seekedToEnd = false;
-
-								createMediaPlayer(video);
-							} else {
-
-								if (activeMedia == filteredMenu.indexOf(videoBox)) {
-									playOrPause();
-								} else {
-
-									System.out.println("oh no");
-
-									mediaPlayer.dispose();
-
-									wasPlaying = false;
-									playing = false;
-									atEnd = false;
-									seekedToEnd = false;
-
-									createMediaPlayer(video);
-								}
-
-								activeMedia = filteredMenu.indexOf(videoBox);
-
-							}
-
-						});
-
-						Label videoLabel = new Label();
-						videoLabel.setFont(Font.font(15));
-						videoLabel.setTextFill(Color.WHITE);
-						videoLabel.setText(video.getName());
-
-						videoBox.getChildren().add(videoLabel);
-
-						filteredMenu.add(videoBox);
-
-						menuVBox.getChildren().add(videoBox);
-
-					}
-				}
-			}
-
-		}
-	}
 
 }

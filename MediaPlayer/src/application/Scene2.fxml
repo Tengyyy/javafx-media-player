@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXToggleButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Rectangle2D?>
@@ -11,7 +10,6 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Slider?>
-<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
@@ -74,7 +72,7 @@
                               </Slider>
                            </children>
                         </FlowPane>
-                        <Label fx:id="durationLabel" prefHeight="27.0" prefWidth="135.0" styleClass="focusableProperty" text="Label" textFill="WHITE">
+                        <Label fx:id="durationLabel" prefHeight="27.0" prefWidth="135.0" styleClass="focusableProperty" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -599,60 +597,12 @@
             </StackPane>
          </children>
       </Pane>
-      <Button fx:id="menuButton" mnemonicParsing="false" onAction="#openMenu" prefHeight="60.0" prefWidth="60.0" style="-fx-padding: 0;" StackPane.alignment="TOP_LEFT" styleClass="focusableProperty">
+      <Button fx:id="menuButton" mnemonicParsing="false" onAction="#openMenu" prefHeight="60.0" prefWidth="60.0" style="-fx-padding: 0;" styleClass="focusableProperty" StackPane.alignment="TOP_LEFT">
          <graphic>
             <ImageView fx:id="menuIcon" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true" />
          </graphic>
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <StackPane fx:id="menuPane" maxHeight="-Infinity" maxWidth="-Infinity" opacity="0.0" pickOnBounds="false" prefHeight="400.0" prefWidth="215.0" StackPane.alignment="CENTER_LEFT">
-         <children>
-            <ScrollPane fx:id="menuScroll" hbarPolicy="NEVER" style="-fx-background-color: rgba(50,50,50,1);" styleClass="menuScroll" stylesheets="@application.css">
-               <content>
-                  <VBox fx:id="menuVBox">
-                     <children>
-                        <HBox fx:id="directoryChooserHBox" alignment="BOTTOM_CENTER" minHeight="100.0" minWidth="215.0" prefHeight="150.0">
-                           <children>
-                              <JFXButton fx:id="directoryChooserButton" buttonType="RAISED" minHeight="70.0" minWidth="150.0" onAction="#openDirectoryChooser" ripplerFill="WHITE" style="-fx-background-color: #D32105;" text="Select directory" textFill="WHITE">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                                 <cursor>
-                                    <Cursor fx:constant="HAND" />
-                                 </cursor>
-                              </JFXButton>
-                           </children>
-                        </HBox>
-                        <HBox fx:id="menuStartHBox" alignment="CENTER" minHeight="100.0" minWidth="215.0" prefHeight="200.0" prefWidth="215.0">
-                           <children>
-                              <Label text="Open a directory containing mp4-files to fill this menu with videos" textAlignment="CENTER" textFill="WHITE" wrapText="true">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                                 <HBox.margin>
-                                    <Insets left="20.0" right="20.0" />
-                                 </HBox.margin>
-                              </Label>
-                           </children>
-                        </HBox>
-                     </children></VBox>
-               </content>
-            </ScrollPane>
-            <Button fx:id="menuCloseButton" mnemonicParsing="false" onAction="#closeMenu" prefHeight="40.0" prefWidth="40.0" style="-fx-padding: 0; -fx-background-color: red; -fx-border-radius: 30; -fx-background-radius: 30;" StackPane.alignment="TOP_RIGHT">
-               <StackPane.margin>
-                  <Insets right="10.0" top="5.0" />
-               </StackPane.margin>
-               <graphic>
-                  <ImageView fx:id="menuCloseIcon" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />
-               </graphic>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-         </children>
-         <effect>
-            <DropShadow blurType="GAUSSIAN" height="130.0" radius="95.75" spread="0.35" width="255.0" />
-         </effect></StackPane>
    </children>
 </StackPane>

@@ -28,7 +28,7 @@ public class Main extends Application {
 	
 	public EventHandler<KeyEvent> eventHandler;
 	
-	static boolean fullScreen;
+	public static boolean fullScreen;
 	
 	static DirectoryChooser directoryChooser;
 
@@ -101,7 +101,6 @@ public class Main extends Application {
 							
 							if(controller.mediaPlayer.getCurrentTime().toSeconds() + 5 >= controller.durationSlider.getMax()) {
 								controller.seekedToEnd = true;
-								//controller.mediaPlayer.seek(controller.media.getDuration());
 								
 								controller.durationSlider.setValue(controller.durationSlider.getMax());
 
@@ -119,14 +118,11 @@ public class Main extends Application {
 						if(!controller.volumeSlider.isFocused()) {
 							controller.seekedToEnd = false;
 							if(controller.atEnd) {
-								System.out.println('h');
 								controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
-
 							}
 							
 							else {
 								controller.durationSlider.setValue(controller.durationSlider.getValue() - 5);
-								//controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
 							}
 							event.consume();
 							
@@ -173,7 +169,6 @@ public class Main extends Application {
 							
 							else {
 								controller.durationSlider.setValue(controller.durationSlider.getValue() - 10.0);
-								//controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
 							}
 
 							
@@ -182,47 +177,38 @@ public class Main extends Application {
 					break;
 					case DIGIT1: {
 						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 1/10);
-						System.out.println("su ema");
 					}
 					break;
 					case DIGIT2: {
 						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 2/10);
-						System.out.println("su ema");
 					}
 					break;
 					case DIGIT3: {
 						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 3/10);
-						System.out.println("su ema");
 					}
 					break;
 					case DIGIT4: {
 						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 4/10);
-						System.out.println("su ema");
 					}
 					break;
 					case DIGIT5: {
 						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 5/10);
-						System.out.println("su ema");
 					}
 					break;
 					case DIGIT6: {
 						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 6/10);
-						System.out.println("su ema");
 					}
 					break;
 					case DIGIT7: {
 						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 7/10);
-						System.out.println("su ema");
 					}
 					break;
 					case DIGIT8: {
 						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 8/10);
-						System.out.println("su ema");
 					}
 					break;
 					case DIGIT9: {
 						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 9/10);
-						System.out.println("su ema");
 					}
 					break;
 					case DIGIT0: {
@@ -233,7 +219,7 @@ public class Main extends Application {
 					
 					case K: {
 						
-						if(!controller.durationSlider.isValueChanging()) {
+						if(!controller.durationSlider.isValueChanging()) {  // wont let user play/pause video while media slider is seeking
 							if(controller.atEnd) {
 								controller.replayMedia();
 							}
@@ -271,15 +257,13 @@ public class Main extends Application {
 					
 					case F11: controller.fullScreen();
 					break;
-					case F: {
-						controller.fullScreen();
-
-					}
+					
+					case F: controller.fullScreen();
 					break;
 					
 					case SPACE:	{
 					
-						if(!controller.durationSlider.isValueChanging()) {
+						if(!controller.durationSlider.isValueChanging()) { // wont let user play/pause video while media slider is seeking
 							
 							if(!controller.playButton.isFocused()) {
 								if(controller.atEnd) {
