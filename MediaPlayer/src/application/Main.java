@@ -28,7 +28,7 @@ public class Main extends Application {
 	
 	public EventHandler<KeyEvent> eventHandler;
 	
-	static boolean fullScreen;
+	public static boolean fullScreen;
 	
 	static DirectoryChooser directoryChooser;
 
@@ -58,80 +58,12 @@ public class Main extends Application {
 			Main.stage = primaryStage;
 			
 			primaryStage.setFullScreenExitHint("Press Esc to exit fullscreen mode");
-			//primaryStage.setFullScreenExitKeyCombination(KeyCombination.);
+
 			
 			
 			directoryChooser = new DirectoryChooser();
 
-			
-			primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-				
-				switch(event.getCode()) {
-					case F11: controller.fullScreen();
-					break;
-					case F: {
-						controller.fullScreen();
 
-					}
-					break;
-					case ESCAPE: {
-						controller.fullScreenIcon.setImage(controller.maximize);
-						primaryStage.setFullScreen(false);
-						controller.fullScreenButton.setTooltip(controller.enterFullScreen);
-					}
-					break;
-					case SPACE:	{
-					
-						if(!controller.playButton.isFocused()) {
-							if(controller.atEnd) {
-								controller.replayMedia();
-							}
-							else {
-								controller.playOrPause();
-							}
-						}
-					
-					}
-					break;
-				
-					case RIGHT: {
-						/*if(!controller.atEnd) {
-						
-							if(controller.durationSlider.getValue() + 5 >= controller.durationSlider.getMax()) {
-							controller.durationSlider.setValue(controller.durationSlider.getMax());
-							}
-							else {
-								controller.durationSlider.setValue(controller.durationSlider.getValue() + 5);
-							}
-						
-						}*/
-					
-					}
-					break;
-				
-					case LEFT: {
-
-						
-						/*if(controller.mediaPlayer.getCurrentTime().toSeconds() > 5.0) {
-							controller.durationSlider.setValue(controller.durationSlider.getValue() - 5);
-
-						}
-						else {
-							controller.durationSlider.setValue(0);
-						}*/
-
-					}
-					break;
-						default:
-							break;
-				
-				}
-				
-			});
-
-			
-
-			
 			
 			//press F11 to set full screen
 			primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -145,10 +77,7 @@ public class Main extends Application {
 							}
 							else {
 								controller.focusNodeTracker--;
-
 							}
-
-							
 							controller.traverseFocusBackwards();
 						}
 						else {
@@ -169,13 +98,14 @@ public class Main extends Application {
 						if(!controller.volumeSlider.isFocused()) {
 							
 							
-							if(controller.mediaPlayer.getCurrentTime().toSeconds() + 5 >= controller.media.getDuration().toSeconds()) {
+							
+							if(controller.mediaPlayer.getCurrentTime().toSeconds() + 5 >= controller.durationSlider.getMax()) {
 								controller.seekedToEnd = true;
-								controller.mediaPlayer.seek(controller.media.getDuration());
+								
+								controller.durationSlider.setValue(controller.durationSlider.getMax());
+
 							}
-							else {
 							controller.durationSlider.setValue(controller.durationSlider.getValue() + 5);
-							}
 							event.consume();
 							
 							
@@ -189,14 +119,12 @@ public class Main extends Application {
 							controller.seekedToEnd = false;
 							if(controller.atEnd) {
 								controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
-
 							}
 							
 							else {
-								controller.durationSlider.setValue(controller.durationSlider.getValue() - 5.0);
-								//controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
+								controller.durationSlider.setValue(controller.durationSlider.getValue() - 5);
 							}
-
+							event.consume();
 							
 						}
 					}
@@ -207,6 +135,10 @@ public class Main extends Application {
 							controller.openCloseSettings();
 						}
 						fullScreen = false;
+						
+						controller.fullScreenIcon.setImage(controller.maximize);
+						primaryStage.setFullScreen(false);
+						controller.fullScreenButton.setTooltip(controller.enterFullScreen);
 					}
 					break;
 					
@@ -214,12 +146,12 @@ public class Main extends Application {
 						if(!controller.volumeSlider.isFocused()) {
 							
 							
-							if(controller.mediaPlayer.getCurrentTime().toSeconds() + 10 >= controller.media.getDuration().toSeconds()) {
+							if(controller.mediaPlayer.getCurrentTime().toSeconds() + 10 >= controller.durationSlider.getMax()) {
 								controller.seekedToEnd = true;
-								controller.mediaPlayer.seek(controller.media.getDuration());
+								controller.durationSlider.setValue(controller.durationSlider.getMax());
 							}
 							else {
-							controller.durationSlider.setValue(controller.durationSlider.getValue() + 10);
+								controller.durationSlider.setValue(controller.durationSlider.getValue() + 10);
 							}
 							event.consume();
 							
@@ -237,7 +169,6 @@ public class Main extends Application {
 							
 							else {
 								controller.durationSlider.setValue(controller.durationSlider.getValue() - 10.0);
-								//controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
 							}
 
 							
@@ -246,62 +177,57 @@ public class Main extends Application {
 					break;
 					case DIGIT1: {
 						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 1/10);
-						System.out.println("su ema");
 					}
 					break;
 					case DIGIT2: {
 						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 2/10);
-						System.out.println("su ema");
 					}
 					break;
 					case DIGIT3: {
 						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 3/10);
-						System.out.println("su ema");
 					}
 					break;
 					case DIGIT4: {
 						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 4/10);
-						System.out.println("su ema");
 					}
 					break;
 					case DIGIT5: {
 						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 5/10);
-						System.out.println("su ema");
 					}
 					break;
 					case DIGIT6: {
 						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 6/10);
-						System.out.println("su ema");
 					}
 					break;
 					case DIGIT7: {
 						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 7/10);
-						System.out.println("su ema");
 					}
 					break;
 					case DIGIT8: {
 						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 8/10);
-						System.out.println("su ema");
 					}
 					break;
 					case DIGIT9: {
 						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 9/10);
-						System.out.println("su ema");
 					}
 					break;
 					case DIGIT0: {
 						controller.seekedToEnd = true;
-						controller.mediaPlayer.seek(controller.media.getDuration());
+						controller.durationSlider.setValue(controller.durationSlider.getMax());
 					}
 					break;
 					
 					case K: {
-						if(controller.atEnd) {
-							controller.replayMedia();
+						
+						if(!controller.durationSlider.isValueChanging()) {  // wont let user play/pause video while media slider is seeking
+							if(controller.atEnd) {
+								controller.replayMedia();
+							}
+							else {
+								controller.playOrPause();
+							}
 						}
-						else {
-							controller.playOrPause();
-						}
+						
 					}
 					break;
 					
@@ -325,6 +251,28 @@ public class Main extends Application {
 							controller.volumeButton.setTooltip(controller.mute);
 
 							controller.volumeSlider.setValue(controller.volumeValue);
+						}
+					}
+					break;
+					
+					case F11: controller.fullScreen();
+					break;
+					
+					case F: controller.fullScreen();
+					break;
+					
+					case SPACE:	{
+					
+						if(!controller.durationSlider.isValueChanging()) { // wont let user play/pause video while media slider is seeking
+							
+							if(!controller.playButton.isFocused()) {
+								if(controller.atEnd) {
+									controller.replayMedia();
+								}
+								else {
+									controller.playOrPause();
+								}
+							}
 						}
 					}
 					break;
