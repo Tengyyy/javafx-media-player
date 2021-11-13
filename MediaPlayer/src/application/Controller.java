@@ -810,11 +810,11 @@ public class Controller implements Initializable {
 						});
 
 						playbackCustom.setOnMouseEntered((e) -> {
-							hoverEffectOn(playbackCustom);
+							Utilities.hoverEffectOn(playbackCustom);
 						});
 
 						playbackCustom.setOnMouseExited((e) -> {
-							hoverEffectOff(playbackCustom);
+							Utilities.hoverEffectOff(playbackCustom);
 						});
 
 						playbackCustomText.setTextFill(Color.WHITE);
@@ -899,7 +899,7 @@ public class Controller implements Initializable {
 						checkBox8.setGraphic(null);
 						checkBox4.setGraphic(new ImageView(check));
 						playbackSpeedScroll.setVvalue(298 / playbackSpeedPage.getHeight());
-						playbackValueLabel.setText(df.format(formattedValue));
+						playbackValueLabel.setText("Normal");
 					}
 						break;
 					case "1.25": {
@@ -1025,7 +1025,7 @@ public class Controller implements Initializable {
 		durationSlider.valueChangingProperty().addListener(new ChangeListener<Boolean>() { // vaja ära fixida see jama
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				bindCurrentTimeLabel();
+				Utilities.bindCurrentTimeLabel(durationLabel, mediaPlayer, media);
 
 				if (wasPlaying) {
 
@@ -1171,24 +1171,24 @@ public class Controller implements Initializable {
 		// On-hover effect for setting tab items
 		//////////////////////////////////////////////////
 		playbackSpeedBox.setOnMouseEntered((e) -> {
-			hoverEffectOn(playbackSpeedBox);
+			Utilities.hoverEffectOn(playbackSpeedBox);
 		});
 		playbackSpeedBox.setOnMouseExited((e) -> {
-			hoverEffectOff(playbackSpeedBox);
+			Utilities.hoverEffectOff(playbackSpeedBox);
 		});
 
 		playbackOptionsBox.setOnMouseEntered((e) -> {
-			hoverEffectOn(playbackOptionsBox);
+			Utilities.hoverEffectOn(playbackOptionsBox);
 		});
 		playbackOptionsBox.setOnMouseExited((e) -> {
-			hoverEffectOff(playbackOptionsBox);
+			Utilities.hoverEffectOff(playbackOptionsBox);
 		});
 
 		videoBox.setOnMouseEntered((e) -> {
-			hoverEffectOn(videoBox);
+			Utilities.hoverEffectOn(videoBox);
 		});
 		videoBox.setOnMouseExited((e) -> {
-			hoverEffectOff(videoBox);
+			Utilities.hoverEffectOff(videoBox);
 		});
 
 		// On-hover effect for playback speed items
@@ -1199,11 +1199,11 @@ public class Controller implements Initializable {
 			final int j = i;
 
 			playbackSpeedBoxesArray[i].setOnMouseEntered((e) -> {
-				hoverEffectOn(playbackSpeedBoxesArray[j]);
+				Utilities.hoverEffectOn(playbackSpeedBoxesArray[j]);
 			});
 
 			playbackSpeedBoxesArray[i].setOnMouseExited((e) -> {
-				hoverEffectOff(playbackSpeedBoxesArray[j]);
+				Utilities.hoverEffectOff(playbackSpeedBoxesArray[j]);
 			});
 
 		}
@@ -1211,27 +1211,27 @@ public class Controller implements Initializable {
 		/////////////////////////////////////////////////////////////
 		////// Hover effect for playback options page ///////////////
 		shuffleBox.setOnMouseEntered((e) -> {
-			hoverEffectOn(shuffleBox);
+			Utilities.hoverEffectOn(shuffleBox);
 		});
 
 		shuffleBox.setOnMouseExited((e) -> {
-			hoverEffectOff(shuffleBox);
+			Utilities.hoverEffectOff(shuffleBox);
 		});
 
 		loopBox.setOnMouseEntered((e) -> {
-			hoverEffectOn(loopBox);
+			Utilities.hoverEffectOn(loopBox);
 		});
 
 		loopBox.setOnMouseExited((e) -> {
-			hoverEffectOff(loopBox);
+			Utilities.hoverEffectOff(loopBox);
 		});
 
 		autoplayBox.setOnMouseEntered((e) -> {
-			hoverEffectOn(autoplayBox);
+			Utilities.hoverEffectOn(autoplayBox);
 		});
 
 		autoplayBox.setOnMouseExited((e) -> {
-			hoverEffectOff(autoplayBox);
+			Utilities.hoverEffectOff(autoplayBox);
 		});
 
 		settingsBackgroundPane.setPickOnBounds(false);
@@ -1732,46 +1732,8 @@ public class Controller implements Initializable {
 
 	}
 
-	public String getTime(Duration time) { // this has to be finished before moving on to binding the duration label
 
-		int hours = (int) time.toHours();
-		int minutes = (int) time.toMinutes();
-		int seconds = (int) time.toSeconds();
-
-		// Fix the issue with the timer going to 61 and above for seconds, minutes, and
-		// hours.
-		if (seconds > 59)
-			seconds = seconds % 60;
-		if (minutes > 59)
-			minutes = minutes % 60;
-		if (hours > 59)
-			hours = hours % 60;
-
-		// Don't show the hours unless the video has been playing for an hour or longer.
-		if (hours > 0)
-			return String.format("%d:%02d:%02d", hours, minutes, seconds);
-		else
-			return String.format("%02d:%02d", minutes, seconds);
-	}
-
-	public void bindCurrentTimeLabel() {
-
-		durationLabel.textProperty().bind(Bindings.createStringBinding(new Callable<String>() {
-			@Override
-			public String call() throws Exception {
-
-				return getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration());
-			}
-		}, mediaPlayer.currentTimeProperty()));
-	}
-
-	public void hoverEffectOn(HBox setting) {
-		setting.setStyle("-fx-background-color: rgba(73,73,73,0.8)");
-	}
-
-	public void hoverEffectOff(HBox setting) {
-		setting.setStyle("-fx-background-color: rgba(83,83,83,0)");
-	}
+	
 
 	public void traverseFocusForwards() {
 
@@ -1920,7 +1882,7 @@ public class Controller implements Initializable {
 
 	public void updateMedia(double newValue) {
 
-		bindCurrentTimeLabel();
+		Utilities.bindCurrentTimeLabel(durationLabel, mediaPlayer, media);
 
 		if (atEnd) {
 			atEnd = false;
@@ -1975,7 +1937,7 @@ public class Controller implements Initializable {
 			durationSlider.setValue(durationSlider.getMax());
 
 				durationLabel.textProperty().unbind();
-				durationLabel.setText(getTime(new Duration(durationSlider.getMax() * 1000)) + "/" + getTime(media.getDuration()));
+				durationLabel.setText(Utilities.getTime(new Duration(durationSlider.getMax() * 1000)) + "/" + Utilities.getTime(media.getDuration()));
 				
 
 			playLogo.setImage(new Image(replayFile.toURI().toString()));
@@ -2344,9 +2306,9 @@ public class Controller implements Initializable {
 
 		mediaPlayer.currentTimeProperty().addListener(new ChangeListener<Duration>() {
 			@Override
-			public void changed(ObservableValue<? extends Duration> observableValue, Duration oldTime,
-					Duration newTime) {
-				bindCurrentTimeLabel();
+			public void changed(ObservableValue<? extends Duration> observableValue, Duration oldTime, Duration newTime) {
+				Utilities.bindCurrentTimeLabel(durationLabel, mediaPlayer, media);
+				
 				if (!durationSlider.isValueChanging()) {
 					durationSlider.setValue(newTime.toSeconds());
 				}
@@ -2367,7 +2329,7 @@ public class Controller implements Initializable {
 
 				durationSlider.setMax(Math.floor(media.getDuration().toSeconds()));
 
-				bindCurrentTimeLabel();
+				Utilities.bindCurrentTimeLabel(durationLabel, mediaPlayer, media);
 
 				TimerTask setRate = new TimerTask() {
 
