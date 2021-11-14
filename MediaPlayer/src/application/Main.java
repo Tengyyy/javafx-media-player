@@ -37,7 +37,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("Scene2.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("Resources/Views/Scene2.fxml"));
 			
 			Parent root = loader.load();
 			
@@ -45,7 +45,7 @@ public class Main extends Application {
 			
 			Scene scene = new Scene(root, 600, 400);
 			
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());	
+			scene.getStylesheets().add(getClass().getResource("Resources/Styles/application.css").toExternalForm());	
 			
 			Screen screen = Screen.getPrimary();
 			

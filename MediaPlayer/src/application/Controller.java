@@ -320,27 +320,27 @@ public class Controller implements Initializable {
 		file = new File("hey.mp4");
 
 		// declaring media control images
-		maximizeFile = new File("Resources/Images/maximizeFile.png");
-		minimizeFile = new File("Resources/Images/minimizeFile.png");
-		startFile = new File("Resources/Images/startFile.png");
-		volumeUpFile = new File("Resources/Images/volumeUpFile.png");
-		volumeDownFile = new File("Resources/Images/volumeDownFile.png");
-		volumeMuteFile = new File("Resources/Images/volumeMuteFile.png");
-		replayFile = new File("Resources/Images/replayFile.png");
-		pauseImageFile = new File("Resources/Images/pauseImageFile.png");
-		settingsImageFile = new File("Resources/Images/settingsImageFile.png");
-		rightArrowFile = new File("Resources/Images/rightArrowFile.png");
-		leftArrowFile = new File("Resources/Images/leftArrowFile.png");
-		checkFile = new File("Resources/Images/checkFile.png");
-		nextVideoFile = new File("Resources/Images/nextVideoFile.png");
-		captionsFile = new File("Resources/Images/captionsFile.png");
-		menuFile = new File("Resources/Images/menuFile.png");
-		menuCloseFile = new File("Resources/Images/menuCloseFile.png");
+		maximizeFile = new File("Images/maximizeFile.png");
+		minimizeFile = new File("Images/minimizeFile.png");
+		startFile = new File("Images/startFile.png");
+		volumeUpFile = new File("Images/volumeUpFile.png");
+		volumeDownFile = new File("Images/volumeDownFile.png");
+		volumeMuteFile = new File("Images/volumeMuteFile.png");
+		replayFile = new File("Images/replayFile.png");
+		pauseImageFile = new File("Images/pauseImageFile.png");
+		settingsImageFile = new File("Images/settingsImageFile.png");
+		rightArrowFile = new File("Images/rightArrowFile.png");
+		leftArrowFile = new File("Images/leftArrowFile.png");
+		checkFile = new File("Images/checkFile.png");
+		nextVideoFile = new File("Images/nextVideoFile.png");
+		captionsFile = new File("Images/captionsFile.png");
+		menuFile = new File("Images/menuFile.png");
+		menuCloseFile = new File("Images/menuCloseFile.png");
 
-		playFile = new File("Resources/Images/playFile.gif");
-		pauseFile = new File("Resources/Images/pauseFile.gif");
-		settingsEnterFile = new File("Resources/Images/settingsEnterFile.gif");
-		settingsExitFile = new File("Resources/Images/settingsExitFile.gif");
+		playFile = new File("Images/playFile.gif");
+		pauseFile = new File("Images/pauseFile.gif");
+		settingsEnterFile = new File("Images/settingsEnterFile.gif");
+		settingsExitFile = new File("Images/settingsExitFile.gif");
 
 		nextVideo = new Image(nextVideoFile.toURI().toString());
 		maximize = new Image(maximizeFile.toURI().toString());

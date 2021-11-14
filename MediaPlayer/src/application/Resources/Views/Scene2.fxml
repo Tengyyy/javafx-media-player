@@ -20,7 +20,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="pane" focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@focusStyles.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+<StackPane fx:id="pane" focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../Styles/focusStyles.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
       <MediaView fx:id="mediaView" focusTraversable="true" onMouseClicked="#mediaClick" styleClass="focusableProperty" StackPane.alignment="CENTER">
          <viewport>
@@ -198,7 +198,7 @@
                   </StackPane>
                </children>
             </StackPane>
-            <ScrollPane fx:id="playbackSpeedScroll" focusTraversable="false" hbarPolicy="NEVER" maxHeight="537.0" maxWidth="235.0" minHeight="170.0" minWidth="235.0" prefHeight="487.0" prefWidth="235.0" styleClass="playbackSpeedScroll" stylesheets="@application.css">
+            <ScrollPane fx:id="playbackSpeedScroll" focusTraversable="false" hbarPolicy="NEVER" maxHeight="537.0" maxWidth="235.0" minHeight="170.0" minWidth="235.0" prefHeight="487.0" prefWidth="235.0" styleClass="playbackSpeedScroll" stylesheets="@../Styles/application.css">
                <content>
                   <VBox fx:id="playbackSpeedPage" alignment="BOTTOM_LEFT" maxHeight="537.0" minHeight="170.0" minWidth="235.0" prefHeight="484.0" prefWidth="235.0">
                      <padding>
