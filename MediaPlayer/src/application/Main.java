@@ -19,6 +19,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 
@@ -30,18 +31,27 @@ public class Main extends Application {
 	
 	public static boolean fullScreen;
 	
-	static DirectoryChooser directoryChooser;
+	 DirectoryChooser directoryChooser;
+	 
+	 ControlBarController controlBarController;
+	 SettingsController settingsController;
 
 	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("Resources/Views/Scene2.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("Resources/Views/Main.fxml"));
 			
 			Parent root = loader.load();
 			
-			Controller controller = loader.getController();
+			MainController mainController = loader.getController();
+
+			
+			controlBarController = mainController.getControlBarController();
+			
+			settingsController = mainController.getSettingsController();
+			
 			
 			Scene scene = new Scene(root, 600, 400);
 			
@@ -72,40 +82,36 @@ public class Main extends Application {
 					case TAB: {
 						if(event.isShiftDown()) {
 							// user pressed SHIFT + TAB which means focus should traverse backwards
-							if(controller.focusNodeTracker == 0) {
-								controller.focusNodeTracker = 8;
+							if(mainController.focusNodeTracker == 0) {
+								mainController.focusNodeTracker = 8;
 							}
 							else {
-								controller.focusNodeTracker--;
+								mainController.focusNodeTracker--;
 							}
-							controller.traverseFocusBackwards();
+							mainController.traverseFocusBackwards();
 						}
 						else {
-							if(controller.focusNodeTracker == 8) {
-								controller.focusNodeTracker = 0;
+							if(mainController.focusNodeTracker == 8) {
+								mainController.focusNodeTracker = 0;
 							}
 							else {
-								controller.focusNodeTracker++;
+								mainController.focusNodeTracker++;
 							}
 							// user pressed TAB which means focus should traverse forwards
 							
-							controller.traverseFocusForwards();
+							mainController.traverseFocusForwards();
 						}
 					}
 					break;	
 					
 					case RIGHT: {
-						if(!controller.volumeSlider.isFocused()) {
+						if(!mainController.getControlBarController().volumeSlider.isFocused()) {
 							
-							
-							
-							if(controller.mediaPlayer.getCurrentTime().toSeconds() + 5 >= controller.durationSlider.getMax()) {
-								controller.seekedToEnd = true;
-								
-								controller.durationSlider.setValue(controller.durationSlider.getMax());
-
+							if(mainController.mediaPlayer.getCurrentTime().toSeconds() + 5 >= controlBarController.durationSlider.getMax()) {
+								mainController.seekedToEnd = true;
 							}
-							controller.durationSlider.setValue(controller.durationSlider.getValue() + 5);
+							
+							controlBarController.durationSlider.setValue(controlBarController.durationSlider.getValue() + 5);
 							event.consume();
 							
 							
@@ -115,15 +121,10 @@ public class Main extends Application {
 					break;
 					
 					case LEFT: {
-						if(!controller.volumeSlider.isFocused()) {
-							controller.seekedToEnd = false;
-							if(controller.atEnd) {
-								controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 5000));
-							}
+						if(!controlBarController.volumeSlider.isFocused()) {
+							mainController.seekedToEnd = false;
 							
-							else {
-								controller.durationSlider.setValue(controller.durationSlider.getValue() - 5);
-							}
+							controlBarController.durationSlider.setValue(controlBarController.durationSlider.getValue() - 5);
 							event.consume();
 							
 						}
@@ -131,28 +132,25 @@ public class Main extends Application {
 					break;
 					
 					case ESCAPE: {
-						if(controller.settingsOpen && !fullScreen) {
-							controller.openCloseSettings();
+						if(settingsController.settingsOpen && !fullScreen) {
+							settingsController.openCloseSettings();
 						}
 						fullScreen = false;
 						
-						controller.fullScreenIcon.setImage(controller.maximize);
+						controlBarController.fullScreenIcon.setImage(controlBarController.maximize);
 						primaryStage.setFullScreen(false);
-						controller.fullScreenButton.setTooltip(controller.enterFullScreen);
+						controlBarController.fullScreenButton.setTooltip(controlBarController.enterFullScreen);
 					}
 					break;
 					
 					case L: {
-						if(!controller.volumeSlider.isFocused()) {
+						if(!controlBarController.volumeSlider.isFocused()) {
 							
 							
-							if(controller.mediaPlayer.getCurrentTime().toSeconds() + 10 >= controller.durationSlider.getMax()) {
-								controller.seekedToEnd = true;
-								controller.durationSlider.setValue(controller.durationSlider.getMax());
+							if(mainController.mediaPlayer.getCurrentTime().toSeconds() + 10 >= controlBarController.durationSlider.getMax()) {
+								mainController.seekedToEnd = true;
 							}
-							else {
-								controller.durationSlider.setValue(controller.durationSlider.getValue() + 10);
-							}
+								controlBarController.durationSlider.setValue(controlBarController.durationSlider.getValue() + 10);
 							event.consume();
 							
 							
@@ -161,70 +159,65 @@ public class Main extends Application {
 					break;
 					
 					case J: {
-						if(!controller.volumeSlider.isFocused()) {
-							controller.seekedToEnd = false;
-							if(controller.atEnd) {
-								controller.mediaPlayer.seek(new Duration(controller.mediaPlayer.getCurrentTime().toMillis() - 10000));
-							}
-							
-							else {
-								controller.durationSlider.setValue(controller.durationSlider.getValue() - 10.0);
-							}
+						if(!controlBarController.volumeSlider.isFocused()) {
+							mainController.seekedToEnd = false;
+					
+								controlBarController.durationSlider.setValue(controlBarController.durationSlider.getValue() - 10.0);
 
 							
 						}
 					}
 					break;
 					case DIGIT1: {
-						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 1/10);
+						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 1/10);
 					}
 					break;
 					case DIGIT2: {
-						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 2/10);
+						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 2/10);
 					}
 					break;
 					case DIGIT3: {
-						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 3/10);
+						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 3/10);
 					}
 					break;
 					case DIGIT4: {
-						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 4/10);
+						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 4/10);
 					}
 					break;
 					case DIGIT5: {
-						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 5/10);
+						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 5/10);
 					}
 					break;
 					case DIGIT6: {
-						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 6/10);
+						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 6/10);
 					}
 					break;
 					case DIGIT7: {
-						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 7/10);
+						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 7/10);
 					}
 					break;
 					case DIGIT8: {
-						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 8/10);
+						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 8/10);
 					}
 					break;
 					case DIGIT9: {
-						controller.durationSlider.setValue(controller.media.getDuration().toSeconds() * 9/10);
+						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 9/10);
 					}
 					break;
 					case DIGIT0: {
-						controller.seekedToEnd = true;
-						controller.durationSlider.setValue(controller.durationSlider.getMax());
+						mainController.seekedToEnd = true;
+						controlBarController.durationSlider.setValue(controlBarController.durationSlider.getMax());
 					}
 					break;
 					
 					case K: {
 						
-						if(!controller.durationSlider.isValueChanging()) {  // wont let user play/pause video while media slider is seeking
-							if(controller.atEnd) {
-								controller.replayMedia();
+						if(!controlBarController.durationSlider.isValueChanging()) {  // wont let user play/pause video while media slider is seeking
+							if(mainController.atEnd) {
+								controlBarController.replayMedia();
 							}
 							else {
-								controller.playOrPause();
+								controlBarController.playOrPause();
 							}
 						}
 						
@@ -232,45 +225,45 @@ public class Main extends Application {
 					break;
 					
 					case M: {
-						if (!controller.muted) {
+						if (!controlBarController.muted) {
 
-							controller.muted = true;
-							controller.volumeIcon.setImage(controller.volumeMute);
-							controller.mediaPlayer.setVolume(0);
+							controlBarController.muted = true;
+							controlBarController.volumeIcon.setImage(controlBarController.volumeMute);
+							mainController.mediaPlayer.setVolume(0);
 
-							controller.volumeValue = controller.volumeSlider.getValue();
+							controlBarController.volumeValue = controlBarController.volumeSlider.getValue();
 							
-							controller.volumeButton.setTooltip(controller.unmute);
+							controlBarController.volumeButton.setTooltip(controlBarController.unmute);
 
-							controller.volumeSlider.setValue(0);
+							controlBarController.volumeSlider.setValue(0);
 						} else {
-							controller.muted = false;
-							controller.volumeIcon.setImage(controller.volumeUp);
-							controller.mediaPlayer.setVolume(controller.volumeValue);
+							controlBarController.muted = false;
+							controlBarController.volumeIcon.setImage(controlBarController.volumeUp);
+							mainController.mediaPlayer.setVolume(controlBarController.volumeValue);
 							
-							controller.volumeButton.setTooltip(controller.mute);
+							controlBarController.volumeButton.setTooltip(controlBarController.mute);
 
-							controller.volumeSlider.setValue(controller.volumeValue);
+							controlBarController.volumeSlider.setValue(controlBarController.volumeValue);
 						}
 					}
 					break;
 					
-					case F11: controller.fullScreen();
+					case F11: controlBarController.fullScreen();
 					break;
 					
-					case F: controller.fullScreen();
+					case F: controlBarController.fullScreen();
 					break;
 					
 					case SPACE:	{
 					
-						if(!controller.durationSlider.isValueChanging()) { // wont let user play/pause video while media slider is seeking
+						if(!controlBarController.durationSlider.isValueChanging()) { // wont let user play/pause video while media slider is seeking
 							
-							if(!controller.playButton.isFocused()) {
-								if(controller.atEnd) {
-									controller.replayMedia();
+							if(!controlBarController.playButton.isFocused()) {
+								if(mainController.atEnd) {
+									controlBarController.replayMedia();
 								}
 								else {
-									controller.playOrPause();
+									controlBarController.playOrPause();
 								}
 							}
 						}
