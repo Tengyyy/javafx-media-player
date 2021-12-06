@@ -7,7 +7,6 @@ import java.util.ResourceBundle;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
-import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -22,6 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -34,26 +34,10 @@ public class ControlBarController implements Initializable{
 	VBox controlBar;
 	
 	@FXML
-	public  Button fullScreenButton;
+	Button fullScreenButton, playButton, volumeButton, settingsButton, nextVideoButton, captionsButton;
 
-	@FXML
-	public  Button playButton;
-
-	@FXML
-	public  Button volumeButton;
-
-	@FXML
-	Button settingsButton;
-
-	@FXML
-	
-	Button nextVideoButton;
-
-	@FXML
-	Button captionsButton;
 	
 	@FXML
-	
 	ImageView settingsIcon;
 
 	@FXML
@@ -91,7 +75,6 @@ public class ControlBarController implements Initializable{
 	private MainController mainController;
 	private SettingsController settingsController;
 	
-	private AnimationsClass animationsClass;
 	
 
 	public  Image maximize;
@@ -135,9 +118,9 @@ public class ControlBarController implements Initializable{
 	
 	Image replayImage;
 
-	 File settingsEnterFile;
+	File settingsEnterFile;
 
-	 File settingsExitFile;
+	File settingsExitFile;
 
 	private File settingsImageFile;
 
@@ -147,13 +130,10 @@ public class ControlBarController implements Initializable{
 
 	private File nextVideoFile;
 
-	Timeline fullscreenTimeline;
-
-	 Timeline volume;
 	
 	public  boolean muted = false;
 
-	 boolean isExited = false;
+	 boolean isExited = true;
 	
 	 boolean sliderFocus = false;
 	 
@@ -189,11 +169,12 @@ public class ControlBarController implements Initializable{
 
 		captionsButton.setTooltip(captionsTooltip);
 
-		volumeSliderPane.setClip(new Rectangle(60, 17));
+		volumeSliderPane.setClip(new Rectangle(60, 38.666666664));
 
 		volumeSlider.setTranslateX(-60);
 
 		durationLabel.setTranslateX(-60);
+
 		
 		maximizeFile = new File("Images/maximizeFile.png");
 		minimizeFile = new File("Images/minimizeFile.png");
@@ -385,8 +366,7 @@ nextVideoButton.focusedProperty()
 			}
 		});
 
-volumeButton.focusedProperty()
-		.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+volumeButton.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 			if (!newValue) {
 				volumeButton.setStyle("-fx-border-color: transparent;");
 			} else {
@@ -394,19 +374,20 @@ volumeButton.focusedProperty()
 			}
 		});
 
-volumeSlider.focusedProperty()
-		.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+volumeSlider.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 
 			sliderFocus = newValue;
 
 			if (!newValue) {
-				volumeSliderExit();
-
+				if(isExited) {
+					volumeSliderExit();
+				}
 				volumeSlider.setStyle("-fx-border-color: transparent;");
 
 			} else {
-				volumeSliderEnter();
-				isExited = true;
+				if(isExited) {
+					volumeSliderEnter();
+				}
 				mainController.focusNodeTracker = 5;
 			}
 
@@ -433,13 +414,12 @@ fullScreenButton.focusedProperty()
 		
 	}
 	
-	public void init(MainController mainController, SettingsController settingsController, AnimationsClass animationsClass) {
+	public void init(MainController mainController, SettingsController settingsController) {
 		
 		this.mainController = mainController;
 		
 		this.settingsController = settingsController;
 		
-		this.animationsClass = animationsClass;
 	}
 
 	
@@ -502,74 +482,31 @@ fullScreenButton.focusedProperty()
 		playButton.setOnAction((e) -> playButtonClick1());
 
 	}
-	
-	
-	public  void volumeSliderEnter() {
-		// display volume slider
-
-		volume = new Timeline();
-
-		volume.setCycleCount(1);
-		volume.setAutoReverse(false);
-
-		volume.getKeyFrames().add(new KeyFrame(Duration.millis(50),
-				new KeyValue(volumeSlider.translateXProperty(), 0, Interpolator.EASE_OUT)));
-		volume.getKeyFrames().add(new KeyFrame(Duration.millis(50),
-				new KeyValue(durationLabel.translateXProperty(), 0, Interpolator.EASE_OUT)));
-
-		volume.play();
-
-		volume.setOnFinished((e) -> {
-			volume.stop();
-			volume.getKeyFrames().clear();
-		});
-
-	}
 
 	public void enterArea() {
-
+		if(isExited && !sliderFocus) {
+			volumeSliderEnter();
+		}
 		isExited = false;
-
-		volumeSliderEnter();
 	}
 
 	public void exitArea() {
-
+		if(!sliderFocus && !isExited) {
+			volumeSliderExit();
+		}
 		isExited = true;
-
-		volumeSliderExit();
+	}
+	
+	public  void volumeSliderEnter() {
+		AnimationsClass.volumeSliderHoverOn(volumeSlider, durationLabel);
 	}
 
 	public  void volumeSliderExit() {
-		// hide volume slider
-
-		if (isExited && !sliderFocus) {
-
-			// volume.stop();
-
-			volume = new Timeline();
-
-			// volume.getKeyFrames().clear();
-
-			volume.getKeyFrames().add(new KeyFrame(Duration.millis(100),
-					new KeyValue(volumeSlider.translateXProperty(), -60, Interpolator.EASE_OUT)));
-
-			volume.getKeyFrames().add(new KeyFrame(Duration.millis(100),
-					new KeyValue(durationLabel.translateXProperty(), -60, Interpolator.EASE_OUT)));
-
-			volume.play();
-
-			volume.setOnFinished((e) -> {
-				volume.stop();
-				volume.getKeyFrames().clear();
-
-			});
-
-		}
-
+		AnimationsClass.volumeSliderHoverOff(volumeSlider, durationLabel);
 	}
 	
 	public void fullScreen() {
+		// gotta move some of this logic to the main class
 		Main.stage.setFullScreen(!Main.stage.isFullScreen());
 
 		if (Main.stage.isFullScreen()) {
@@ -584,69 +521,42 @@ fullScreenButton.focusedProperty()
 		}
 	}
 
-	public void fullScreenEnter() {
-
-		fullscreenTimeline = new Timeline();
-
-		fullscreenTimeline.setCycleCount(2);
-		fullscreenTimeline.setAutoReverse(true);
-		fullscreenTimeline.getKeyFrames()
-				.add(new KeyFrame(Duration.millis(200), new KeyValue(fullScreenIcon.scaleYProperty(), 1.3)));
-		fullscreenTimeline.getKeyFrames()
-				.add(new KeyFrame(Duration.millis(200), new KeyValue(fullScreenIcon.scaleXProperty(), 1.3)));
-
-		fullscreenTimeline.play();
-
-		fullscreenTimeline.setOnFinished((e) -> {
-			fullscreenTimeline.stop();
-			fullscreenTimeline.getKeyFrames().clear();
-		});
+	public void fullScreenButtonHoverOn() {
+		AnimationsClass.fullScreenHoverOn(fullScreenIcon);
 	}
 
-	public void fullSreenExit() {
-
-		fullscreenTimeline = new Timeline();
-
-		fullscreenTimeline.stop();
-
-		fullscreenTimeline.getKeyFrames().clear();
-
-		fullScreenIcon.scaleXProperty().set(1);
-		fullScreenIcon.scaleYProperty().set(1);
+	public void fullSreenButtonHoverOff() {
+		AnimationsClass.fullScreenHoverOff(fullScreenIcon);
 	}
 	
 	
-
-
-	public void mute() {
-
+	public void volumeButtonClick() {
 		if (settingsController.settingsOpen) {
 			settingsController.openCloseSettings();
-		} else {
-
-			if (!muted) {
-
-				muted = true;
-				volumeIcon.setImage(volumeMute);
-				mainController.mediaPlayer.setVolume(0);
-
-				volumeValue = volumeSlider.getValue(); //stores the value of the volumeslider before setting it to 0
-
-				volumeButton.setTooltip(unmute);
-
-				volumeSlider.setValue(0);
-			} else {
-				muted = false;
-				volumeIcon.setImage(volumeUp);
-
-				mainController.mediaPlayer.setVolume(volumeValue);
-
-				volumeButton.setTooltip(mute);
-
-				volumeSlider.setValue(volumeValue); // sets volume back to the value it was at before muting
-			}
 		}
+		else {
+			if(!muted)
+				mute();
+			else
+				unmute();
+		}
+	}
 
+	public void mute() {
+		muted = true;
+		volumeIcon.setImage(volumeMute);
+		mainController.mediaPlayer.setVolume(0);
+		volumeValue = volumeSlider.getValue(); //stores the value of the volumeslider before setting it to 0
+		volumeButton.setTooltip(unmute);
+		volumeSlider.setValue(0);
+	}
+	
+	public void unmute() {
+		muted = false;
+		volumeIcon.setImage(volumeUp);
+		mainController.mediaPlayer.setVolume(volumeValue);
+		volumeButton.setTooltip(mute);
+		volumeSlider.setValue(volumeValue); // sets volume back to the value it was at before muting
 	}
 	
 	
@@ -660,43 +570,26 @@ fullScreenButton.focusedProperty()
 	}
 
 	
-	public void openCloseCaptions() {
-		if (mainController.captionsOpen) {
-			// CLOSE CAPTIONS
-			mainController.captionsOpen = false;
-
-			ScaleTransition scale = new ScaleTransition(Duration.millis(100), captionLine);
-			scale.setFromX(1);
-			scale.setToX(0);
-			scale.setCycleCount(1);
-			scale.setInterpolator(Interpolator.LINEAR);
-			scale.play();
-
-		} else {
-			// OPEN CAPTIONS
-			mainController.captionsOpen = true;
-
-			ScaleTransition scale = new ScaleTransition(Duration.millis(100), captionLine);
-			scale.setFromX(0);
-			scale.setToX(1);
-			scale.setCycleCount(1);
-			scale.setInterpolator(Interpolator.LINEAR);
-			scale.play();
-
-		}
+	public void openCaptions() {
+		mainController.captionsOpen = true;
+		AnimationsClass.openCaptions(captionLine);
 	}
 	
-	public void settingsClick() {
+	public void closeCaptions() {
+		mainController.captionsOpen = false;
+		AnimationsClass.closeCaptions(captionLine);
+	}
+	
+	public void settingsButtonClick() {
 		settingsController.openCloseSettings();
 	}
 	
 	
-	public void pressFullScreen() {
-		if (settingsController.settingsOpen) {
+	public void fullScreenButtonClick() {
+		if (settingsController.settingsOpen)
 			settingsController.openCloseSettings();
-		} else {
+		else
 			fullScreen();
-		}
 	}
 	
 
@@ -704,6 +597,13 @@ fullScreenButton.focusedProperty()
 		if (settingsController.settingsOpen) {
 			settingsController.openCloseSettings();
 		}
+	}
+	
+	public void captionsButtonClick() {
+		if(!mainController.captionsOpen)
+			openCaptions();
+		else
+			closeCaptions();
 	}
 	
 }

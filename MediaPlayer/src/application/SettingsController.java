@@ -7,13 +7,7 @@ import java.util.ResourceBundle;
 
 import com.jfoenix.controls.JFXToggleButton;
 
-import javafx.animation.FadeTransition;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.ParallelTransition;
-import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
+
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
@@ -35,7 +29,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.util.Duration;
 
 public class SettingsController implements Initializable{
 	
@@ -85,7 +78,6 @@ public class SettingsController implements Initializable{
 
 	private MainController mainController;
 	private ControlBarController controlBarController;
-	private AnimationsClass animationsClass;
 	
 	
 	HBox playbackCustom;
@@ -868,10 +860,26 @@ public class SettingsController implements Initializable{
 		
 	}
 	
-	public void init(MainController mainController, ControlBarController controlBarController, AnimationsClass animationsClass) {
+	public void init(MainController mainController, ControlBarController controlBarController) {
 		this.mainController = mainController;
 		this.controlBarController = controlBarController;
-		this.animationsClass = animationsClass;
+	}
+	
+	public void settingsClick() { // this needs to be moved to controlBarController
+		
+		if(settingsOpen)
+			closeSettings();
+		else
+			openSettings();
+		
+	}
+	
+	public void openSettings() {
+		
+	}
+	
+	public void closeSettings() {
+		
 	}
 	
 	public   void openCloseSettings() {
@@ -881,20 +889,8 @@ public class SettingsController implements Initializable{
 				controlBarController.settingsIcon.setImage(controlBarController.settingsExit);
 				settingsOpen = false;
 
-				FadeTransition fadeTransition1 = new FadeTransition(Duration.millis(100), bufferPane);
-				fadeTransition1.setFromValue(1);
-				fadeTransition1.setToValue(0.0f);
-				fadeTransition1.setCycleCount(1);
-
-				TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), bufferPane);
-				translateTransition1.setFromY(0);
-				translateTransition1.setToY(bufferPane.getHeight());
-				translateTransition1.setCycleCount(1);
-
-				ParallelTransition parallelTransition = new ParallelTransition();
-				parallelTransition.getChildren().addAll(fadeTransition1, translateTransition1);
-				parallelTransition.setCycleCount(1);
-				parallelTransition.play();
+				AnimationsClass.closeSettings(bufferPane);
+				
 			} else if (playbackOptionsOpen) {
 				// CLOSING ANIMATION WHEN PLAYBACK OPTIONS PAGE IS OPEN
 
@@ -905,85 +901,21 @@ public class SettingsController implements Initializable{
 				customSpeedOpen = false;
 				playbackOptionsOpen = false;
 
-				settingsBackgroundPane.prefHeightProperty().unbind();
-				playbackOptionsBuffer.translateYProperty().unbind();
-				FadeTransition fadeTransition1 = new FadeTransition(Duration.millis(100), playbackOptionsBuffer);
-				fadeTransition1.setFromValue(1);
-				fadeTransition1.setToValue(0.0f);
-				fadeTransition1.setCycleCount(1);
-				TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100),
-						playbackOptionsBuffer);
-				translateTransition1.setFromY(playbackOptionsBuffer.getTranslateY());
-				translateTransition1.setToY(bufferPane.getHeight());
-				translateTransition1.setCycleCount(1);
-
-				ParallelTransition parallelTransition = new ParallelTransition();
-				parallelTransition.getChildren().addAll(fadeTransition1, translateTransition1);
-				parallelTransition.setCycleCount(1);
-				parallelTransition.play();
-
-				parallelTransition.setOnFinished((e) -> {
-					playbackOptionsBuffer.setTranslateX(settingsBackgroundPane.getWidth());
-					bufferPane.setTranslateX(0);
-					settingsBackgroundPane.setPrefHeight(170);
-					playbackOptionsBuffer
-							.setTranslateY(settingsBackgroundPane.getHeight() - playbackOptionsBuffer.getHeight());
-					playbackOptionsBuffer.setOpacity(1);
-					playbackOptionsBuffer.translateYProperty().bind(Bindings
-							.subtract(settingsBackgroundPane.heightProperty(), playbackOptionsBuffer.heightProperty()));
-					bufferPane.setTranslateY(bufferPane.getHeight());
-
-				});
+				
+				AnimationsClass.closeSettingsFromPlaybackOptions(settingsBackgroundPane, playbackOptionsBuffer, bufferPane);
+				
 
 			} else if (!customSpeedOpen) {
+				
+				// closing animation when playback speed page is open
+				
 				controlBarController.settingsExit = new Image(controlBarController.settingsExitFile.toURI().toString());
 				controlBarController.settingsIcon.setImage(controlBarController.settingsExit);
 				settingsOpen = false;
 				playbackSpeedOpen = false;
 
-				settingsBackgroundPane.prefHeightProperty().unbind();
-
-				playbackSpeedScroll.translateYProperty().unbind();
-
-				FadeTransition fadeTransition1 = new FadeTransition(Duration.millis(100), playbackSpeedScroll);
-				fadeTransition1.setFromValue(1);
-				fadeTransition1.setToValue(0.0f);
-				fadeTransition1.setCycleCount(1);
-				TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100),
-						playbackSpeedScroll);
-				translateTransition1.setFromY(playbackSpeedScroll.getTranslateY());
-				translateTransition1.setToY(bufferPane.getHeight());
-				translateTransition1.setCycleCount(1);
-
-				/*
-				 * FadeTransition fadeTransition2 = new FadeTransition(Duration.millis(100),
-				 * bufferPane); fadeTransition2.setFromValue(0.8f);
-				 * fadeTransition2.setToValue(0.0f); fadeTransition2.setCycleCount(1);
-				 * TranslateTransition translateTransition2 = new
-				 * TranslateTransition(Duration.millis(100), bufferPane);
-				 * translateTransition2.setFromY(0);
-				 * translateTransition2.setToY(bufferPane.getHeight());
-				 * translateTransition2.setCycleCount(1);
-				 */
-
-				ParallelTransition parallelTransition = new ParallelTransition();
-				parallelTransition.getChildren().addAll(fadeTransition1, translateTransition1);
-				parallelTransition.setCycleCount(1);
-				parallelTransition.play();
-
-				parallelTransition.setOnFinished((e) -> {
-					playbackSpeedScroll.setTranslateX(settingsBackgroundPane.getWidth());
-					bufferPane.setTranslateX(0);
-					settingsBackgroundPane.setPrefHeight(170);
-					playbackSpeedScroll
-							.setTranslateY(settingsBackgroundPane.getHeight() - playbackSpeedScroll.getHeight());
-					playbackSpeedScroll.setOpacity(1);
-					playbackSpeedScroll.translateYProperty().bind(Bindings
-							.subtract(settingsBackgroundPane.heightProperty(), playbackSpeedScroll.heightProperty()));
-					bufferPane.setTranslateY(bufferPane.getHeight());
-
-					playbackSpeedScroll.setVvalue(0);
-				});
+				AnimationsClass.closeSettingsFromPlaybackSpeed(settingsBackgroundPane, playbackSpeedScroll, bufferPane);
+				
 			} else if (customSpeedOpen) {
 				// TODO: Settings closing animation when custom playback speed selector is open.
 				controlBarController.settingsExit = new Image(controlBarController.settingsExitFile.toURI().toString());
@@ -991,44 +923,9 @@ public class SettingsController implements Initializable{
 				settingsOpen = false;
 				playbackSpeedOpen = false;
 				customSpeedOpen = false;
-
-				settingsBackgroundPane.prefHeightProperty().unbind();
-
-				playbackSpeedScroll.translateYProperty().unbind();
-
-				FadeTransition fadeTransition1 = new FadeTransition(Duration.millis(100), customSpeedBuffer);
-				fadeTransition1.setFromValue(1);
-				fadeTransition1.setToValue(0.0f);
-				fadeTransition1.setCycleCount(1);
-
-				TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100),
-						customSpeedBuffer);
-				translateTransition1.setFromY(0);
-				translateTransition1.setToY(customSpeedBuffer.getHeight());
-				translateTransition1.setCycleCount(1);
-
-				ParallelTransition parallelTransition = new ParallelTransition();
-				parallelTransition.getChildren().addAll(fadeTransition1, translateTransition1);
-				parallelTransition.setCycleCount(1);
-				parallelTransition.play();
-
-				parallelTransition.setOnFinished((e) -> {
-					playbackSpeedScroll.setTranslateX(settingsBackgroundPane.getWidth());
-					bufferPane.setTranslateX(0);
-					settingsBackgroundPane.setPrefHeight(170);
-					playbackSpeedScroll
-							.setTranslateY(settingsBackgroundPane.getHeight() - playbackSpeedScroll.getHeight());
-					playbackSpeedScroll.setOpacity(1);
-					playbackSpeedScroll.translateYProperty().bind(Bindings
-							.subtract(settingsBackgroundPane.heightProperty(), playbackSpeedScroll.heightProperty()));
-					bufferPane.setTranslateY(bufferPane.getHeight());
-
-					customSpeedBuffer.setOpacity(1);
-					customSpeedBuffer.setTranslateX(settingsBackgroundPane.getWidth());
-					customSpeedBuffer.setTranslateY(0);
-
-					playbackSpeedScroll.setVvalue(0);
-				});
+				
+				AnimationsClass.closeSettingsFromCustomSpeed(settingsBackgroundPane, playbackSpeedScroll, customSpeedBuffer, bufferPane);
+				
 			}
 
 		}
@@ -1038,7 +935,7 @@ public class SettingsController implements Initializable{
 			controlBarController.settingsIcon.setImage(controlBarController.settingsEnter);
 			settingsOpen = true;
 			
-			animationsClass.openSettings(bufferPane);
+			AnimationsClass.openSettings(bufferPane);
 			
 			
 		}
@@ -1048,98 +945,21 @@ public class SettingsController implements Initializable{
 
 		playbackSpeedOpen = true;
 
-		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), bufferPane);
-		translateTransition1.setFromX(0);
-		translateTransition1.setToX(-settingsBackgroundPane.getWidth());
-		translateTransition1.setCycleCount(1);
-		translateTransition1.setInterpolator(Interpolator.LINEAR);
-
-		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(100), playbackSpeedScroll);
-		translateTransition2.setFromX(settingsBackgroundPane.getWidth());
-		translateTransition2.setToX(0);
-		translateTransition2.setCycleCount(1);
-		translateTransition2.setInterpolator(Interpolator.LINEAR);
-
-		Timeline settingsTimeline1 = new Timeline();
-
-		settingsTimeline1.setCycleCount(1);
-		settingsTimeline1.setAutoReverse(false);
-
 		double toHeight;
-		if (playbackCustom != null) {
-			toHeight = mainController.mediaView.sceneProperty().get().getHeight() < 637
-					? mainController.mediaView.sceneProperty().get().getHeight() - 100
-					: 537;
-		} else {
-			toHeight = mainController.mediaView.sceneProperty().get().getHeight() < 587
-					? mainController.mediaView.sceneProperty().get().getHeight() - 100
-					: 487;
-		}
-
-		settingsTimeline1.getKeyFrames().add(new KeyFrame(Duration.millis(100),
-				new KeyValue(settingsBackgroundPane.prefHeightProperty(), toHeight, Interpolator.LINEAR)));
-
-		/*
-		 * settingsTimeline.setOnFinished((e) -> { settingsTimeline.stop();
-		 * settingsTimeline.getKeyFrames().clear(); });
-		 */
-
-		ParallelTransition parallelTransition = new ParallelTransition();
-		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline1);
-		parallelTransition.setCycleCount(1);
-		parallelTransition.play();
-
-		/*
-		 * SequentialTransition seqTrans = new SequentialTransition();
-		 * seqTrans.getChildren().addAll(parallelTransition, translateTransition2);
-		 * seqTrans.play();
-		 */
-
-		// settingsTimeline.play();
-
-		parallelTransition.setOnFinished((e) -> {
-			settingsBackgroundPane.prefHeightProperty()
-					.bind(Bindings.max(Bindings.add(playbackSpeedScroll.heightProperty(), 40), 170));
-		});
+		if (playbackCustom != null)
+			toHeight = mainController.mediaView.sceneProperty().get().getHeight() < 637 ? mainController.mediaView.sceneProperty().get().getHeight() - 100 : 537;
+		else
+			toHeight = mainController.mediaView.sceneProperty().get().getHeight() < 587 ? mainController.mediaView.sceneProperty().get().getHeight() - 100 : 487;
+		
+		AnimationsClass.openPlaybackSpeed(bufferPane, settingsBackgroundPane, playbackSpeedScroll, toHeight);
+		
 	}
 	
 	public void closePlaybackSpeedPage() {
 
 		playbackSpeedOpen = false;
 
-		settingsBackgroundPane.prefHeightProperty().unbind();
-
-		settingsBackgroundPane.setPrefHeight(playbackSpeedScroll.getHeight());
-
-		// bufferPane.prefHeightProperty().unbind();
-
-		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), bufferPane);
-		translateTransition1.setFromX(-settingsBackgroundPane.getWidth());
-		translateTransition1.setToX(0);
-		translateTransition1.setCycleCount(1);
-		translateTransition1.setInterpolator(Interpolator.LINEAR);
-
-		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(100), playbackSpeedScroll);
-		translateTransition2.setFromX(0);
-		translateTransition2.setToX(settingsBackgroundPane.getWidth());
-		translateTransition2.setCycleCount(1);
-		translateTransition2.setInterpolator(Interpolator.LINEAR);
-
-		Timeline settingsTimeline1 = new Timeline();
-
-		settingsTimeline1.setCycleCount(1);
-		settingsTimeline1.setAutoReverse(false);
-		settingsTimeline1.getKeyFrames().add(new KeyFrame(Duration.millis(100),
-				new KeyValue(settingsBackgroundPane.prefHeightProperty(), 170, Interpolator.LINEAR)));
-
-		ParallelTransition parallelTransition = new ParallelTransition();
-		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline1);
-		parallelTransition.setCycleCount(1);
-		parallelTransition.play();
-
-		parallelTransition.setOnFinished((e) -> {
-			playbackSpeedScroll.setVvalue(0);
-		});
+		AnimationsClass.closePlaybackSpeed(settingsBackgroundPane, playbackSpeedScroll, bufferPane);
 
 	}
 	
@@ -1147,59 +967,12 @@ public class SettingsController implements Initializable{
 	public void openCustomSpeed() {
 		customSpeedOpen = true;
 
-		settingsBackgroundPane.prefHeightProperty().unbind();
-
-		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), customSpeedBuffer);
-		translateTransition1.setFromX(settingsBackgroundPane.getWidth());
-		translateTransition1.setToX(0);
-		translateTransition1.setCycleCount(1);
-		translateTransition1.setInterpolator(Interpolator.LINEAR);
-
-		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(100), playbackSpeedScroll);
-		translateTransition2.setFromX(0);
-		translateTransition2.setToX(-playbackSpeedScroll.getWidth() - 1.5);
-		translateTransition2.setCycleCount(1);
-		translateTransition2.setInterpolator(Interpolator.LINEAR);
-
-		Timeline settingsTimeline1 = new Timeline();
-
-		settingsTimeline1.setCycleCount(1);
-		settingsTimeline1.setAutoReverse(false);
-		settingsTimeline1.getKeyFrames().add(new KeyFrame(Duration.millis(100),
-				new KeyValue(settingsBackgroundPane.prefHeightProperty(), 130, Interpolator.LINEAR)));
-
-		ParallelTransition parallelTransition = new ParallelTransition();
-		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline1);
-		parallelTransition.setCycleCount(1);
-		parallelTransition.play();
-
-		parallelTransition.setOnFinished((e) -> {
-			playbackSpeedScroll.setVvalue(0);
-		});
+		AnimationsClass.openCustomSpeed(settingsBackgroundPane, customSpeedBuffer, playbackSpeedScroll);
 
 	}
 
 	public void closeCustomSpeed() {
 		customSpeedOpen = false;
-
-		// settingsBackgroundPane.prefHeightProperty().unbind();
-
-		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), customSpeedBuffer);
-		translateTransition1.setFromX(0);
-		translateTransition1.setToX(settingsBackgroundPane.getWidth());
-		translateTransition1.setCycleCount(1);
-		translateTransition1.setInterpolator(Interpolator.LINEAR);
-
-		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(100), playbackSpeedScroll);
-		translateTransition2.setFromX(-settingsBackgroundPane.getWidth());
-		translateTransition2.setToX(0);
-		translateTransition2.setCycleCount(1);
-		translateTransition2.setInterpolator(Interpolator.LINEAR);
-
-		Timeline settingsTimeline1 = new Timeline();
-
-		settingsTimeline1.setCycleCount(1);
-		settingsTimeline1.setAutoReverse(false);
 
 		double toHeight;
 		if (playbackCustom != null) {
@@ -1212,51 +985,16 @@ public class SettingsController implements Initializable{
 					: 487;
 		}
 
-		settingsTimeline1.getKeyFrames().add(new KeyFrame(Duration.millis(100),
-				new KeyValue(settingsBackgroundPane.prefHeightProperty(), toHeight, Interpolator.LINEAR)));
 
-		ParallelTransition parallelTransition = new ParallelTransition();
-		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline1);
-		parallelTransition.setCycleCount(1);
-		parallelTransition.play();
-
-		parallelTransition.setOnFinished((e) -> {
-			settingsBackgroundPane.prefHeightProperty().bind(Bindings.add(playbackSpeedScroll.heightProperty(), 40));
-		});
-
+		AnimationsClass.closeCustomSpeed(customSpeedBuffer, settingsBackgroundPane, playbackSpeedScroll, toHeight);
+		
 	}
 
 	public void openPlaybackOptions() {
 
 		playbackOptionsOpen = true;
-
-		// OPENING ANIMATION GOES HERE//
-
-		settingsBackgroundPane.prefHeightProperty().unbind();
-
-		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), playbackOptionsBuffer);
-		translateTransition1.setFromX(settingsBackgroundPane.getWidth());
-		translateTransition1.setToX(0);
-		translateTransition1.setCycleCount(1);
-		translateTransition1.setInterpolator(Interpolator.LINEAR);
-
-		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(100), bufferPane);
-		translateTransition2.setFromX(0);
-		translateTransition2.setToX(-settingsBackgroundPane.getWidth());
-		translateTransition2.setCycleCount(1);
-		translateTransition2.setInterpolator(Interpolator.LINEAR);
-
-		Timeline settingsTimeline1 = new Timeline();
-
-		settingsTimeline1.setCycleCount(1);
-		settingsTimeline1.setAutoReverse(false);
-		settingsTimeline1.getKeyFrames().add(new KeyFrame(Duration.millis(100),
-				new KeyValue(settingsBackgroundPane.prefHeightProperty(), 230, Interpolator.LINEAR)));
-
-		ParallelTransition parallelTransition = new ParallelTransition();
-		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline1);
-		parallelTransition.setCycleCount(1);
-		parallelTransition.play();
+		
+		AnimationsClass.openPlaybackOptions(settingsBackgroundPane, playbackOptionsBuffer, bufferPane);
 
 	}
 
@@ -1264,31 +1002,9 @@ public class SettingsController implements Initializable{
 
 		playbackOptionsOpen = false;
 
-		// CLOSING ANIMATION GOES HERE//
 
-		TranslateTransition translateTransition1 = new TranslateTransition(Duration.millis(100), playbackOptionsBuffer);
-		translateTransition1.setFromX(0);
-		translateTransition1.setToX(settingsBackgroundPane.getWidth());
-		translateTransition1.setCycleCount(1);
-		translateTransition1.setInterpolator(Interpolator.LINEAR);
-
-		TranslateTransition translateTransition2 = new TranslateTransition(Duration.millis(100), bufferPane);
-		translateTransition2.setFromX(-settingsBackgroundPane.getWidth());
-		translateTransition2.setToX(0);
-		translateTransition2.setCycleCount(1);
-		translateTransition2.setInterpolator(Interpolator.LINEAR);
-
-		Timeline settingsTimeline1 = new Timeline();
-
-		settingsTimeline1.setCycleCount(1);
-		settingsTimeline1.setAutoReverse(false);
-		settingsTimeline1.getKeyFrames().add(new KeyFrame(Duration.millis(100),
-				new KeyValue(settingsBackgroundPane.prefHeightProperty(), 170, Interpolator.LINEAR)));
-
-		ParallelTransition parallelTransition = new ParallelTransition();
-		parallelTransition.getChildren().addAll(translateTransition1, translateTransition2, settingsTimeline1);
-		parallelTransition.setCycleCount(1);
-		parallelTransition.play();
+		AnimationsClass.closePlaybackOptions(playbackOptionsBuffer, settingsBackgroundPane, bufferPane);
+		
 	}
 	
 }
