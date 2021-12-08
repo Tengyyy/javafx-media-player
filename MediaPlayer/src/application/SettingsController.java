@@ -29,6 +29,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 public class SettingsController implements Initializable{
 	
@@ -102,23 +104,19 @@ public class SettingsController implements Initializable{
 	
 	DecimalFormat df;
 	
+	FileChooser fileChooser;
+	
 
 	// counter to keep track of which playback speed field is selected in the settings menu
 	int playbackSpeedTracker = 4;
 	
 
-	public  boolean settingsOpen = false;
-
+	public  boolean settingsOpen = false; // true if settings home is open
 	boolean playbackSpeedOpen = false;
-
 	boolean playbackOptionsOpen = false;
-
 	boolean customSpeedOpen = false;
 	
-	private File rightArrowFile, leftArrowFile, checkFile;
-	
-	
-	
+	private File rightArrowFile, leftArrowFile, checkFile;	
 	
 	HBox[] playbackSpeedBoxesArray; // array containing playback speed selection fields
 	Label[] playbackSpeedCheckBoxesArray; // array containing checkmark fields inside playback speed tab
@@ -127,6 +125,10 @@ public class SettingsController implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
+
+		fileChooser = new FileChooser();
+		fileChooser.setTitle("Open video");
+		fileChooser.getExtensionFilters().add(new ExtensionFilter("Videos","*.mp4"));
 		
 		playbackSpeedBoxesArray = new HBox[] { playbackSpeed1, playbackSpeed2, playbackSpeed3, playbackSpeed4, playbackSpeed5, playbackSpeed6, playbackSpeed7, playbackSpeed8 };
 		playbackSpeedCheckBoxesArray = new Label[] { checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7, checkBox8 };
@@ -181,7 +183,7 @@ public class SettingsController implements Initializable{
 		});
 
 		videoBox.setOnMouseClicked((e) -> {
-			mainController.openVideoChooser();
+			openVideoChooser();
 		});
 
 		shuffleBox.setOnMouseClicked((e) -> {
@@ -875,75 +877,42 @@ public class SettingsController implements Initializable{
 	}
 	
 	public void openSettings() {
+		controlBarController.settingsEnter = new Image(controlBarController.settingsEnterFile.toURI().toString());
+		controlBarController.settingsIcon.setImage(controlBarController.settingsEnter);
+		settingsOpen = true;
 		
+		AnimationsClass.openSettings(bufferPane);
+
 	}
 	
 	public void closeSettings() {
 		
-	}
-	
-	public   void openCloseSettings() {
-		if (settingsOpen) {
-			if (!playbackSpeedOpen && !playbackOptionsOpen) {
-				controlBarController.settingsExit = new Image(controlBarController.settingsExitFile.toURI().toString());
-				controlBarController.settingsIcon.setImage(controlBarController.settingsExit);
-				settingsOpen = false;
-
-				AnimationsClass.closeSettings(bufferPane);
-				
-			} else if (playbackOptionsOpen) {
-				// CLOSING ANIMATION WHEN PLAYBACK OPTIONS PAGE IS OPEN
-
-				controlBarController.settingsExit = new Image(controlBarController.settingsExitFile.toURI().toString());
-				controlBarController.settingsIcon.setImage(controlBarController.settingsExit);
-				settingsOpen = false;
-				playbackSpeedOpen = false;
-				customSpeedOpen = false;
-				playbackOptionsOpen = false;
-
-				
-				AnimationsClass.closeSettingsFromPlaybackOptions(settingsBackgroundPane, playbackOptionsBuffer, bufferPane);
-				
-
-			} else if (!customSpeedOpen) {
-				
-				// closing animation when playback speed page is open
-				
-				controlBarController.settingsExit = new Image(controlBarController.settingsExitFile.toURI().toString());
-				controlBarController.settingsIcon.setImage(controlBarController.settingsExit);
-				settingsOpen = false;
-				playbackSpeedOpen = false;
-
-				AnimationsClass.closeSettingsFromPlaybackSpeed(settingsBackgroundPane, playbackSpeedScroll, bufferPane);
-				
-			} else if (customSpeedOpen) {
-				// TODO: Settings closing animation when custom playback speed selector is open.
-				controlBarController.settingsExit = new Image(controlBarController.settingsExitFile.toURI().toString());
-				controlBarController.settingsIcon.setImage(controlBarController.settingsExit);
-				settingsOpen = false;
-				playbackSpeedOpen = false;
-				customSpeedOpen = false;
-				
-				AnimationsClass.closeSettingsFromCustomSpeed(settingsBackgroundPane, playbackSpeedScroll, customSpeedBuffer, bufferPane);
-				
-			}
-
+		controlBarController.settingsExit = new Image(controlBarController.settingsExitFile.toURI().toString());
+		controlBarController.settingsIcon.setImage(controlBarController.settingsExit);
+		
+		if(settingsOpen) {
+			settingsOpen = false;
+			AnimationsClass.closeSettings(bufferPane);
 		}
-
-		else {
-			controlBarController.settingsEnter = new Image(controlBarController.settingsEnterFile.toURI().toString());
-			controlBarController.settingsIcon.setImage(controlBarController.settingsEnter);
-			settingsOpen = true;
-			
-			AnimationsClass.openSettings(bufferPane);
-			
-			
+		else if(playbackOptionsOpen) {
+			playbackOptionsOpen = false;
+			AnimationsClass.closeSettingsFromPlaybackOptions(settingsBackgroundPane, playbackOptionsBuffer, bufferPane);
+		}
+		else if(playbackSpeedOpen) {
+			playbackSpeedOpen = false;
+			AnimationsClass.closeSettingsFromPlaybackSpeed(settingsBackgroundPane, playbackSpeedScroll, bufferPane);
+		}
+		else if(customSpeedOpen) {
+			customSpeedOpen = false;
+			AnimationsClass.closeSettingsFromCustomSpeed(settingsBackgroundPane, playbackSpeedScroll, customSpeedBuffer, bufferPane);
 		}
 	}
+
 
 	public void openPlaybackSpeedPage() {
 
 		playbackSpeedOpen = true;
+		settingsOpen = false;
 
 		double toHeight;
 		if (playbackCustom != null)
@@ -958,6 +927,7 @@ public class SettingsController implements Initializable{
 	public void closePlaybackSpeedPage() {
 
 		playbackSpeedOpen = false;
+		settingsOpen = true;
 
 		AnimationsClass.closePlaybackSpeed(settingsBackgroundPane, playbackSpeedScroll, bufferPane);
 
@@ -966,6 +936,7 @@ public class SettingsController implements Initializable{
 	
 	public void openCustomSpeed() {
 		customSpeedOpen = true;
+		playbackSpeedOpen = false;
 
 		AnimationsClass.openCustomSpeed(settingsBackgroundPane, customSpeedBuffer, playbackSpeedScroll);
 
@@ -973,19 +944,14 @@ public class SettingsController implements Initializable{
 
 	public void closeCustomSpeed() {
 		customSpeedOpen = false;
+		playbackSpeedOpen = true;
 
 		double toHeight;
-		if (playbackCustom != null) {
-			toHeight = mainController.mediaView.sceneProperty().get().getHeight() < 637
-					? mainController.mediaView.sceneProperty().get().getHeight() - 100
-					: 537;
-		} else {
-			toHeight = mainController.mediaView.sceneProperty().get().getHeight() < 587
-					? mainController.mediaView.sceneProperty().get().getHeight() - 100
-					: 487;
-		}
-
-
+		if (playbackCustom != null)
+			toHeight = mainController.mediaView.sceneProperty().get().getHeight() < 637 ? mainController.mediaView.sceneProperty().get().getHeight() - 100 : 537;
+		else 
+			toHeight = mainController.mediaView.sceneProperty().get().getHeight() < 587 ? mainController.mediaView.sceneProperty().get().getHeight() - 100 : 487;
+		
 		AnimationsClass.closeCustomSpeed(customSpeedBuffer, settingsBackgroundPane, playbackSpeedScroll, toHeight);
 		
 	}
@@ -993,6 +959,7 @@ public class SettingsController implements Initializable{
 	public void openPlaybackOptions() {
 
 		playbackOptionsOpen = true;
+		settingsOpen = false;
 		
 		AnimationsClass.openPlaybackOptions(settingsBackgroundPane, playbackOptionsBuffer, bufferPane);
 
@@ -1001,10 +968,32 @@ public class SettingsController implements Initializable{
 	public void closePlaybackOptions() {
 
 		playbackOptionsOpen = false;
-
+		settingsOpen = true;
 
 		AnimationsClass.closePlaybackOptions(playbackOptionsBuffer, settingsBackgroundPane, bufferPane);
 		
+	}
+	
+	public void openVideoChooser() {
+		File selectedFile = fileChooser.showOpenDialog(Main.stage);
+
+		if (selectedFile != null) {
+			videoNameLabel.setText(selectedFile.getName());
+			Main.stage.setTitle(selectedFile.getName());
+			
+			////////////// this can be turned into one mediaplayer cleaning method
+			mainController.mediaPlayer.dispose();
+			mainController.atEnd = false;
+			mainController.seekedToEnd = false;
+			mainController.playing = false;
+			mainController.wasPlaying = false;
+			//////////////
+			
+			
+			mainController.createMediaPlayer(selectedFile);
+
+		}
+
 	}
 	
 }

@@ -56,10 +56,7 @@ public class MainController implements Initializable {
 	
 	@FXML
 	private SettingsController settingsController;
-	
 
-	
-	//private MainController mainController;
 
 	// custom playback speed selection box that will be created if the user selects a custom speed using the slider
 
@@ -93,25 +90,14 @@ public class MainController implements Initializable {
 	// counter to keep track of the current node that has focus (used for focus traversing with tab and shift+tab)
 	public  int focusNodeTracker = 0;
 
-	FileChooser fileChooser;
-	File selectedFile;
-
 	SubtitleTrack subtitles;
 
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		
-		
 		controlBarController.init(this, settingsController);
-		
 		settingsController.init(this, controlBarController);
-
-		fileChooser = new FileChooser();
-		fileChooser.setTitle("Open video");
-		
-		
-		fileChooser.getExtensionFilters().add(new ExtensionFilter("Videos","*.mp4"));
 
 		file = new File("hey.mp4");
 
@@ -166,7 +152,7 @@ public class MainController implements Initializable {
 		// otherwise play/pause/replay the video
 
 		if (settingsController.settingsOpen) {
-			settingsController.openCloseSettings();
+			settingsController.closeSettings();
 		} else {
 			if (atEnd) {
 				controlBarController.replayMedia();
@@ -423,26 +409,6 @@ public class MainController implements Initializable {
 
 		} else if (settingsController.autoplayOn) {
 			// play next song in queue/directory
-		}
-
-	}
-
-
-	public void openVideoChooser() {
-		selectedFile = fileChooser.showOpenDialog(Main.stage);
-
-		if (selectedFile != null) {
-			settingsController.videoNameLabel.setText(selectedFile.getName());
-			
-			mediaPlayer.dispose();
-			
-			atEnd = false;
-			seekedToEnd = false;
-			playing = false;
-			wasPlaying = false;
-			
-			createMediaPlayer(selectedFile);
-
 		}
 
 	}

@@ -4,10 +4,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -21,7 +17,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -108,9 +103,7 @@ public class ControlBarController implements Initializable{
 
 
 	private File volumeUpFile;
-
 	private File volumeDownFile;
-
 	private File volumeMuteFile;
 	
 	Image playImage;
@@ -241,7 +234,7 @@ public class ControlBarController implements Initializable{
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				// TODO Auto-generated method stub
 				if (!newValue && settingsController.settingsOpen) {
-					settingsController.openCloseSettings();
+					settingsController.closeSettings();
 				}
 
 			}
@@ -287,7 +280,7 @@ public class ControlBarController implements Initializable{
 		
 		durationSlider.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
 			if (settingsController.settingsOpen) {
-				settingsController.openCloseSettings();
+				settingsController.closeSettings();
 			}
 		});
 		
@@ -319,7 +312,7 @@ public class ControlBarController implements Initializable{
 					mainController.mediaPlayer.seek(Duration.seconds(durationSlider.getValue())); // seeks to exact position when user finishes dragging
 					
 					if (settingsController.settingsOpen) { // close settings pane after user finishes seeking media (if its open)
-						settingsController.openCloseSettings();
+						settingsController.closeSettings();
 					}
 					
 					if(mainController.atEnd) { // if user drags the duration slider to the end turn play button to replay button
@@ -426,7 +419,7 @@ fullScreenButton.focusedProperty()
 
 	public  void playButtonClick1() {
 		if (settingsController.settingsOpen) {
-			settingsController.openCloseSettings();
+			settingsController.closeSettings();
 		} else {
 			playOrPause();
 		}
@@ -435,7 +428,7 @@ fullScreenButton.focusedProperty()
 	
 	public  void playButtonClick2() {
 		if (settingsController.settingsOpen) {
-			settingsController.openCloseSettings();
+			settingsController.closeSettings();
 		} else {
 			replayMedia();
 			mainController.seekedToEnd = false;
@@ -532,7 +525,7 @@ fullScreenButton.focusedProperty()
 	
 	public void volumeButtonClick() {
 		if (settingsController.settingsOpen) {
-			settingsController.openCloseSettings();
+			settingsController.closeSettings();
 		}
 		else {
 			if(!muted)
@@ -563,7 +556,7 @@ fullScreenButton.focusedProperty()
 
 	public void playNextMedia() {
 		if (settingsController.settingsOpen) {
-			settingsController.openCloseSettings();
+			settingsController.closeSettings();
 		} else {
 
 		}
@@ -581,13 +574,16 @@ fullScreenButton.focusedProperty()
 	}
 	
 	public void settingsButtonClick() {
-		settingsController.openCloseSettings();
+		if(settingsController.settingsOpen)
+			settingsController.closeSettings();
+		else
+			settingsController.openSettings();
 	}
 	
 	
 	public void fullScreenButtonClick() {
 		if (settingsController.settingsOpen)
-			settingsController.openCloseSettings();
+			settingsController.closeSettings();
 		else
 			fullScreen();
 	}
@@ -595,7 +591,7 @@ fullScreenButton.focusedProperty()
 
 	public void controlBarClick() {
 		if (settingsController.settingsOpen) {
-			settingsController.openCloseSettings();
+			settingsController.closeSettings();
 		}
 	}
 	

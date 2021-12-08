@@ -1,26 +1,17 @@
 package application;
 	
-import java.io.File;
 
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javafx.util.Duration;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
+
 
 
 public class Main extends Application {
@@ -56,10 +47,7 @@ public class Main extends Application {
 			Scene scene = new Scene(root, 600, 400);
 			
 			scene.getStylesheets().add(getClass().getResource("Resources/Styles/application.css").toExternalForm());	
-			
-			Screen screen = Screen.getPrimary();
-			
-			double scaleY = screen.getOutputScaleY();
+
 			
 			
 			primaryStage.setMinHeight(325);
@@ -133,7 +121,7 @@ public class Main extends Application {
 					
 					case ESCAPE: {
 						if(settingsController.settingsOpen && !fullScreen) {
-							settingsController.openCloseSettings();
+							settingsController.closeSettings();
 						}
 						fullScreen = false;
 						
