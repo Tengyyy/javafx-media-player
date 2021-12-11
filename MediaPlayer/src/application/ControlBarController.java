@@ -130,6 +130,8 @@ public class ControlBarController implements Initializable{
 	
 	 boolean sliderFocus = false;
 	 
+	 boolean showingTimeLeft = false;
+	 
 	
 	 Tooltip play;
 	 Tooltip pause;
@@ -168,6 +170,8 @@ public class ControlBarController implements Initializable{
 
 		durationLabel.setTranslateX(-60);
 
+		durationLabel.setOnMouseClicked((e) -> toggleDurationLabel());
+		
 		
 		maximizeFile = new File("Images/maximizeFile.png");
 		minimizeFile = new File("Images/minimizeFile.png");
@@ -406,7 +410,7 @@ fullScreenButton.focusedProperty()
 		//////////////////////////////////////////////////////////////////////////
 		
 	}
-	
+
 	public void init(MainController mainController, SettingsController settingsController) {
 		
 		this.mainController = mainController;
@@ -415,6 +419,17 @@ fullScreenButton.focusedProperty()
 		
 	}
 
+	public void toggleDurationLabel() {
+		if(showingTimeLeft) {
+			Utilities.bindCurrentTimeLabel(durationLabel, mainController.mediaPlayer, mainController.media);
+			showingTimeLeft = false;
+		}
+		else {
+			Utilities.bindTimeLeftLabel(durationLabel, mainController.mediaPlayer, mainController.media);
+			showingTimeLeft= true;
+		}
+	}
+	
 	
 
 	public  void playButtonClick1() {

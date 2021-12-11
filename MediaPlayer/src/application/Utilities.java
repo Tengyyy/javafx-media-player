@@ -46,6 +46,17 @@ public class Utilities {
 		}, mediaPlayer.currentTimeProperty()));
 	}
 	
+	public static void bindTimeLeftLabel(Label durationLabel, MediaPlayer mediaPlayer, Media media) { // gotta make formatting of this label prettier
+
+		durationLabel.textProperty().bind(Bindings.createStringBinding(new Callable<String>() {
+			@Override
+			public String call() throws Exception {
+
+				return "-" + getTime(media.getDuration().subtract(mediaPlayer.getCurrentTime())) + "/" + getTime(media.getDuration());
+			}
+		}, mediaPlayer.currentTimeProperty()));
+	}
+	
 	
 	// makes HBox's background lighter and less transparent on hovering
 	public static void hoverEffectOn(HBox setting) {
