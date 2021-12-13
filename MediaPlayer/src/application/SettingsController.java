@@ -7,11 +7,16 @@ import java.util.ResourceBundle;
 
 import com.jfoenix.controls.JFXToggleButton;
 
-
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -29,8 +34,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.util.Duration;
 
 public class SettingsController implements Initializable{
 	
@@ -66,7 +73,7 @@ public class SettingsController implements Initializable{
 	StackPane settingsPane;
 	
 	@FXML
-	Label playbackValueLabel, videoNameLabel, playbackOptionsArrow, playbackSpeedArrow, playbackSpeedTitleLabel, playbackSpeedCustom, checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7, checkBox8, customSpeedArrow, customSpeedTitleLabel, customSpeedLabel, playbackOptionsTitleArrow, playbackOptionsTitleText, shuffleLabel, loopLabel, autoplayLabel, videoArrowLabel;
+	Label playbackValueLabel, playbackOptionsArrow, playbackSpeedArrow, playbackSpeedTitleLabel, playbackSpeedCustom, checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7, checkBox8, customSpeedArrow, customSpeedTitleLabel, customSpeedLabel, playbackOptionsTitleArrow, playbackOptionsTitleText, shuffleLabel, loopLabel, autoplayLabel, videoArrowLabel;
 	
 
 	@FXML
@@ -76,8 +83,13 @@ public class SettingsController implements Initializable{
 	JFXToggleButton shuffleSwitch, loopSwitch, autoplaySwitch;
 	
 	@FXML
-	HBox playbackSpeedBox, playbackOptionsBox, videoBox, playbackSpeedTitle, playbackSpeed1, playbackSpeed2, playbackSpeed3, playbackSpeed4, playbackSpeed5, playbackSpeed6, playbackSpeed7, playbackSpeed8, customSpeedTitle, shuffleBox, loopBox, autoplayBox, playbackOptionsTitle;
+	HBox playbackSpeedBox, playbackOptionsBox, videoBox, videoNameBox, playbackSpeedTitle, playbackSpeed1, playbackSpeed2, playbackSpeed3, playbackSpeed4, playbackSpeed5, playbackSpeed6, playbackSpeed7, playbackSpeed8, customSpeedTitle, shuffleBox, loopBox, autoplayBox, playbackOptionsTitle;
 
+	@FXML
+	Text videoNameText;
+	
+	
+	
 	private MainController mainController;
 	private ControlBarController controlBarController;
 	
@@ -118,8 +130,17 @@ public class SettingsController implements Initializable{
 	
 	private File rightArrowFile, leftArrowFile, checkFile;	
 	
+	
+	final double OFFSET = 0;
+	
+	
 	HBox[] playbackSpeedBoxesArray; // array containing playback speed selection fields
 	Label[] playbackSpeedCheckBoxesArray; // array containing checkmark fields inside playback speed tab
+	
+	
+	
+	Timeline videoNameTimeline = new Timeline();
+	Timeline resetTimeline = new Timeline();
 	
 	
 	@Override
@@ -722,12 +743,12 @@ public class SettingsController implements Initializable{
 					Utilities.hoverEffectOff(playbackOptionsBox);
 				});
 
-				videoBox.setOnMouseEntered((e) -> {
+				/*videoBox.setOnMouseEntered((e) -> {
 					Utilities.hoverEffectOn(videoBox);
 				});
 				videoBox.setOnMouseExited((e) -> {
 					Utilities.hoverEffectOff(videoBox);
-				});
+				});*/
 				
 
 				// On-hover effect for playback speed items
@@ -859,6 +880,79 @@ public class SettingsController implements Initializable{
 
 					});
 				}
+				
+			    videoNameText.setManaged(false);
+			    videoNameText.setLayoutY(30);
+			    videoNameText.setLayoutX(OFFSET);
+			    
+			    Rectangle videoNameClip = new Rectangle(195, 50);
+			    videoNameBox.setClip(videoNameClip);
+
+			    KeyFrame updateFrame = new KeyFrame(Duration.seconds(1 / 60d), new EventHandler<ActionEvent>() {
+
+			    	private boolean rightMovement;
+			    	
+			        @Override
+			        public void handle(ActionEvent event) {
+			            double tW = videoNameText.getLayoutBounds().getWidth();
+			            double pW = videoNameBox.getWidth();
+			            double layoutX = videoNameText.getLayoutX();
+
+			                if ((rightMovement && layoutX >= OFFSET) || (!rightMovement && layoutX + tW + OFFSET <= pW)) {
+			                    // invert movement, if bounds are reached
+			                    rightMovement = !rightMovement;
+			                }
+
+			                // update position
+			                if (rightMovement) {
+			                    layoutX += 0.5;
+			                } else {
+			                    layoutX -= 0.5;
+			                }
+			                videoNameText.setLayoutX(layoutX);
+			        }
+			    });
+
+			    videoNameTimeline.getKeyFrames().add(updateFrame);
+			    videoNameTimeline.setCycleCount(Animation.INDEFINITE);
+			    
+			    KeyFrame resetFrame = new KeyFrame(Duration.seconds(1/60d), new EventHandler<ActionEvent>() {
+
+					@Override
+					public void handle(ActionEvent event) {
+						
+			            double layoutX = videoNameText.getLayoutX();
+
+			            if(Math.round(layoutX) == 0) {
+			            	resetTimeline.stop();
+			            }
+			            else if(layoutX < 0)
+			            	layoutX += 1;
+			            
+			            
+			            videoNameText.setLayoutX(layoutX);
+					}
+			    });
+
+			    resetTimeline.getKeyFrames().add(resetFrame);
+			    resetTimeline.setCycleCount(Animation.INDEFINITE);
+			    
+			    videoBox.setOnMouseEntered((e) -> {
+					Utilities.hoverEffectOn(videoBox);
+			    	if(videoNameTimeline.getStatus() != Animation.Status.RUNNING && resetTimeline.getStatus() != Animation.Status.RUNNING && videoNameText.getLayoutBounds().getWidth() > videoNameBox.getWidth()) {
+					    videoNameText.setLayoutX(OFFSET);
+			        	videoNameTimeline.play();
+			    	}
+			    });
+			    
+			    videoBox.setOnMouseExited((e) -> {
+					Utilities.hoverEffectOff(videoBox);
+			    	if(videoNameTimeline.getStatus() == Animation.Status.RUNNING) {
+			    		videoNameTimeline.stop();
+					    resetTimeline.play();
+			    	}
+			    });
+
 		
 	}
 	
@@ -978,8 +1072,18 @@ public class SettingsController implements Initializable{
 		File selectedFile = fileChooser.showOpenDialog(Main.stage);
 
 		if (selectedFile != null) {
-			videoNameLabel.setText(selectedFile.getName());
+			videoNameText.setText(selectedFile.getName());
 			Main.stage.setTitle(selectedFile.getName());
+			
+			if(videoNameTimeline.getStatus() == Animation.Status.RUNNING) {
+				videoNameTimeline.stop();
+				videoNameText.setLayoutX(0);
+			}
+			else if(resetTimeline.getStatus() == Animation.Status.RUNNING) {
+				resetTimeline.stop();
+				videoNameText.setLayoutX(0);
+
+			}
 			
 			////////////// this can be turned into one mediaplayer cleaning method
 			mainController.mediaPlayer.dispose();

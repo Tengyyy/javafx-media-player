@@ -301,8 +301,6 @@ public class ControlBarController implements Initializable{
 		durationSlider.valueChangingProperty().addListener(new ChangeListener<Boolean>() { // vaja ära fixida see jama
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				
-				//Utilities.bindCurrentTimeLabel(durationLabel, mainController.mediaPlayer, mainController.media);
 
 				
 				if(newValue) { // pause video when user starts seeking
@@ -421,11 +419,11 @@ fullScreenButton.focusedProperty()
 
 	public void toggleDurationLabel() {
 		if(showingTimeLeft) {
-			Utilities.bindCurrentTimeLabel(durationLabel, mainController.mediaPlayer, mainController.media);
+			Utilities.setCurrentTimeLabel(durationLabel, mainController.mediaPlayer, mainController.media);
 			showingTimeLeft = false;
 		}
 		else {
-			Utilities.bindTimeLeftLabel(durationLabel, mainController.mediaPlayer, mainController.media);
+			Utilities.setTimeLeftLabel(durationLabel, mainController.mediaPlayer, mainController.media);
 			showingTimeLeft= true;
 		}
 	}

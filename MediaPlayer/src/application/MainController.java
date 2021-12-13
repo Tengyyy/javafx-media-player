@@ -338,9 +338,9 @@ public class MainController implements Initializable {
 
 	public void updateMedia(double newValue) {
 		if(!controlBarController.showingTimeLeft)
-		Utilities.bindCurrentTimeLabel(controlBarController.durationLabel, mediaPlayer, media);
+			Utilities.setCurrentTimeLabel(controlBarController.durationLabel, mediaPlayer, media);
 		else
-		Utilities.bindTimeLeftLabel(controlBarController.durationLabel, mediaPlayer, media);
+			Utilities.setTimeLeftLabel(controlBarController.durationLabel, mediaPlayer, media);
 
 		if (atEnd) {
 			atEnd = false;
@@ -443,9 +443,9 @@ public class MainController implements Initializable {
 			@Override
 			public void changed(ObservableValue<? extends Duration> observableValue, Duration oldTime, Duration newTime) {
 				if(!controlBarController.showingTimeLeft)
-					Utilities.bindCurrentTimeLabel(controlBarController.durationLabel, mediaPlayer, media);
-					else
-					Utilities.bindTimeLeftLabel(controlBarController.durationLabel, mediaPlayer, media);
+					Utilities.setCurrentTimeLabel(controlBarController.durationLabel, mediaPlayer, media);
+				else
+					Utilities.setTimeLeftLabel(controlBarController.durationLabel, mediaPlayer, media);
 				
 				if (!controlBarController.durationSlider.isValueChanging()) {
 					controlBarController.durationSlider.setValue(newTime.toSeconds());
@@ -467,10 +467,10 @@ public class MainController implements Initializable {
 
 				controlBarController.durationSlider.setMax(Math.floor(media.getDuration().toSeconds()));
 
-				if(!controlBarController.showingTimeLeft) // fix this shit
-					Utilities.bindCurrentTimeLabel(controlBarController.durationLabel, mediaPlayer, media);
-					else
-					Utilities.bindTimeLeftLabel(controlBarController.durationLabel, mediaPlayer, media);
+				//if(!controlBarController.showingTimeLeft) // fix this shit
+					//Utilities.bindCurrentTimeLabel(controlBarController.durationLabel, mediaPlayer, media);
+					//else
+					//Utilities.bindTimeLeftLabel(controlBarController.durationLabel, mediaPlayer, media);
 
 				TimerTask setRate = new TimerTask() {
 

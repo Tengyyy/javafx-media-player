@@ -46,6 +46,15 @@ public class Utilities {
 		}, mediaPlayer.currentTimeProperty()));
 	}
 	
+	
+	public static void setCurrentTimeLabel(Label durationLabel, MediaPlayer mediaPlayer, Media media) {
+		durationLabel.setText(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()));		
+	}
+	
+	public static void setTimeLeftLabel(Label durationLabel, MediaPlayer mediaPlayer, Media media) { // gotta make formatting of this label prettier
+		durationLabel.setText("-" + getTime(media.getDuration().subtract(mediaPlayer.getCurrentTime())) + "/" + getTime(media.getDuration()));
+	}
+	
 	public static void bindTimeLeftLabel(Label durationLabel, MediaPlayer mediaPlayer, Media media) { // gotta make formatting of this label prettier
 
 		durationLabel.textProperty().bind(Bindings.createStringBinding(new Callable<String>() {
