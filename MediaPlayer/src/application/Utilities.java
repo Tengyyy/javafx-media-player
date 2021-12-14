@@ -35,7 +35,7 @@ public class Utilities {
 	}
 	
 	// binds the video duration label string to mediaplayers current time value
-	public static void bindCurrentTimeLabel(Label durationLabel, MediaPlayer mediaPlayer, Media media) {
+	/*public static void bindCurrentTimeLabel(Label durationLabel, MediaPlayer mediaPlayer, Media media) {
 
 		durationLabel.textProperty().bind(Bindings.createStringBinding(new Callable<String>() {
 			@Override
@@ -44,18 +44,17 @@ public class Utilities {
 				return getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration());
 			}
 		}, mediaPlayer.currentTimeProperty()));
-	}
-	
+	}*/
 	
 	public static void setCurrentTimeLabel(Label durationLabel, MediaPlayer mediaPlayer, Media media) {
-		durationLabel.setText(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()));		
+		durationLabel.setText(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()));
 	}
 	
-	public static void setTimeLeftLabel(Label durationLabel, MediaPlayer mediaPlayer, Media media) { // gotta make formatting of this label prettier
-		durationLabel.setText("-" + getTime(media.getDuration().subtract(mediaPlayer.getCurrentTime())) + "/" + getTime(media.getDuration()));
+	public static void setTimeLeftLabel(Label durationLabel, MediaPlayer mediaPlayer, Media media) {
+		durationLabel.setText("−" + getTime(media.getDuration().subtract(mediaPlayer.getCurrentTime())) + "/" + getTime(media.getDuration()));
 	}
-	
-	public static void bindTimeLeftLabel(Label durationLabel, MediaPlayer mediaPlayer, Media media) { // gotta make formatting of this label prettier
+
+	/*public static void bindTimeLeftLabel(Label durationLabel, MediaPlayer mediaPlayer, Media media) { // gotta make formatting of this label prettier
 
 		durationLabel.textProperty().bind(Bindings.createStringBinding(new Callable<String>() {
 			@Override
@@ -64,7 +63,7 @@ public class Utilities {
 				return "-" + getTime(media.getDuration().subtract(mediaPlayer.getCurrentTime())) + "/" + getTime(media.getDuration());
 			}
 		}, mediaPlayer.currentTimeProperty()));
-	}
+	}*/
 	
 	
 	// makes HBox's background lighter and less transparent on hovering

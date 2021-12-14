@@ -10,6 +10,7 @@ import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.beans.binding.Bindings;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
@@ -21,8 +22,10 @@ import javafx.util.Duration;
 public class AnimationsClass {
 
 	static ScaleTransition fullScreenButtonScaleTransition;
+	
 	static TranslateTransition volumeSliderTranslateTransition1;
 	static TranslateTransition volumeSliderTranslateTransition2;
+	static TranslateTransition volumeSliderTranslateTransition3;
 	
 	public static void openSettings(StackPane bufferPane) {
 
@@ -378,7 +381,7 @@ public class AnimationsClass {
 		fullScreenIcon.setScaleY(1);
 	}
 	
-	public static void volumeSliderHoverOn(Slider volumeSlider, Label durationLabel) {
+	public static void volumeSliderHoverOn(Slider volumeSlider, Label durationLabel, ProgressBar volumeTrack) {
 		volumeSliderTranslateTransition1 = new TranslateTransition(Duration.millis(100), volumeSlider);
 		volumeSliderTranslateTransition1.setFromX(-60);
 		volumeSliderTranslateTransition1.setToX(0);
@@ -390,9 +393,15 @@ public class AnimationsClass {
 		volumeSliderTranslateTransition2.setToX(0);
 		volumeSliderTranslateTransition2.setInterpolator(Interpolator.EASE_OUT);
 		volumeSliderTranslateTransition2.play();
+		
+		volumeSliderTranslateTransition3 = new TranslateTransition(Duration.millis(100), volumeTrack);
+		volumeSliderTranslateTransition3.setFromX(-60);
+		volumeSliderTranslateTransition3.setToX(0);
+		volumeSliderTranslateTransition3.setInterpolator(Interpolator.EASE_OUT);
+		volumeSliderTranslateTransition3.play();
 	}
 	
-	public static void volumeSliderHoverOff(Slider volumeSlider, Label durationLabel) {
+	public static void volumeSliderHoverOff(Slider volumeSlider, Label durationLabel, ProgressBar volumeTrack) {
 		volumeSliderTranslateTransition1.stop();
 		volumeSliderTranslateTransition1 = new TranslateTransition(Duration.millis(100), volumeSlider);
 		volumeSliderTranslateTransition1.setFromX(0);
@@ -406,6 +415,13 @@ public class AnimationsClass {
 		volumeSliderTranslateTransition2.setToX(-60);
 		volumeSliderTranslateTransition2.setInterpolator(Interpolator.EASE_OUT);
 		volumeSliderTranslateTransition2.play();
+		
+		volumeSliderTranslateTransition3.stop();
+		volumeSliderTranslateTransition3 = new TranslateTransition(Duration.millis(100), volumeTrack);
+		volumeSliderTranslateTransition3.setFromX(0);
+		volumeSliderTranslateTransition3.setToX(-60);
+		volumeSliderTranslateTransition3.setInterpolator(Interpolator.EASE_OUT);
+		volumeSliderTranslateTransition3.play();
 	}
 	
 }

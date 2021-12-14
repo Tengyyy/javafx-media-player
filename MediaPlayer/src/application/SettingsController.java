@@ -960,15 +960,7 @@ public class SettingsController implements Initializable{
 		this.mainController = mainController;
 		this.controlBarController = controlBarController;
 	}
-	
-	public void settingsClick() { // this needs to be moved to controlBarController
-		
-		if(settingsOpen)
-			closeSettings();
-		else
-			openSettings();
-		
-	}
+
 	
 	public void openSettings() {
 		controlBarController.settingsEnter = new Image(controlBarController.settingsEnterFile.toURI().toString());
@@ -1072,9 +1064,10 @@ public class SettingsController implements Initializable{
 		File selectedFile = fileChooser.showOpenDialog(Main.stage);
 
 		if (selectedFile != null) {
-			videoNameText.setText(selectedFile.getName());
+			videoNameText.setText(selectedFile.getName()); // updates video name text and window title with filename 
 			Main.stage.setTitle(selectedFile.getName());
 			
+			// resets video name text in the settings tab if the animations had not finished before the user already selected a new video to play
 			if(videoNameTimeline.getStatus() == Animation.Status.RUNNING) {
 				videoNameTimeline.stop();
 				videoNameText.setLayoutX(0);
@@ -1082,7 +1075,6 @@ public class SettingsController implements Initializable{
 			else if(resetTimeline.getStatus() == Animation.Status.RUNNING) {
 				resetTimeline.stop();
 				videoNameText.setLayoutX(0);
-
 			}
 			
 			////////////// this can be turned into one mediaplayer cleaning method
@@ -1091,9 +1083,8 @@ public class SettingsController implements Initializable{
 			mainController.seekedToEnd = false;
 			mainController.playing = false;
 			mainController.wasPlaying = false;
-			//////////////
-			
-			
+			///////////////////////////////////////////////////////////////////
+		
 			mainController.createMediaPlayer(selectedFile);
 
 		}

@@ -10,13 +10,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -43,12 +44,15 @@ public class ControlBarController implements Initializable{
 
 	@FXML
 	public  Slider volumeSlider;
+	
+	@FXML
+	public ProgressBar volumeTrack;
 
 	@FXML
 	public  Slider durationSlider;
 	
 	@FXML
-	FlowPane volumeSliderPane;
+	StackPane volumeSliderPane;
 	
 	@FXML
 	
@@ -167,6 +171,7 @@ public class ControlBarController implements Initializable{
 		volumeSliderPane.setClip(new Rectangle(60, 38.666666664));
 
 		volumeSlider.setTranslateX(-60);
+		volumeTrack.setTranslateX(-60);
 
 		durationLabel.setTranslateX(-60);
 
@@ -253,6 +258,8 @@ public class ControlBarController implements Initializable{
 				// TODO Auto-generated method stub
 				
 				mainController.mediaPlayer.setVolume(volumeSlider.getValue() / 100);
+				
+				volumeTrack.setProgress(volumeSlider.getValue() / 100);
 
 				if (volumeSlider.getValue() == 0) {
 					volumeIcon.setImage(volumeMute);
@@ -504,11 +511,11 @@ fullScreenButton.focusedProperty()
 	}
 	
 	public  void volumeSliderEnter() {
-		AnimationsClass.volumeSliderHoverOn(volumeSlider, durationLabel);
+		AnimationsClass.volumeSliderHoverOn(volumeSlider, durationLabel, volumeTrack);
 	}
 
 	public  void volumeSliderExit() {
-		AnimationsClass.volumeSliderHoverOff(volumeSlider, durationLabel);
+		AnimationsClass.volumeSliderHoverOff(volumeSlider, durationLabel, volumeTrack);
 	}
 	
 	public void fullScreen() {

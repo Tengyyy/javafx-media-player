@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -49,15 +50,20 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <FlowPane fx:id="volumeSliderPane" alignment="CENTER" maxHeight="-Infinity" prefHeight="38.666666664" prefWidth="60.0">
-                           <children>
-                              <Slider fx:id="volumeSlider" blockIncrement="5.0" maxHeight="-Infinity" maxWidth="60.0" minHeight="-Infinity" minWidth="0.0" prefHeight="10.0" prefWidth="60.0" styleClass="focusableProperty" value="50.0">
+                  <StackPane fx:id="volumeSliderPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="38.66666666664" prefWidth="60.0" stylesheets="@../Styles/application.css">
+                     <children>
+                        <ProgressBar fx:id="volumeTrack" prefHeight="6.0" prefWidth="48.0" progress="0.5" styleClass="volumeTrack" />
+                              <Slider fx:id="volumeSlider" blockIncrement="5.0" maxHeight="-Infinity" maxWidth="60.0" minHeight="-Infinity" minWidth="0.0" prefHeight="10.0" prefWidth="60.0" value="50.0">
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
+                           <styleClass>
+                              <String fx:value="focusableProperty" />
+                              <String fx:value="volumeSlider" />
+                           </styleClass>
                               </Slider>
-                           </children>
-                        </FlowPane>
+                     </children>
+                  </StackPane>
                         <Label fx:id="durationLabel" maxHeight="-Infinity" prefHeight="30.0" prefWidth="135.0" styleClass="focusableProperty" textFill="WHITE">
                            <font>
                               <Font size="18.0" />

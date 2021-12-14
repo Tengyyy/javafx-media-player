@@ -37,6 +37,37 @@
 	-fx-padding: 10;
 }
 
+
+
+.volumeSlider .track {
+	
+	-fx-background-color: null;
+}
+
+
+.volumeTrack {
+	-fx-accent: white;
+}
+
+.volumeTrack > .track {
+	-fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-text-box-border: transparent;
+    -fx-control-inner-background: transparent;
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.volumeTrack > .bar {
+	-fx-padding: 1px;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+.volumeSlider > .thumb {
+	-fx-background-color: white;
+	-fx-padding: 10;
+}
+
 .menuScroll > .viewport {
    -fx-background-color: transparent;
 }
