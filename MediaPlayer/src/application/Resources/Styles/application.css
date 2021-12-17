@@ -71,3 +71,34 @@
 .menuScroll > .viewport {
    -fx-background-color: transparent;
 }
+
+
+
+.durationSlider .track {
+	
+	-fx-background-color: null;
+}
+
+
+.durationTrack {
+	-fx-accent: red;
+}
+
+.durationTrack > .track {
+	-fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-text-box-border: transparent;
+    -fx-control-inner-background: transparent;
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.durationTrack > .bar {
+	-fx-padding: 1px;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+.durationSlider > .thumb {
+	-fx-background-color: red;
+	-fx-padding: 10;
+}

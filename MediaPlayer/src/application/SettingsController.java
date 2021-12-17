@@ -122,8 +122,8 @@ public class SettingsController implements Initializable{
 	// counter to keep track of which playback speed field is selected in the settings menu
 	int playbackSpeedTracker = 4;
 	
-
-	public  boolean settingsOpen = false; // true if settings home is open
+	public boolean settingsOpen = false;
+	public  boolean settingsHomeOpen = false;
 	boolean playbackSpeedOpen = false;
 	boolean playbackOptionsOpen = false;
 	boolean customSpeedOpen = false;
@@ -742,13 +742,6 @@ public class SettingsController implements Initializable{
 				playbackOptionsBox.setOnMouseExited((e) -> {
 					Utilities.hoverEffectOff(playbackOptionsBox);
 				});
-
-				/*videoBox.setOnMouseEntered((e) -> {
-					Utilities.hoverEffectOn(videoBox);
-				});
-				videoBox.setOnMouseExited((e) -> {
-					Utilities.hoverEffectOff(videoBox);
-				});*/
 				
 
 				// On-hover effect for playback speed items
@@ -966,6 +959,7 @@ public class SettingsController implements Initializable{
 		controlBarController.settingsEnter = new Image(controlBarController.settingsEnterFile.toURI().toString());
 		controlBarController.settingsIcon.setImage(controlBarController.settingsEnter);
 		settingsOpen = true;
+		settingsHomeOpen = true;
 		
 		AnimationsClass.openSettings(bufferPane);
 
@@ -976,8 +970,10 @@ public class SettingsController implements Initializable{
 		controlBarController.settingsExit = new Image(controlBarController.settingsExitFile.toURI().toString());
 		controlBarController.settingsIcon.setImage(controlBarController.settingsExit);
 		
-		if(settingsOpen) {
-			settingsOpen = false;
+		settingsOpen = false;
+		
+		if(settingsHomeOpen) {
+			settingsHomeOpen = false;
 			AnimationsClass.closeSettings(bufferPane);
 		}
 		else if(playbackOptionsOpen) {
@@ -998,7 +994,7 @@ public class SettingsController implements Initializable{
 	public void openPlaybackSpeedPage() {
 
 		playbackSpeedOpen = true;
-		settingsOpen = false;
+		settingsHomeOpen = false;
 
 		double toHeight;
 		if (playbackCustom != null)
@@ -1013,7 +1009,7 @@ public class SettingsController implements Initializable{
 	public void closePlaybackSpeedPage() {
 
 		playbackSpeedOpen = false;
-		settingsOpen = true;
+		settingsHomeOpen = true;
 
 		AnimationsClass.closePlaybackSpeed(settingsBackgroundPane, playbackSpeedScroll, bufferPane);
 
@@ -1045,7 +1041,7 @@ public class SettingsController implements Initializable{
 	public void openPlaybackOptions() {
 
 		playbackOptionsOpen = true;
-		settingsOpen = false;
+		settingsHomeOpen = false;
 		
 		AnimationsClass.openPlaybackOptions(settingsBackgroundPane, playbackOptionsBuffer, bufferPane);
 
@@ -1054,7 +1050,7 @@ public class SettingsController implements Initializable{
 	public void closePlaybackOptions() {
 
 		playbackOptionsOpen = false;
-		settingsOpen = true;
+		settingsHomeOpen = true;
 
 		AnimationsClass.closePlaybackOptions(playbackOptionsBuffer, settingsBackgroundPane, bufferPane);
 		

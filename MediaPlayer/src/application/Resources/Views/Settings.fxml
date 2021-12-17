@@ -369,7 +369,7 @@
                               </Separator>
                               <StackPane prefHeight="30.0" prefWidth="235.0">
                                  <children>
-                                    <ProgressBar fx:id="customSpeedTrack" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="10.0" prefWidth="140.0" progress="0.45" styleClass="customSpeedTrack" />
+                                    <ProgressBar fx:id="customSpeedTrack" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="10.0" prefWidth="138.0" progress="0.45" styleClass="customSpeedTrack" />
                                     <Slider fx:id="customSpeedSlider" blockIncrement="0.05" majorTickUnit="0.05" max="2.0" maxWidth="-Infinity" min="0.25" minWidth="-Infinity" minorTickCount="0" prefWidth="150.0" styleClass="customSpeedSlider" value="1.0" />
                                  </children>
                               </StackPane>

@@ -16,11 +16,23 @@
 
 <VBox fx:id="controlBar" alignment="BOTTOM_CENTER" maxHeight="50.0" onMouseClicked="#controlBarClick" prefHeight="50.0" prefWidth="600.0" style="-fx-background-color: transparent;" stylesheets="@../Styles/focusStyles.css" StackPane.alignment="BOTTOM_CENTER" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ControlBarController">
          <children>
-            <Slider fx:id="durationSlider" blockIncrement="5.0" pickOnBounds="false" prefWidth="600.0" styleClass="focusableProperty">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Slider>
+      <StackPane>
+         <children>
+            <ProgressBar fx:id="durationTrack" prefHeight="8.0" prefWidth="588.0" progress="0.0" styleClass="durationTrack" />
+                  <Slider fx:id="durationSlider" blockIncrement="5.0" pickOnBounds="false" prefHeight="16.666666" prefWidth="600.0">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+               <styleClass>
+                  <String fx:value="focusableProperty" />
+                  <String fx:value="durationSlider" />
+               </styleClass>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+                  </Slider>
+         </children>
+      </StackPane>
             <HBox alignment="CENTER" fillHeight="false" prefHeight="36.0" prefWidth="600.0">
                <children>
                   <HBox fx:id="settingsBox1" alignment="CENTER_LEFT" onMouseExited="#exitArea" prefHeight="100.0" prefWidth="350.0" HBox.hgrow="ALWAYS">

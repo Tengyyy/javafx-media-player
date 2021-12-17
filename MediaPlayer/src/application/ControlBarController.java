@@ -52,6 +52,9 @@ public class ControlBarController implements Initializable{
 	public  Slider durationSlider;
 	
 	@FXML
+	public ProgressBar durationTrack;
+	
+	@FXML
 	StackPane volumeSliderPane;
 	
 	@FXML
@@ -235,8 +238,7 @@ public class ControlBarController implements Initializable{
 		
 		volumeSlider.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> volumeSlider.setValueChanging(true));
 		volumeSlider.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> volumeSlider.setValueChanging(false));
-		
-		
+
 		volumeSlider.valueChangingProperty().addListener(new ChangeListener<Boolean>() {
 
 			@Override
@@ -294,6 +296,9 @@ public class ControlBarController implements Initializable{
 				settingsController.closeSettings();
 			}
 		});
+		
+		
+		
 		
 		
 		
