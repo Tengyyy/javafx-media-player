@@ -72,7 +72,7 @@ public class MainController implements Initializable {
 	public  boolean seekedToEnd = false; // true = video was seeked to the end; false = video naturally reached the end or the video is still playing
 	////////////////////////////////////////////////
 
-	private DoubleProperty mediaViewWidth;
+	DoubleProperty mediaViewWidth;
 	DoubleProperty mediaViewHeight;
 
 	Image menuImage;
@@ -383,6 +383,11 @@ public class MainController implements Initializable {
 			if (Math.abs(mediaPlayer.getCurrentTime().toSeconds() - newValue) > 0.5) {
 				mediaPlayer.seek(Duration.seconds(newValue));
 		}
+			
+		controlBarController.durationTrack.setProgress(controlBarController.durationSlider.getValue()/controlBarController.durationSlider.getMax());
+			
+		
+			
 	}
 
 	public void endMedia() {

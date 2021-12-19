@@ -65,7 +65,7 @@
 
 .volumeSlider > .thumb {
 	-fx-background-color: white;
-	-fx-padding: 10;
+	-fx-padding: 7;
 }
 
 .menuScroll > .viewport {
@@ -93,12 +93,13 @@
 }
 
 .durationTrack > .bar {
-	-fx-padding: 1px;
+	-fx-padding: 0px;
     -fx-background-insets: 0;
     -fx-background-radius: 0;
 }
 
 .durationSlider > .thumb {
 	-fx-background-color: red;
-	-fx-padding: 10;
+	-fx-padding: 10; /* hides thumb by default */
+	
 }

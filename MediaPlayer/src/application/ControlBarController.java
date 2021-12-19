@@ -4,6 +4,12 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -55,7 +61,7 @@ public class ControlBarController implements Initializable{
 	public ProgressBar durationTrack;
 	
 	@FXML
-	StackPane volumeSliderPane;
+	StackPane volumeSliderPane, durationPane;
 	
 	@FXML
 	
@@ -138,6 +144,9 @@ public class ControlBarController implements Initializable{
 	 boolean sliderFocus = false;
 	 
 	 boolean showingTimeLeft = false;
+	 
+	 
+	 boolean durationSliderHover = false;
 	 
 	
 	 Tooltip play;
@@ -297,14 +306,36 @@ public class ControlBarController implements Initializable{
 			}
 		});
 		
+		durationSlider.setOnMouseEntered((e) -> {
+			durationSliderHover = true;
+			durationSliderHoverOn();
+		});
 		
+		durationSlider.setOnMouseExited((e) -> {
+			durationSliderHover = false;
+			if(!e.isPrimaryButtonDown() && !e.isSecondaryButtonDown() && !e.isMiddleButtonDown()) {
+				durationSliderHoverOff();
+			}
+		});
 		
-		
-		
-		
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				
+				durationSlider.lookup(".thumb").setScaleX(0);
+				durationSlider.lookup(".thumb").setScaleY(0);
+			}
+			
+		});
+
 		durationSlider.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				
+				
+				
 				mainController.updateMedia(newValue.doubleValue());
 			}
 
@@ -322,6 +353,10 @@ public class ControlBarController implements Initializable{
 					playButton.setTooltip(play);
 				}
 				else {
+					
+					if(!durationSliderHover) {
+						durationSliderHoverOff();
+					}
 					
 					mainController.mediaPlayer.seek(Duration.seconds(durationSlider.getValue())); // seeks to exact position when user finishes dragging
 					
@@ -625,6 +660,31 @@ fullScreenButton.focusedProperty()
 			openCaptions();
 		else
 			closeCaptions();
+	}
+	
+	public void durationSliderHoverOn(){
+			
+		Timeline durationSliderTimelineOn = new Timeline();
+
+		durationSliderTimelineOn.setCycleCount(1);
+		durationSliderTimelineOn.setAutoReverse(false);
+		durationSliderTimelineOn.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationTrack.scaleYProperty(), 1.6, Interpolator.LINEAR)));
+		durationSliderTimelineOn.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationSlider.lookup(".thumb").scaleXProperty(), 1, Interpolator.LINEAR)));
+		durationSliderTimelineOn.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationSlider.lookup(".thumb").scaleYProperty(), 1, Interpolator.LINEAR)));
+		durationSliderTimelineOn.play();
+	}
+	
+	
+	public void durationSliderHoverOff(){
+
+		Timeline durationSliderTimelineOff = new Timeline();
+
+		durationSliderTimelineOff.setCycleCount(1);
+		durationSliderTimelineOff.setAutoReverse(false);
+		durationSliderTimelineOff.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationTrack.scaleYProperty(), 1, Interpolator.LINEAR)));
+		durationSliderTimelineOff.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationSlider.lookup(".thumb").scaleXProperty(), 0, Interpolator.LINEAR)));
+		durationSliderTimelineOff.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationSlider.lookup(".thumb").scaleYProperty(), 0, Interpolator.LINEAR)));
+		durationSliderTimelineOff.play();
 	}
 	
 }
