@@ -163,32 +163,6 @@ public class MainController implements Initializable {
 
 		mediaView.requestFocus();
 	}
-
-
-	public void displayControls() {
-
-		if (playing) {
-			// control bar slide animation - display
-			TranslateTransition slide = new TranslateTransition();
-			slide.setDuration(Duration.seconds(0.2));
-			slide.setNode(controlBarController.controlBar);
-
-			slide.setToY(0);
-
-			slide.play();
-			controlBarController.controlBar.setTranslateY(-50);
-		} else {
-			// control bar slide animation - hide
-			TranslateTransition slide = new TranslateTransition();
-			slide.setDuration(Duration.seconds(0.4));
-			slide.setNode(controlBarController.controlBar);
-
-			slide.setToY(50);
-			slide.play();
-			controlBarController.controlBar.setTranslateY(0);
-		}
-
-	}
 	
 
 	public void traverseFocusForwards() {
@@ -403,6 +377,10 @@ public class MainController implements Initializable {
 			controlBarController.playButton.setTooltip(controlBarController.replay);
 			controlBarController.playButton.setOnAction((e) -> controlBarController.playButtonClick2());
 			
+			if(!controlBarController.controlBarOpen) {
+				controlBarController.displayControls();
+			}
+			
 			
 			
 		} else if (settingsController.loopOn && !seekedToEnd) {
@@ -412,10 +390,17 @@ public class MainController implements Initializable {
 			mediaPlayer.stop();
 			
 		} else if (settingsController.shuffleOn) {
-		
+			
+			//if(!controlBarController.controlBarOpen) {
+			//	controlBarController.displayControls();
+			//}
 
 		} else if (settingsController.autoplayOn) {
 			// play next song in queue/directory
+			
+			//if(!controlBarController.controlBarOpen) {
+			//	controlBarController.displayControls();
+			//}
 		}
 
 	}

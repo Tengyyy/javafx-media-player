@@ -11,6 +11,7 @@ import javafx.stage.WindowEvent;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 
 
@@ -26,6 +27,8 @@ public class Main extends Application {
 	 
 	 ControlBarController controlBarController;
 	 SettingsController settingsController;
+	 
+	 MouseEventTracker mouseEventTracker;
 
 	
 	@Override
@@ -46,7 +49,17 @@ public class Main extends Application {
 			
 			Scene scene = new Scene(root, 600, 400);
 			
-			scene.getStylesheets().add(getClass().getResource("Resources/Styles/application.css").toExternalForm());	
+			scene.getStylesheets().add(getClass().getResource("Resources/Styles/application.css").toExternalForm());
+			
+			
+			
+			//TODO: Continue this bit to make the controlbar hiding logic
+			mouseEventTracker = new MouseEventTracker(4, mainController, controlBarController, settingsController);
+			
+			scene.addEventFilter(MouseEvent.ANY, event -> {
+				if(mouseEventTracker != null)
+					mouseEventTracker.move();
+			});
 
 			
 			
@@ -56,8 +69,6 @@ public class Main extends Application {
 			Main.stage = primaryStage;
 			
 			primaryStage.setFullScreenExitHint("Press Esc to exit fullscreen mode");
-
-			
 			
 			directoryChooser = new DirectoryChooser();
 
@@ -68,6 +79,9 @@ public class Main extends Application {
 				
 				switch(event.getCode()) {
 					case TAB: {
+						
+						mouseEventTracker.move();
+
 						if(event.isShiftDown()) {
 							// user pressed SHIFT + TAB which means focus should traverse backwards
 							if(mainController.focusNodeTracker == 0) {
@@ -93,6 +107,9 @@ public class Main extends Application {
 					break;	
 					
 					case RIGHT: {
+						
+						mouseEventTracker.move();
+						
 						if(!mainController.getControlBarController().volumeSlider.isFocused()) {
 							
 							if(mainController.mediaPlayer.getCurrentTime().toSeconds() + 5 >= controlBarController.durationSlider.getMax()) {
@@ -105,10 +122,11 @@ public class Main extends Application {
 							
 						}
 					}
-					
 					break;
-					
 					case LEFT: {
+						
+						mouseEventTracker.move();
+						
 						if(!controlBarController.volumeSlider.isFocused()) {
 							mainController.seekedToEnd = false;
 							
@@ -120,6 +138,9 @@ public class Main extends Application {
 					break;
 					
 					case ESCAPE: {
+						
+						mouseEventTracker.move();
+						
 						if(settingsController.settingsOpen && !fullScreen) {
 							settingsController.closeSettings();
 						}
@@ -132,6 +153,9 @@ public class Main extends Application {
 					break;
 					
 					case L: {
+						
+						mouseEventTracker.move();
+
 						if(!controlBarController.volumeSlider.isFocused()) {
 							
 							
@@ -147,6 +171,9 @@ public class Main extends Application {
 					break;
 					
 					case J: {
+						
+						mouseEventTracker.move();
+
 						if(!controlBarController.volumeSlider.isFocused()) {
 							mainController.seekedToEnd = false;
 					
@@ -157,48 +184,80 @@ public class Main extends Application {
 					}
 					break;
 					case DIGIT1: {
+						
+						mouseEventTracker.move();
+
 						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 1/10);
 					}
 					break;
 					case DIGIT2: {
+						
+						mouseEventTracker.move();
+
 						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 2/10);
 					}
 					break;
 					case DIGIT3: {
+						
+						mouseEventTracker.move();
+
 						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 3/10);
 					}
 					break;
 					case DIGIT4: {
+						
+						mouseEventTracker.move();
+
 						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 4/10);
 					}
 					break;
 					case DIGIT5: {
+						
+						mouseEventTracker.move();
+
 						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 5/10);
 					}
 					break;
 					case DIGIT6: {
+						
+						mouseEventTracker.move();
+
 						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 6/10);
 					}
 					break;
 					case DIGIT7: {
+						
+						mouseEventTracker.move();
+
 						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 7/10);
 					}
 					break;
 					case DIGIT8: {
+						
+						mouseEventTracker.move();
+
 						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 8/10);
 					}
 					break;
 					case DIGIT9: {
+						
+						mouseEventTracker.move();
+
 						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 9/10);
 					}
 					break;
 					case DIGIT0: {
+						
+						mouseEventTracker.move();
+
 						mainController.seekedToEnd = true;
 						controlBarController.durationSlider.setValue(controlBarController.durationSlider.getMax());
 					}
 					break;
 					
 					case K: {
+						
+						mouseEventTracker.move();
 						
 						if(!controlBarController.durationSlider.isValueChanging()) {  // wont let user play/pause video while media slider is seeking
 							if(mainController.atEnd) {
@@ -213,6 +272,9 @@ public class Main extends Application {
 					break;
 					
 					case M: {
+						
+						mouseEventTracker.move();
+
 						if (!controlBarController.muted) {
 
 							controlBarController.muted = true;
@@ -236,14 +298,22 @@ public class Main extends Application {
 					}
 					break;
 					
-					case F11: controlBarController.fullScreen();
+					case F11: {
+						mouseEventTracker.move();
+						controlBarController.fullScreen();
+					}
 					break;
 					
-					case F: controlBarController.fullScreen();
+					case F: {
+						mouseEventTracker.move();
+						controlBarController.fullScreen();
+					}
 					break;
 					
 					case SPACE:	{
 					
+						mouseEventTracker.move();
+
 						if(!controlBarController.durationSlider.isValueChanging()) { // wont let user play/pause video while media slider is seeking
 							
 							if(!controlBarController.playButton.isFocused()) {
@@ -288,5 +358,10 @@ public class Main extends Application {
 	
 	public static void main(String[] args) {
 		launch(args);
+	}
+	
+	
+	public MouseEventTracker getMouseEventTracker() {
+		return mouseEventTracker;
 	}
 }

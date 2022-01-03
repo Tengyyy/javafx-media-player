@@ -4,16 +4,20 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventDispatcher;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -138,15 +142,12 @@ public class ControlBarController implements Initializable{
 
 	
 	public  boolean muted = false;
-
 	 boolean isExited = true;
-	
 	 boolean sliderFocus = false;
-	 
 	 boolean showingTimeLeft = false;
-	 
-	 
 	 boolean durationSliderHover = false;
+	 boolean controlBarOpen = false;
+
 	 
 	
 	 Tooltip play;
@@ -186,6 +187,8 @@ public class ControlBarController implements Initializable{
 		volumeTrack.setTranslateX(-60);
 
 		durationLabel.setTranslateX(-60);
+		
+		controlBar.setTranslateY(50);
 
 		durationLabel.setOnMouseClicked((e) -> toggleDurationLabel());
 		
@@ -248,11 +251,14 @@ public class ControlBarController implements Initializable{
 		volumeSlider.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> volumeSlider.setValueChanging(true));
 		volumeSlider.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> volumeSlider.setValueChanging(false));
 
+		
 		volumeSlider.valueChangingProperty().addListener(new ChangeListener<Boolean>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				// TODO Auto-generated method stub
+
+				
 				if (!newValue && settingsController.settingsOpen) {
 					settingsController.closeSettings();
 				}
@@ -285,12 +291,7 @@ public class ControlBarController implements Initializable{
 					muted = false;
 					volumeButton.setTooltip(mute);
 				}
-				
-				
 			}
-
-
-
 		});
 		
 		
@@ -306,19 +307,8 @@ public class ControlBarController implements Initializable{
 			}
 		});
 		
-		durationSlider.setOnMouseEntered((e) -> {
-			durationSliderHover = true;
-			durationSliderHoverOn();
-		});
 		
-		durationSlider.setOnMouseExited((e) -> {
-			durationSliderHover = false;
-			if(!e.isPrimaryButtonDown() && !e.isSecondaryButtonDown() && !e.isMiddleButtonDown()) {
-				durationSliderHoverOff();
-			}
-		});
-		
-		Platform.runLater(new Runnable() {
+		Platform.runLater(new Runnable() { // this part has to be run later because the slider thumb loads in later than the slider itself
 
 			@Override
 			public void run() {
@@ -326,6 +316,22 @@ public class ControlBarController implements Initializable{
 				
 				durationSlider.lookup(".thumb").setScaleX(0);
 				durationSlider.lookup(".thumb").setScaleY(0);
+				
+				durationSlider.lookup(".track").setCursor(Cursor.HAND);
+				durationSlider.lookup(".thumb").setCursor(Cursor.HAND);
+				
+				
+				durationSlider.setOnMouseEntered((e) -> {
+					durationSliderHover = true;
+					durationSliderHoverOn();
+				});
+				
+				durationSlider.setOnMouseExited((e) -> {
+					durationSliderHover = false;
+					if(!e.isPrimaryButtonDown() && !e.isSecondaryButtonDown() && !e.isMiddleButtonDown()) {
+						durationSliderHoverOff();
+					}
+				});
 			}
 			
 		});
@@ -685,6 +691,18 @@ fullScreenButton.focusedProperty()
 		durationSliderTimelineOff.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationSlider.lookup(".thumb").scaleXProperty(), 0, Interpolator.LINEAR)));
 		durationSliderTimelineOff.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationSlider.lookup(".thumb").scaleYProperty(), 0, Interpolator.LINEAR)));
 		durationSliderTimelineOff.play();
+	}
+	
+	public void displayControls() {
+		AnimationsClass.displayControls(this);
+	}
+	
+	public void hideControls() {
+		AnimationsClass.hideControls(this);
+	}
+	
+	public void setControlBarOpen(boolean value) {
+		controlBarOpen = value;
 	}
 	
 }

@@ -33,7 +33,7 @@
                <children>
                   <ProgressBar fx:id="durationTrack" focusTraversable="false" maxWidth="1.7976931348623157E308" pickOnBounds="false" prefHeight="5.0" prefWidth="584.0" progress="0.0" styleClass="durationTrack" StackPane.alignment="CENTER">
                      <StackPane.margin>
-                        <Insets left="8.0" right="8.0" />
+                        <Insets left="11.0" right="11.0" />
                      </StackPane.margin>
                      <cursor>
                         <Cursor fx:constant="DEFAULT" />
@@ -41,7 +41,7 @@
                   </ProgressBar>
                         <Slider fx:id="durationSlider" blockIncrement="5.0" maxHeight="-Infinity" minHeight="16.0" prefHeight="16.0" prefWidth="600.0" StackPane.alignment="CENTER">
                            <cursor>
-                              <Cursor fx:constant="HAND" />
+                              <Cursor fx:constant="DEFAULT" />
                            </cursor>
                      <styleClass>
                         <String fx:value="focusableProperty" />

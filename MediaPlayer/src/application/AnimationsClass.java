@@ -16,6 +16,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
@@ -422,6 +423,37 @@ public class AnimationsClass {
 		volumeSliderTranslateTransition3.setToX(-60);
 		volumeSliderTranslateTransition3.setInterpolator(Interpolator.EASE_OUT);
 		volumeSliderTranslateTransition3.play();
+	}
+	
+	public static void displayControls(ControlBarController controlBarController) {
+		TranslateTransition translateTransition = new TranslateTransition(Duration.millis(100), controlBarController.controlBar);
+		translateTransition.setFromY(50);
+		translateTransition.setToY(0);
+		translateTransition.setCycleCount(1);
+		translateTransition.setInterpolator(Interpolator.LINEAR);
+
+
+		
+		translateTransition.play();
+		translateTransition.setOnFinished((e) -> {
+			controlBarController.setControlBarOpen(true);
+
+		});
+	}
+	
+	public static void hideControls(ControlBarController controlBarController) {
+		
+		TranslateTransition translateTransition = new TranslateTransition(Duration.millis(100), controlBarController.controlBar);
+		translateTransition.setFromY(0);
+		translateTransition.setToY(50);
+		translateTransition.setCycleCount(1);
+		translateTransition.setInterpolator(Interpolator.LINEAR);
+		
+		translateTransition.play();
+		
+		translateTransition.setOnFinished((e) -> {
+			controlBarController.setControlBarOpen(false);
+		});
 	}
 	
 }
