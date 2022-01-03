@@ -84,8 +84,8 @@ public class ControlBarController implements Initializable{
 	@FXML
 	public  ImageView volumeIcon;
 	
-	private MainController mainController;
-	private SettingsController settingsController;
+	MainController mainController;
+	SettingsController settingsController;
 	
 	
 
@@ -162,11 +162,11 @@ public class ControlBarController implements Initializable{
 	Tooltip directoryTooltip;
 	Tooltip captionsTooltip;
 	
+	MouseEventTracker mouseEventTracker;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-
 		// TOOLTIPS//
 		play = new Tooltip("Play (k)");
 		pause = new Tooltip("Pause (k)");
@@ -463,10 +463,10 @@ fullScreenButton.focusedProperty()
 	}
 
 	public void init(MainController mainController, SettingsController settingsController) {
-		
 		this.mainController = mainController;
-		
 		this.settingsController = settingsController;
+		
+		mouseEventTracker = new MouseEventTracker(4, mainController, this, settingsController); // creates instance of the MouseEventTracker class which keeps track of when to hide and show the control-bar
 		
 	}
 

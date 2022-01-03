@@ -16,7 +16,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
@@ -431,9 +430,6 @@ public class AnimationsClass {
 		translateTransition.setToY(0);
 		translateTransition.setCycleCount(1);
 		translateTransition.setInterpolator(Interpolator.LINEAR);
-
-
-		
 		translateTransition.play();
 		translateTransition.setOnFinished((e) -> {
 			controlBarController.setControlBarOpen(true);
@@ -453,6 +449,7 @@ public class AnimationsClass {
 		
 		translateTransition.setOnFinished((e) -> {
 			controlBarController.setControlBarOpen(false);
+			controlBarController.mouseEventTracker.mouseMoving.set(false);
 		});
 	}
 	

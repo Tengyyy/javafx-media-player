@@ -5,7 +5,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.scene.Parent;
@@ -22,13 +21,11 @@ public class Main extends Application {
 	public EventHandler<KeyEvent> eventHandler;
 	
 	public static boolean fullScreen;
-	
-	 DirectoryChooser directoryChooser;
+
 	 
 	 ControlBarController controlBarController;
 	 SettingsController settingsController;
-	 
-	 MouseEventTracker mouseEventTracker;
+
 
 	
 	@Override
@@ -54,11 +51,10 @@ public class Main extends Application {
 			
 			
 			//TODO: Continue this bit to make the controlbar hiding logic
-			mouseEventTracker = new MouseEventTracker(4, mainController, controlBarController, settingsController);
 			
 			scene.addEventFilter(MouseEvent.ANY, event -> {
-				if(mouseEventTracker != null)
-					mouseEventTracker.move();
+				if(controlBarController.mouseEventTracker != null)
+					controlBarController.mouseEventTracker.move();
 			});
 
 			
@@ -69,8 +65,7 @@ public class Main extends Application {
 			Main.stage = primaryStage;
 			
 			primaryStage.setFullScreenExitHint("Press Esc to exit fullscreen mode");
-			
-			directoryChooser = new DirectoryChooser();
+
 
 
 			
@@ -80,7 +75,7 @@ public class Main extends Application {
 				switch(event.getCode()) {
 					case TAB: {
 						
-						mouseEventTracker.move();
+						controlBarController.mouseEventTracker.move();
 
 						if(event.isShiftDown()) {
 							// user pressed SHIFT + TAB which means focus should traverse backwards
@@ -108,8 +103,7 @@ public class Main extends Application {
 					
 					case RIGHT: {
 						
-						mouseEventTracker.move();
-						
+						controlBarController.mouseEventTracker.move();
 						if(!mainController.getControlBarController().volumeSlider.isFocused()) {
 							
 							if(mainController.mediaPlayer.getCurrentTime().toSeconds() + 5 >= controlBarController.durationSlider.getMax()) {
@@ -125,8 +119,8 @@ public class Main extends Application {
 					break;
 					case LEFT: {
 						
-						mouseEventTracker.move();
-						
+						controlBarController.mouseEventTracker.move();
+		
 						if(!controlBarController.volumeSlider.isFocused()) {
 							mainController.seekedToEnd = false;
 							
@@ -139,8 +133,7 @@ public class Main extends Application {
 					
 					case ESCAPE: {
 						
-						mouseEventTracker.move();
-						
+						controlBarController.mouseEventTracker.move();
 						if(settingsController.settingsOpen && !fullScreen) {
 							settingsController.closeSettings();
 						}
@@ -154,8 +147,7 @@ public class Main extends Application {
 					
 					case L: {
 						
-						mouseEventTracker.move();
-
+						controlBarController.mouseEventTracker.move();
 						if(!controlBarController.volumeSlider.isFocused()) {
 							
 							
@@ -172,84 +164,70 @@ public class Main extends Application {
 					
 					case J: {
 						
-						mouseEventTracker.move();
-
+						controlBarController.mouseEventTracker.move();
 						if(!controlBarController.volumeSlider.isFocused()) {
 							mainController.seekedToEnd = false;
-					
-								controlBarController.durationSlider.setValue(controlBarController.durationSlider.getValue() - 10.0);
-
-							
+							controlBarController.durationSlider.setValue(controlBarController.durationSlider.getValue() - 10.0);
 						}
 					}
 					break;
 					case DIGIT1: {
 						
-						mouseEventTracker.move();
-
+						controlBarController.mouseEventTracker.move();
 						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 1/10);
 					}
 					break;
 					case DIGIT2: {
 						
-						mouseEventTracker.move();
-
+						controlBarController.mouseEventTracker.move();
 						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 2/10);
 					}
 					break;
 					case DIGIT3: {
 						
-						mouseEventTracker.move();
-
+						controlBarController.mouseEventTracker.move();
 						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 3/10);
 					}
 					break;
 					case DIGIT4: {
 						
-						mouseEventTracker.move();
-
+						controlBarController.mouseEventTracker.move();
 						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 4/10);
 					}
 					break;
 					case DIGIT5: {
 						
-						mouseEventTracker.move();
-
+						controlBarController.mouseEventTracker.move();
 						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 5/10);
 					}
 					break;
 					case DIGIT6: {
 						
-						mouseEventTracker.move();
-
+						controlBarController.mouseEventTracker.move();
 						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 6/10);
 					}
 					break;
 					case DIGIT7: {
 						
-						mouseEventTracker.move();
-
+						controlBarController.mouseEventTracker.move();
 						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 7/10);
 					}
 					break;
 					case DIGIT8: {
 						
-						mouseEventTracker.move();
-
+						controlBarController.mouseEventTracker.move();
 						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 8/10);
 					}
 					break;
 					case DIGIT9: {
 						
-						mouseEventTracker.move();
-
+						controlBarController.mouseEventTracker.move();
 						controlBarController.durationSlider.setValue(mainController.media.getDuration().toSeconds() * 9/10);
 					}
 					break;
 					case DIGIT0: {
 						
-						mouseEventTracker.move();
-
+						controlBarController.mouseEventTracker.move();
 						mainController.seekedToEnd = true;
 						controlBarController.durationSlider.setValue(controlBarController.durationSlider.getMax());
 					}
@@ -257,8 +235,7 @@ public class Main extends Application {
 					
 					case K: {
 						
-						mouseEventTracker.move();
-						
+						controlBarController.mouseEventTracker.move();
 						if(!controlBarController.durationSlider.isValueChanging()) {  // wont let user play/pause video while media slider is seeking
 							if(mainController.atEnd) {
 								controlBarController.replayMedia();
@@ -273,8 +250,7 @@ public class Main extends Application {
 					
 					case M: {
 						
-						mouseEventTracker.move();
-
+						controlBarController.mouseEventTracker.move();
 						if (!controlBarController.muted) {
 
 							controlBarController.muted = true;
@@ -299,21 +275,20 @@ public class Main extends Application {
 					break;
 					
 					case F11: {
-						mouseEventTracker.move();
+						controlBarController.mouseEventTracker.move();
 						controlBarController.fullScreen();
 					}
 					break;
 					
 					case F: {
-						mouseEventTracker.move();
+						controlBarController.mouseEventTracker.move();
 						controlBarController.fullScreen();
 					}
 					break;
 					
 					case SPACE:	{
 					
-						mouseEventTracker.move();
-
+						controlBarController.mouseEventTracker.move();
 						if(!controlBarController.durationSlider.isValueChanging()) { // wont let user play/pause video while media slider is seeking
 							
 							if(!controlBarController.playButton.isFocused()) {
@@ -359,9 +334,5 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
-	
-	public MouseEventTracker getMouseEventTracker() {
-		return mouseEventTracker;
-	}
+
 }

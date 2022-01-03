@@ -96,7 +96,7 @@ public class MainController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		
-		controlBarController.init(this, settingsController);
+		controlBarController.init(this, settingsController); // shares references of all the controllers between eachother
 		settingsController.init(this, controlBarController);
 
 		file = new File("hey.mp4");
@@ -457,11 +457,6 @@ public class MainController implements Initializable {
 
 				controlBarController.durationSlider.setMax(Math.floor(media.getDuration().toSeconds()));
 
-				//if(!controlBarController.showingTimeLeft) // fix this shit
-					//Utilities.bindCurrentTimeLabel(controlBarController.durationLabel, mediaPlayer, media);
-					//else
-					//Utilities.bindTimeLeftLabel(controlBarController.durationLabel, mediaPlayer, media);
-
 				TimerTask setRate = new TimerTask() {
 
 					@Override
@@ -505,7 +500,7 @@ public class MainController implements Initializable {
 				Timer timer = new Timer();
 
 				// this is mega stupid but it works
-				timer.schedule(setRate, 100);
+				timer.schedule(setRate, 200);
 			}
 
 		});
