@@ -669,28 +669,12 @@ fullScreenButton.focusedProperty()
 	}
 	
 	public void durationSliderHoverOn(){
-			
-		Timeline durationSliderTimelineOn = new Timeline();
-
-		durationSliderTimelineOn.setCycleCount(1);
-		durationSliderTimelineOn.setAutoReverse(false);
-		durationSliderTimelineOn.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationTrack.scaleYProperty(), 1.6, Interpolator.LINEAR)));
-		durationSliderTimelineOn.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationSlider.lookup(".thumb").scaleXProperty(), 1, Interpolator.LINEAR)));
-		durationSliderTimelineOn.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationSlider.lookup(".thumb").scaleYProperty(), 1, Interpolator.LINEAR)));
-		durationSliderTimelineOn.play();
+		AnimationsClass.durationSliderHoverOn(durationTrack, durationSlider);
 	}
 	
 	
 	public void durationSliderHoverOff(){
-
-		Timeline durationSliderTimelineOff = new Timeline();
-
-		durationSliderTimelineOff.setCycleCount(1);
-		durationSliderTimelineOff.setAutoReverse(false);
-		durationSliderTimelineOff.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationTrack.scaleYProperty(), 1, Interpolator.LINEAR)));
-		durationSliderTimelineOff.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationSlider.lookup(".thumb").scaleXProperty(), 0, Interpolator.LINEAR)));
-		durationSliderTimelineOff.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationSlider.lookup(".thumb").scaleYProperty(), 0, Interpolator.LINEAR)));
-		durationSliderTimelineOff.play();
+		AnimationsClass.durationSliderHoverOff(durationTrack, durationSlider);
 	}
 	
 	public void displayControls() {

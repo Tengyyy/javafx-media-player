@@ -131,17 +131,8 @@ public class SettingsController implements Initializable{
 	private File rightArrowFile, leftArrowFile, checkFile;	
 	
 	
-	final double OFFSET = 0;
-	
-	
 	HBox[] playbackSpeedBoxesArray; // array containing playback speed selection fields
 	Label[] playbackSpeedCheckBoxesArray; // array containing checkmark fields inside playback speed tab
-	
-	
-	
-	Timeline videoNameTimeline = new Timeline();
-	Timeline resetTimeline = new Timeline();
-	
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -876,74 +867,20 @@ public class SettingsController implements Initializable{
 				
 			    videoNameText.setManaged(false);
 			    videoNameText.setLayoutY(30);
-			    videoNameText.setLayoutX(OFFSET);
+			    //videoNameText.setLayoutX(0);
 			    
 			    Rectangle videoNameClip = new Rectangle(195, 50);
 			    videoNameBox.setClip(videoNameClip);
 
-			    KeyFrame updateFrame = new KeyFrame(Duration.seconds(1 / 60d), new EventHandler<ActionEvent>() {
-
-			    	private boolean rightMovement;
-			    	
-			        @Override
-			        public void handle(ActionEvent event) {
-			            double tW = videoNameText.getLayoutBounds().getWidth();
-			            double pW = videoNameBox.getWidth();
-			            double layoutX = videoNameText.getLayoutX();
-
-			                if ((rightMovement && layoutX >= OFFSET) || (!rightMovement && layoutX + tW + OFFSET <= pW)) {
-			                    // invert movement, if bounds are reached
-			                    rightMovement = !rightMovement;
-			                }
-
-			                // update position
-			                if (rightMovement) {
-			                    layoutX += 0.5;
-			                } else {
-			                    layoutX -= 0.5;
-			                }
-			                videoNameText.setLayoutX(layoutX);
-			        }
-			    });
-
-			    videoNameTimeline.getKeyFrames().add(updateFrame);
-			    videoNameTimeline.setCycleCount(Animation.INDEFINITE);
-			    
-			    KeyFrame resetFrame = new KeyFrame(Duration.seconds(1/60d), new EventHandler<ActionEvent>() {
-
-					@Override
-					public void handle(ActionEvent event) {
-						
-			            double layoutX = videoNameText.getLayoutX();
-
-			            if(Math.round(layoutX) == 0) {
-			            	resetTimeline.stop();
-			            }
-			            else if(layoutX < 0)
-			            	layoutX += 1;
-			            
-			            
-			            videoNameText.setLayoutX(layoutX);
-					}
-			    });
-
-			    resetTimeline.getKeyFrames().add(resetFrame);
-			    resetTimeline.setCycleCount(Animation.INDEFINITE);
 			    
 			    videoBox.setOnMouseEntered((e) -> {
 					Utilities.hoverEffectOn(videoBox);
-			    	if(videoNameTimeline.getStatus() != Animation.Status.RUNNING && resetTimeline.getStatus() != Animation.Status.RUNNING && videoNameText.getLayoutBounds().getWidth() > videoNameBox.getWidth()) {
-					    videoNameText.setLayoutX(OFFSET);
-			        	videoNameTimeline.play();
-			    	}
+					AnimationsClass.marqueeOn(videoNameText, videoNameBox);
 			    });
 			    
 			    videoBox.setOnMouseExited((e) -> {
 					Utilities.hoverEffectOff(videoBox);
-			    	if(videoNameTimeline.getStatus() == Animation.Status.RUNNING) {
-			    		videoNameTimeline.stop();
-					    resetTimeline.play();
-			    	}
+					AnimationsClass.marqueeOff(videoNameText);
 			    });
 
 		
@@ -1064,14 +1001,7 @@ public class SettingsController implements Initializable{
 			Main.stage.setTitle(selectedFile.getName());
 			
 			// resets video name text in the settings tab if the animations had not finished before the user already selected a new video to play
-			if(videoNameTimeline.getStatus() == Animation.Status.RUNNING) {
-				videoNameTimeline.stop();
-				videoNameText.setLayoutX(0);
-			}
-			else if(resetTimeline.getStatus() == Animation.Status.RUNNING) {
-				resetTimeline.stop();
-				videoNameText.setLayoutX(0);
-			}
+			AnimationsClass.stopMarquee(videoNameText);
 			
 			////////////// this can be turned into one mediaplayer cleaning method
 			mainController.mediaPlayer.dispose();

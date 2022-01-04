@@ -1,5 +1,6 @@
 package application;
 
+import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -9,14 +10,18 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.beans.binding.Bindings;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 public class AnimationsClass {
@@ -26,6 +31,11 @@ public class AnimationsClass {
 	static TranslateTransition volumeSliderTranslateTransition1;
 	static TranslateTransition volumeSliderTranslateTransition2;
 	static TranslateTransition volumeSliderTranslateTransition3;
+	
+	static Timeline videoNameTimeline;
+	static Timeline resetTimeline;
+	
+	static KeyFrame updateFrame;
 	
 	public static void openSettings(StackPane bufferPane) {
 
@@ -435,6 +445,8 @@ public class AnimationsClass {
 			controlBarController.setControlBarOpen(true);
 
 		});
+		
+		controlBarController.mainController.menuButton.setVisible(true);
 	}
 	
 	public static void hideControls(ControlBarController controlBarController) {
@@ -451,6 +463,122 @@ public class AnimationsClass {
 			controlBarController.setControlBarOpen(false);
 			controlBarController.mouseEventTracker.mouseMoving.set(false);
 		});
+		
+		controlBarController.mainController.menuButton.setVisible(false);
+	}
+	
+	public static void marqueeOn(Text videoNameText, HBox videoNameBox) {
+		
+		if(videoNameTimeline == null) {
+		
+			videoNameTimeline = new Timeline();
+		
+			updateFrame = new KeyFrame(Duration.seconds(1 / 60d), new EventHandler<ActionEvent>() {
+
+		    	private boolean rightMovement;
+		    	
+		        @Override
+		        public void handle(ActionEvent event) {
+		            double tW = videoNameText.getLayoutBounds().getWidth();
+		            double pW = videoNameBox.getWidth();
+		            double layoutX = videoNameText.getLayoutX();
+
+		                if ((rightMovement && layoutX >= 0) || (!rightMovement && layoutX + tW <= pW)) {
+		                    // invert movement, if bounds are reached
+		                    rightMovement = !rightMovement;
+		                }
+
+		                // update position
+		                if (rightMovement) {
+		                    layoutX += 0.5;
+		                } else {
+		                    layoutX -= 0.5;
+		                }
+		                videoNameText.setLayoutX(layoutX);
+		        }
+		    });
+		 
+			videoNameTimeline.getKeyFrames().add(updateFrame);
+			videoNameTimeline.setCycleCount(Animation.INDEFINITE);
+		}
+		
+		if(videoNameTimeline != null && resetTimeline != null) {
+			if(videoNameTimeline.getStatus() != Animation.Status.RUNNING && resetTimeline.getStatus() != Animation.Status.RUNNING && videoNameText.getLayoutBounds().getWidth() > videoNameBox.getWidth()) {
+			    videoNameText.setLayoutX(0);
+	        	videoNameTimeline.play();
+	    	}
+		}
+	}
+	
+	
+	public static void marqueeOff(Text videoNameText) {
+		
+		if(resetTimeline == null) {
+			
+			resetTimeline = new Timeline();
+		
+			KeyFrame resetFrame = new KeyFrame(Duration.seconds(1/60d), new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent event) {
+					
+		            double layoutX = videoNameText.getLayoutX();
+
+		            if(Math.round(layoutX) == 0) {
+		            	resetTimeline.stop();
+		            }
+		            else if(layoutX < 0)
+		            	layoutX += 1;
+		            
+		            
+		            videoNameText.setLayoutX(layoutX);
+				}
+		    });
+		 
+			resetTimeline.getKeyFrames().add(resetFrame);
+			resetTimeline.setCycleCount(Animation.INDEFINITE);
+		}
+		
+		if( videoNameTimeline != null && videoNameTimeline.getStatus() == Animation.Status.RUNNING) {
+    		videoNameTimeline.stop();
+		    resetTimeline.play();
+    	}
+	}
+	
+	
+	public static void stopMarquee(Text videoNameText) {
+		if(videoNameTimeline != null && videoNameTimeline.getStatus() == Animation.Status.RUNNING) {
+			videoNameTimeline.stop();
+			videoNameText.setLayoutX(0);
+		}
+		else if(resetTimeline != null && resetTimeline.getStatus() == Animation.Status.RUNNING) {
+			resetTimeline.stop();
+			videoNameText.setLayoutX(0);
+		}
+	}
+	
+	
+	public static void durationSliderHoverOn(ProgressBar durationTrack, Slider durationSlider) {
+		Timeline durationSliderTimelineOn = new Timeline();
+
+		durationSliderTimelineOn.setCycleCount(1);
+		durationSliderTimelineOn.setAutoReverse(false);
+		durationSliderTimelineOn.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationTrack.scaleYProperty(), 1.6, Interpolator.LINEAR)));
+		durationSliderTimelineOn.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationSlider.lookup(".thumb").scaleXProperty(), 1, Interpolator.LINEAR)));
+		durationSliderTimelineOn.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationSlider.lookup(".thumb").scaleYProperty(), 1, Interpolator.LINEAR)));
+		durationSliderTimelineOn.play();
+	}
+	
+	public static void durationSliderHoverOff(ProgressBar durationTrack, Slider durationSlider) {
+
+		Timeline durationSliderTimelineOff = new Timeline();
+
+		durationSliderTimelineOff.setCycleCount(1);
+		durationSliderTimelineOff.setAutoReverse(false);
+		durationSliderTimelineOff.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationTrack.scaleYProperty(), 1, Interpolator.LINEAR)));
+		durationSliderTimelineOff.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationSlider.lookup(".thumb").scaleXProperty(), 0, Interpolator.LINEAR)));
+		durationSliderTimelineOff.getKeyFrames().add(new KeyFrame(Duration.millis(100), new KeyValue(durationSlider.lookup(".thumb").scaleYProperty(), 0, Interpolator.LINEAR)));
+		durationSliderTimelineOff.play();
 	}
 	
 }

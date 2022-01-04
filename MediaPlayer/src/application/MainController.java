@@ -121,6 +121,8 @@ public class MainController implements Initializable {
 
 
 		menuButton.setBackground(Background.EMPTY);
+		menuButton.setVisible(false);
+		
 		menuIcon.setImage(menuImage);
 
 
