@@ -3,20 +3,12 @@ package application;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
-
-
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventDispatcher;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -147,39 +139,59 @@ public class ControlBarController implements Initializable{
 	 boolean showingTimeLeft = false;
 	 boolean durationSliderHover = false;
 	 boolean controlBarOpen = false;
-
 	 
-	
-	 Tooltip play;
-	 Tooltip pause;
-	 Tooltip replay;
-	public  Tooltip mute;
-	public  Tooltip unmute;
-	Tooltip settings;
-	public  Tooltip enterFullScreen;
-	 Tooltip exitFullScreen;
-	Tooltip next;
-	Tooltip directoryTooltip;
-	Tooltip captionsTooltip;
-	
+	 
+		
+		Tooltip play = new Tooltip("Play (k)");
+		 Tooltip pause = new Tooltip("Pause (k)");
+		 Tooltip replay = new Tooltip("Replay (k)");
+		 Tooltip mute = new Tooltip("Mute (m)");
+		 Tooltip unmute = new Tooltip("Unmute (m)");
+		 Tooltip settings = new Tooltip("Settings");
+		 Tooltip enterFullScreen = new Tooltip("Full screen (f)");
+		 Tooltip exitFullScreen = new Tooltip("Exit full screen (f)");
+		 Tooltip next = new Tooltip("Next video (SHIFT + N)");
+		 Tooltip captionsTooltip = new Tooltip("Subtitles/closed captions (c)");
+		
+		Tooltip[] toolTips = {play, pause, replay, mute, unmute, settings, enterFullScreen, exitFullScreen, next, captionsTooltip};
+
+
 	MouseEventTracker mouseEventTracker;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		// TOOLTIPS//
-		play = new Tooltip("Play (k)");
-		pause = new Tooltip("Pause (k)");
-		replay = new Tooltip("Replay (k)");
-		mute = new Tooltip("Mute (m)");
-		unmute = new Tooltip("Unmute (m)");
-		settings = new Tooltip("Settings");
-		enterFullScreen = new Tooltip("Full screen (f)");
-		exitFullScreen = new Tooltip("Exit full screen (f)");
-		next = new Tooltip("Next video (SHIFT + N)");
-		captionsTooltip = new Tooltip("Subtitles/closed captions (c)");
+		
+		for(Tooltip toolTip : toolTips) {
+			toolTip.setShowDelay(Duration.ZERO);
+		}
+		
 
-		captionsButton.setTooltip(captionsTooltip);
+			Platform.runLater(new Runnable() {
+
+				@Override
+				public void run() {
+					captionsTooltip.show(captionsButton, 0, 0);
+					
+					double tooltipMiddle = (captionsTooltip.getWidth() -18) / 2;
+					double tooltipHeight = captionsTooltip.getHeight();
+					
+					captionsTooltip.hide();
+					
+					captionsButton.setOnMouseEntered((e) -> {
+						
+						Bounds bounds = captionsButton.localToScreen(captionsButton.getBoundsInLocal());
+						double nodeMiddle = captionsButton.getWidth() / 2;
+						
+						captionsTooltip.show(captionsButton, bounds.getMinX() + nodeMiddle - tooltipMiddle, bounds.getMinY() - tooltipHeight);
+					});
+					captionsButton.setOnMouseExited((e) -> {
+						captionsTooltip.hide();
+					});
+				}
+				
+			});
+
 
 		volumeSliderPane.setClip(new Rectangle(60, 38.666666664));
 
