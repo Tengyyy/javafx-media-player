@@ -140,8 +140,9 @@ public class Main extends Application {
 						fullScreen = false;
 						
 						controlBarController.fullScreenIcon.setImage(controlBarController.maximize);
-						primaryStage.setFullScreen(false);
-						controlBarController.fullScreenButton.setTooltip(controlBarController.enterFullScreen);
+						primaryStage.setFullScreen(false);						
+						controlBarController.fullScreen = new ControlTooltip("Full screen (f)", controlBarController.fullScreenButton);
+
 					}
 					break;
 					
@@ -241,7 +242,12 @@ public class Main extends Application {
 								controlBarController.replayMedia();
 							}
 							else {
-								controlBarController.playOrPause();
+								if(mainController.playing) {
+									controlBarController.pause();
+								}
+								else {
+									controlBarController.play();
+								}
 							}
 						}
 						
@@ -252,24 +258,9 @@ public class Main extends Application {
 						
 						controlBarController.mouseEventTracker.move();
 						if (!controlBarController.muted) {
-
-							controlBarController.muted = true;
-							controlBarController.volumeIcon.setImage(controlBarController.volumeMute);
-							mainController.mediaPlayer.setVolume(0);
-
-							controlBarController.volumeValue = controlBarController.volumeSlider.getValue();
-							
-							controlBarController.volumeButton.setTooltip(controlBarController.unmute);
-
-							controlBarController.volumeSlider.setValue(0);
+							controlBarController.mute();
 						} else {
-							controlBarController.muted = false;
-							controlBarController.volumeIcon.setImage(controlBarController.volumeUp);
-							mainController.mediaPlayer.setVolume(controlBarController.volumeValue);
-							
-							controlBarController.volumeButton.setTooltip(controlBarController.mute);
-
-							controlBarController.volumeSlider.setValue(controlBarController.volumeValue);
+							controlBarController.unmute();
 						}
 					}
 					break;
@@ -290,16 +281,21 @@ public class Main extends Application {
 					
 						controlBarController.mouseEventTracker.move();
 						if(!controlBarController.durationSlider.isValueChanging()) { // wont let user play/pause video while media slider is seeking
-							
-							if(!controlBarController.playButton.isFocused()) {
 								if(mainController.atEnd) {
 									controlBarController.replayMedia();
 								}
 								else {
-									controlBarController.playOrPause();
+									if(mainController.playing) {
+										controlBarController.pause();
+									}
+									else {
+										controlBarController.play();
+									}
 								}
-							}
+								
+								event.consume(); // might have to add a check to consume the space event only if any controlbar buttons are focused (might use space bar to navigate settings or menu)
 						}
+
 					}
 					break;
 					

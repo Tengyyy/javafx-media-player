@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -68,33 +69,45 @@
          <children>
                   <HBox fx:id="settingsBox1" alignment="CENTER_LEFT" onMouseExited="#exitArea" prefHeight="34.0" prefWidth="300.0" GridPane.columnIndex="1" GridPane.halignment="LEFT">
                      <children>
-                        <Button fx:id="playButton" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="36.0" prefWidth="52.0" style="-fx-padding: 0;" styleClass="focusableProperty">
-                           <HBox.margin>
-                              <Insets />
-                           </HBox.margin>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                           <graphic>
-                              <ImageView fx:id="playLogo" fitHeight="34.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" />
-                           </graphic>
-                  </Button>
-                        <Button fx:id="nextVideoButton" layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" mnemonicParsing="false" onAction="#playNextMedia" prefHeight="36.0" prefWidth="52.0" style="-fx-padding: 0;" styleClass="focusableProperty">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                           <graphic>
-                              <ImageView fx:id="nextVideoIcon" fitHeight="34.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" />
-                           </graphic>
-                  </Button>
-                        <Button fx:id="volumeButton" mnemonicParsing="false" onAction="#volumeButtonClick" onMouseEntered="#enterArea" prefHeight="36.0" prefWidth="52.0" style="-fx-padding: 0;" styleClass="focusableProperty">
-                           <graphic>
-                              <ImageView fx:id="volumeIcon" fitHeight="34.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" />
-                           </graphic>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
+                  <Pane fx:id="playButtonPane">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <children>
+                              <Button fx:id="playButton" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="36.0" prefWidth="52.0" style="-fx-padding: 0;" styleClass="focusableProperty">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <graphic>
+                                    <ImageView fx:id="playLogo" fitHeight="34.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" />
+                                 </graphic>
                         </Button>
+                     </children>
+                  </Pane>
+                  <Pane fx:id="nextVideoPane">
+                     <children>
+                              <Button fx:id="nextVideoButton" maxHeight="-Infinity" mnemonicParsing="false" onAction="#playNextMedia" prefHeight="36.0" prefWidth="52.0" style="-fx-padding: 0;" styleClass="focusableProperty">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <graphic>
+                                    <ImageView fx:id="nextVideoIcon" fitHeight="34.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" />
+                                 </graphic>
+                        </Button>
+                     </children>
+                  </Pane>
+                  <Pane fx:id="volumeButtonPane" onMouseEntered="#enterArea">
+                     <children>
+                              <Button fx:id="volumeButton" mnemonicParsing="false" onAction="#volumeButtonClick" prefHeight="36.0" prefWidth="52.0" style="-fx-padding: 0;" styleClass="focusableProperty">
+                                 <graphic>
+                                    <ImageView fx:id="volumeIcon" fitHeight="34.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" />
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                     </children>
+                  </Pane>
                   <StackPane fx:id="volumeSliderPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="36.0" prefWidth="60.0" stylesheets="@../Styles/application.css">
                      <children>
                         <ProgressBar fx:id="volumeTrack" pickOnBounds="false" prefHeight="4.0" prefWidth="48.0" progress="0.5" styleClass="volumeTrack" />
@@ -121,39 +134,51 @@
                   </HBox>
                   <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="36.0" prefWidth="300.0" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
                      <children>
-                        <Button fx:id="captionsButton" maxHeight="-Infinity" mnemonicParsing="false" onAction="#captionsButtonClick" prefHeight="36.0" prefWidth="46.0" style="-fx-padding: 0;">
-                           <graphic>
-                              <StackPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="36.0">
-                                 <children>
-                                    <ImageView fx:id="captionsIcon" fitHeight="34.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" />
-                                    <Line fx:id="captionLine" endX="10.0" scaleX="0.0" startX="-10.0" stroke="RED" strokeLineCap="ROUND" strokeWidth="3.0" StackPane.alignment="BOTTOM_CENTER">
-                                       <StackPane.margin>
-                                          <Insets bottom="3.0" />
-                                       </StackPane.margin>
-                                    </Line>
-                                 </children>
-                              </StackPane>
-                           </graphic>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
+                  <Pane fx:id="captionsButtonPane" onMouseEntered="#enterCaptionsButton" onMouseExited="#exitCaptionsButton">
+                     <children>
+                              <Button fx:id="captionsButton" maxHeight="-Infinity" mnemonicParsing="false" onAction="#captionsButtonClick" prefHeight="36.0" prefWidth="46.0" style="-fx-padding: 0;">
+                                 <graphic>
+                                    <StackPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="36.0">
+                                       <children>
+                                          <ImageView fx:id="captionsIcon" fitHeight="34.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" />
+                                          <Line fx:id="captionLine" endX="10.0" scaleX="0.0" startX="-10.0" stroke="RED" strokeLineCap="ROUND" strokeWidth="3.0" StackPane.alignment="BOTTOM_CENTER">
+                                             <StackPane.margin>
+                                                <Insets bottom="3.0" />
+                                             </StackPane.margin>
+                                          </Line>
+                                       </children>
+                                    </StackPane>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                     </children>
+                  </Pane>
+                  <Pane fx:id="settingsButtonPane">
+                     <children>
+                              <Button fx:id="settingsButton" contentDisplay="CENTER" graphicTextGap="0.0" maxHeight="-Infinity" mnemonicParsing="false" onAction="#settingsButtonClick" prefHeight="36.0" prefWidth="46.0" style="-fx-padding: 0;" styleClass="focusableProperty">
+                                 <graphic>
+                                    <ImageView fx:id="settingsIcon" fitHeight="34.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" />
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                     </children>
+                  </Pane>
+                  <Pane fx:id="fullScreenButtonPane" onMouseEntered="#fullScreenButtonHoverOn" onMouseExited="#fullScreenButtonHoverOff">
+                     <children>
+                              <Button fx:id="fullScreenButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" mnemonicParsing="false" onAction="#fullScreenButtonClick" prefHeight="36.0" prefWidth="46.0" style="-fx-padding: 0;" styleClass="focusableProperty">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <graphic>
+                                    <ImageView fx:id="fullScreenIcon" fitHeight="34.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" />
+                                 </graphic>
                         </Button>
-                        <Button fx:id="settingsButton" contentDisplay="CENTER" graphicTextGap="0.0" maxHeight="-Infinity" mnemonicParsing="false" onAction="#settingsButtonClick" prefHeight="36.0" prefWidth="46.0" style="-fx-padding: 0;" styleClass="focusableProperty">
-                           <graphic>
-                              <ImageView fx:id="settingsIcon" fitHeight="34.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" />
-                           </graphic>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Button>
-                        <Button fx:id="fullScreenButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" mnemonicParsing="false" onAction="#fullScreenButtonClick" onMouseEntered="#fullScreenButtonHoverOn" onMouseExited="#fullSreenButtonHoverOff" prefHeight="36.0" prefWidth="46.0" style="-fx-padding: 0;" styleClass="focusableProperty">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                           <graphic>
-                              <ImageView fx:id="fullScreenIcon" fitHeight="34.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" />
-                           </graphic>
-                  </Button>
+                     </children>
+                  </Pane>
                      </children>
                   </HBox>
          </children>

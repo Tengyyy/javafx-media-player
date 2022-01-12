@@ -159,7 +159,12 @@ public class MainController implements Initializable {
 			if (atEnd) {
 				controlBarController.replayMedia();
 			} else {
-				controlBarController.playOrPause();
+				if(playing) {
+					controlBarController.pause();
+				}
+				else {
+					controlBarController.play();
+				}				
 			}
 		}
 
@@ -328,14 +333,32 @@ public class MainController implements Initializable {
 
 					playing = true;
 					mediaPlayer.play();
-					controlBarController.playButton.setTooltip(controlBarController.pause);
-
+					
+					if(controlBarController.play.isShowing() || controlBarController.replay.isShowing()) {
+						controlBarController.play.hide();
+						controlBarController.replay.hide();
+						controlBarController.pause = new ControlTooltip("Pause (k)", controlBarController.playButton);
+						controlBarController.pause.showTooltip();
+					}
+					else {
+						controlBarController.pause = new ControlTooltip("Pause (k)", controlBarController.playButton);
+					}
 				}
 			}
 			else {
 				controlBarController.playLogo.setImage(controlBarController.playImage);
 				playing = false;
-				controlBarController.playButton.setTooltip(controlBarController.play);
+				
+				if(controlBarController.pause.isShowing() || controlBarController.replay.isShowing()) {
+					controlBarController.pause.hide();
+					controlBarController.replay.hide();
+					controlBarController.play = new ControlTooltip("Play (k)", controlBarController.playButton);
+					controlBarController.play.showTooltip();
+				}
+				else {
+					controlBarController.play = new ControlTooltip("Play (k)", controlBarController.playButton);
+				}
+				
 			}
 			controlBarController.playButton.setOnAction((e) -> {
 				controlBarController.playButtonClick1();
@@ -376,7 +399,17 @@ public class MainController implements Initializable {
 				
 
 			controlBarController.playLogo.setImage(new Image(controlBarController.replayFile.toURI().toString()));
-			controlBarController.playButton.setTooltip(controlBarController.replay);
+			
+			if(controlBarController.play.isShowing() || controlBarController.pause.isShowing()) {
+				controlBarController.play.hide();
+				controlBarController.pause.hide();
+				controlBarController.replay = new ControlTooltip("Replay (k)", controlBarController.playButton);
+				controlBarController.replay.showTooltip();
+			}	
+			else {
+				controlBarController.replay = new ControlTooltip("Replay (k)", controlBarController.playButton);
+			}
+			
 			controlBarController.playButton.setOnAction((e) -> controlBarController.playButtonClick2());
 			
 			if(!controlBarController.controlBarOpen) {
@@ -455,7 +488,7 @@ public class MainController implements Initializable {
 
 				mediaPlayer.setVolume(controlBarController.volumeSlider.getValue() / 100);
 
-				controlBarController.playOrPause();
+				controlBarController.play();
 
 				controlBarController.durationSlider.setMax(Math.floor(media.getDuration().toSeconds()));
 
