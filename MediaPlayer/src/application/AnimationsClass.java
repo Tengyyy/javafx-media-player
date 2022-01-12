@@ -10,6 +10,7 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
@@ -102,6 +103,7 @@ public class AnimationsClass {
 			playbackOptionsBuffer.setOpacity(1);
 			playbackOptionsBuffer.translateYProperty().bind(Bindings.subtract(settingsBackgroundPane.heightProperty(), playbackOptionsBuffer.heightProperty()));
 			bufferPane.setTranslateY(bufferPane.getHeight());
+			
 		});
 	}
 	
@@ -135,6 +137,7 @@ public class AnimationsClass {
 			playbackSpeedScroll.translateYProperty().bind(Bindings.subtract(settingsBackgroundPane.heightProperty(), playbackSpeedScroll.heightProperty()));
 			bufferPane.setTranslateY(bufferPane.getHeight());
 			playbackSpeedScroll.setVvalue(0);
+			
 		});
 	}
 	
@@ -169,6 +172,7 @@ public class AnimationsClass {
 			customSpeedBuffer.setTranslateX(settingsBackgroundPane.getWidth());
 			customSpeedBuffer.setTranslateY(0);
 			playbackSpeedScroll.setVvalue(0);
+			
 			
 		});
 	}

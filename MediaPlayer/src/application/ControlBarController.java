@@ -649,13 +649,15 @@ fullScreenButton.focusedProperty()
 			fullScreenIcon.setImage(minimize);
 			Main.fullScreen = true;
 			
-			if(fullScreen.isShowing()) {
-				fullScreen.hide();
-				exitFullScreen = new ControlTooltip("Exit full screen (f)", fullScreenButton);
-				exitFullScreen.showTooltip();
-			}
-			else {
-				exitFullScreen = new ControlTooltip("Exit full screen (f)", fullScreenButton);
+			if(!mainController.captionsOpen && !settingsController.settingsOpen) {
+				if(fullScreen.isShowing()) {
+					fullScreen.hide();
+					exitFullScreen = new ControlTooltip("Exit full screen (f)", fullScreenButton);
+					exitFullScreen.showTooltip();
+				}
+				else {
+					exitFullScreen = new ControlTooltip("Exit full screen (f)", fullScreenButton);
+				}
 			}
 		} 
 		else {
@@ -723,23 +725,40 @@ fullScreenButton.focusedProperty()
 	
 	public void openCaptions() {
 		mainController.captionsOpen = true;
+		
+		if(settingsController.settingsOpen) {
+			settingsController.closeSettings();
+		}
+		
 		AnimationsClass.openCaptions(captionLine);
 		
-		if(captions.isShowing()) {
+		if(captions.isShowing() || settings.isShowing() || fullScreen.isShowing()) {
 			captions.hide();
+			settings.hide();
+			fullScreen.hide();
 		}
 		captionsButton.setOnMouseEntered(null);
+		settingsButton.setOnMouseEntered(null);
+		fullScreenButton.setOnMouseEntered(null);
 	}
 	
 	public void closeCaptions() {
 		mainController.captionsOpen = false;
-		AnimationsClass.closeCaptions(captionLine);
 		
-		//TODO: Move this tooltip bit inside the actual captions closing method's setOnFinished part when its done
 		if(captionsButtonHover) {
 			captions = new ControlTooltip("Subtitles/closed captions (c)", captionsButton);
 			captions.showTooltip();
 		}
+		else {
+			captions = new ControlTooltip("Subtitles/closed captions (c)", captionsButton);
+		}
+		
+		settings = new ControlTooltip("Settings", settingsButton);
+		
+		if(Main.fullScreen) exitFullScreen = new ControlTooltip("Exit full screen (f)", fullScreenButton);
+		else fullScreen = new ControlTooltip("Full screen (f)", fullScreenButton);
+		
+		AnimationsClass.closeCaptions(captionLine);
 		
 	}
 	
@@ -799,6 +818,14 @@ fullScreenButton.focusedProperty()
 	
 	public void exitCaptionsButton() {
 		captionsButtonHover = false;
+	}
+	
+	public void enterSettingsButton() {
+		settingsButtonHover = true;
+	}
+	
+	public void exitSettingsButton() {
+		settingsButtonHover = false;
 	}
 	
 }

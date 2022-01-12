@@ -4,15 +4,20 @@ import java.io.File;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.jfoenix.controls.JFXToggleButton;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -133,6 +138,11 @@ public class SettingsController implements Initializable{
 	
 	HBox[] playbackSpeedBoxesArray; // array containing playback speed selection fields
 	Label[] playbackSpeedCheckBoxesArray; // array containing checkmark fields inside playback speed tab
+	
+	BooleanProperty settingsClosingFinished = new SimpleBooleanProperty(false);
+	
+	Timer tooltipTimer;
+	TimerTask tooltipTimerTask;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -881,9 +891,27 @@ public class SettingsController implements Initializable{
 			    videoBox.setOnMouseExited((e) -> {
 					Utilities.hoverEffectOff(videoBox);
 					AnimationsClass.marqueeOff(videoNameText);
-			    });
-
-		
+			    });	
+			    
+			    
+			   /*settingsClosingFinished.addListener((obs, wasFinished, isFinished) -> {
+				   if(isFinished) {
+					   if(controlBarController.settingsButtonHover) {
+							controlBarController.settings = new ControlTooltip("Settings", controlBarController.settingsButton);
+							controlBarController.settings.showTooltip();
+						}
+						else {
+							controlBarController.settings = new ControlTooltip("Settings", controlBarController.settingsButton);
+						}
+						
+						controlBarController.captions = new ControlTooltip("Subtitles/closed captions (c)", controlBarController.captionsButton);
+						
+						if(Main.fullScreen) controlBarController.exitFullScreen = new ControlTooltip("Exit full screen (f)", controlBarController.fullScreenButton);
+						else controlBarController.fullScreen = new ControlTooltip("Full screen (f)", controlBarController.fullScreenButton);
+						
+						settingsClosingFinished.set(false);
+				   }
+			   });*/
 	}
 	
 	public void init(MainController mainController, ControlBarController controlBarController) {
@@ -898,8 +926,21 @@ public class SettingsController implements Initializable{
 		settingsOpen = true;
 		settingsHomeOpen = true;
 		
+		if(mainController.captionsOpen) {
+			controlBarController.closeCaptions();
+		}
+		
 		AnimationsClass.openSettings(bufferPane);
-
+		
+		if(controlBarController.captions.isShowing() || controlBarController.settings.isShowing() || controlBarController.fullScreen.isShowing()) {
+			controlBarController.captions.hide();
+			controlBarController.settings.hide();
+			controlBarController.fullScreen.hide();
+		}
+		controlBarController.captionsButton.setOnMouseEntered(null);
+		controlBarController.settingsButton.setOnMouseEntered(null);
+		controlBarController.fullScreenButton.setOnMouseEntered(null);
+		
 	}
 	
 	public void closeSettings() {
@@ -908,6 +949,21 @@ public class SettingsController implements Initializable{
 		controlBarController.settingsIcon.setImage(controlBarController.settingsExit);
 		
 		settingsOpen = false;
+
+		
+		 if(controlBarController.settingsButtonHover) {
+				controlBarController.settings = new ControlTooltip("Settings", controlBarController.settingsButton);
+				controlBarController.settings.showTooltip();
+			}
+			else {
+				controlBarController.settings = new ControlTooltip("Settings", controlBarController.settingsButton);
+			}
+			
+			controlBarController.captions = new ControlTooltip("Subtitles/closed captions (c)", controlBarController.captionsButton);
+			
+			if(Main.fullScreen) controlBarController.exitFullScreen = new ControlTooltip("Exit full screen (f)", controlBarController.fullScreenButton);
+			else controlBarController.fullScreen = new ControlTooltip("Full screen (f)", controlBarController.fullScreenButton);
+			
 		
 		if(settingsHomeOpen) {
 			settingsHomeOpen = false;

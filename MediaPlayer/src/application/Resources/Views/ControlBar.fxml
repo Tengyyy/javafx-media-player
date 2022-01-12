@@ -155,7 +155,7 @@
                               </Button>
                      </children>
                   </Pane>
-                  <Pane fx:id="settingsButtonPane">
+                  <Pane fx:id="settingsButtonPane" onMouseEntered="#enterSettingsButton" onMouseExited="#exitSettingsButton">
                      <children>
                               <Button fx:id="settingsButton" contentDisplay="CENTER" graphicTextGap="0.0" maxHeight="-Infinity" mnemonicParsing="false" onAction="#settingsButtonClick" prefHeight="36.0" prefWidth="46.0" style="-fx-padding: 0;" styleClass="focusableProperty">
                                  <graphic>
