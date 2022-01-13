@@ -140,8 +140,10 @@ public class Main extends Application {
 						fullScreen = false;
 						
 						controlBarController.fullScreenIcon.setImage(controlBarController.maximize);
-						primaryStage.setFullScreen(false);						
-						controlBarController.fullScreen = new ControlTooltip("Full screen (f)", controlBarController.fullScreenButton);
+						primaryStage.setFullScreen(false);	
+						
+						if(!mainController.captionsOpen && !settingsController.settingsOpen)
+							controlBarController.fullScreen = new ControlTooltip("Full screen (f)", controlBarController.fullScreenButton, false);
 
 					}
 					break;
@@ -298,6 +300,36 @@ public class Main extends Application {
 
 					}
 					break;
+					
+					case C: {
+						controlBarController.mouseEventTracker.move();
+						
+						if(mainController.captionsOpen) {
+							controlBarController.closeCaptions();
+						}
+						else {
+							controlBarController.openCaptions();
+						}
+					}
+					break;
+					
+					case S: {
+						controlBarController.mouseEventTracker.move(); 
+
+						if(settingsController.settingsOpen) {
+							settingsController.closeSettings();
+						}
+						else {
+							settingsController.openSettings();
+						}
+					}
+					break;
+					
+					case Q: {
+						controlBarController.mouseEventTracker.move();
+						
+						mainController.openMenu();
+					}
 					
 					default: break;
 				}

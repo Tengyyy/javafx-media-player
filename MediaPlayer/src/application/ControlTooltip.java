@@ -10,17 +10,21 @@ public class ControlTooltip extends Tooltip{
 
 	String tooltipText;
 	Button tooltipParent;
-
 	
 	double tooltipMiddle;
 	double tooltipHeight;
 	
-	double nodeMiddle;
+	double nodeMiddleX;
+	double nodeMiddleY;
 	
-	ControlTooltip(String tooltipText, Button tooltipParent ){
+	boolean menuTooltip;
+	
+	ControlTooltip(String tooltipText, Button tooltipParent, boolean menuTooltip){
 		
 		this.tooltipText = tooltipText;
 		this.tooltipParent = tooltipParent;
+		this.menuTooltip = menuTooltip;
+		
 		this.setText(tooltipText);
 		this.setShowDelay(Duration.ZERO);
 		
@@ -33,9 +37,13 @@ public class ControlTooltip extends Tooltip{
 		
 		tooltipParent.setOnMouseEntered((e) -> {
 			Bounds bounds = tooltipParent.localToScreen(tooltipParent.getBoundsInLocal());
-			nodeMiddle = tooltipParent.getWidth() / 2;
+			nodeMiddleX = tooltipParent.getWidth() / 2;
+			nodeMiddleY = tooltipParent.getHeight() / 2;
 			
-			this.show(tooltipParent, bounds.getMinX() + nodeMiddle - tooltipMiddle, bounds.getMinY() - tooltipHeight);
+			if(!menuTooltip)
+				this.show(tooltipParent, bounds.getMinX() + nodeMiddleX - tooltipMiddle, bounds.getMinY() - tooltipHeight);
+			else
+				this.show(tooltipParent, bounds.getMaxX() + 10, bounds.getMinY() + nodeMiddleY - ((tooltipHeight-18)/2));
 		});
 		
 		tooltipParent.setOnMouseExited((e) -> {
@@ -43,15 +51,16 @@ public class ControlTooltip extends Tooltip{
 		});
 		
 	}
+
 	
 	public void showTooltip() {
 		Bounds bounds = tooltipParent.localToScreen(tooltipParent.getBoundsInLocal());
-		nodeMiddle = tooltipParent.getWidth() / 2;
+		nodeMiddleX = tooltipParent.getWidth() / 2;
+		nodeMiddleY = tooltipParent.getHeight() / 2;
 		
-		this.show(tooltipParent, bounds.getMinX() + nodeMiddle - tooltipMiddle, bounds.getMinY() - tooltipHeight);
-		
+		if(!menuTooltip)
+			this.show(tooltipParent, bounds.getMinX() + nodeMiddleX - tooltipMiddle, bounds.getMinY() - tooltipHeight);
+		else
+			this.show(tooltipParent, bounds.getMaxX() + 10, bounds.getMinY() + nodeMiddleY - ((tooltipHeight-18)/2));
 	}
-	
-	
-
 }
