@@ -131,7 +131,7 @@ public class MainController implements Initializable {
 			@Override
 			public void run() {
 				// needs to be run later so that the rest of the app can load in and this tooltip popup has a parent window to be associated with
-				menuTooltip = new ControlTooltip("Open menu (q)", menuButton, true);
+				menuTooltip = new ControlTooltip("Open menu (q)", menuButton, true, controlBarController.controlBar);
 			}
 		});
 
@@ -346,11 +346,11 @@ public class MainController implements Initializable {
 					if(controlBarController.play.isShowing() || controlBarController.replay.isShowing()) {
 						controlBarController.play.hide();
 						controlBarController.replay.hide();
-						controlBarController.pause = new ControlTooltip("Pause (k)", controlBarController.playButton, false);
+						controlBarController.pause = new ControlTooltip("Pause (k)", controlBarController.playButton, false, controlBarController.controlBar);
 						controlBarController.pause.showTooltip();
 					}
 					else {
-						controlBarController.pause = new ControlTooltip("Pause (k)", controlBarController.playButton, false);
+						controlBarController.pause = new ControlTooltip("Pause (k)", controlBarController.playButton, false, controlBarController.controlBar);
 					}
 				}
 			}
@@ -361,11 +361,11 @@ public class MainController implements Initializable {
 				if(controlBarController.pause.isShowing() || controlBarController.replay.isShowing()) {
 					controlBarController.pause.hide();
 					controlBarController.replay.hide();
-					controlBarController.play = new ControlTooltip("Play (k)", controlBarController.playButton, false);
+					controlBarController.play = new ControlTooltip("Play (k)", controlBarController.playButton, false, controlBarController.controlBar);
 					controlBarController.play.showTooltip();
 				}
 				else {
-					controlBarController.play = new ControlTooltip("Play (k)", controlBarController.playButton, false);
+					controlBarController.play = new ControlTooltip("Play (k)", controlBarController.playButton, false, controlBarController.controlBar);
 				}
 				
 			}
@@ -412,11 +412,11 @@ public class MainController implements Initializable {
 			if(controlBarController.play.isShowing() || controlBarController.pause.isShowing()) {
 				controlBarController.play.hide();
 				controlBarController.pause.hide();
-				controlBarController.replay = new ControlTooltip("Replay (k)", controlBarController.playButton, false);
+				controlBarController.replay = new ControlTooltip("Replay (k)", controlBarController.playButton, false, controlBarController.controlBar);
 				controlBarController.replay.showTooltip();
 			}	
 			else {
-				controlBarController.replay = new ControlTooltip("Replay (k)", controlBarController.playButton, false);
+				controlBarController.replay = new ControlTooltip("Replay (k)", controlBarController.playButton, false, controlBarController.controlBar);
 			}
 			
 			controlBarController.playButton.setOnAction((e) -> controlBarController.playButtonClick2());

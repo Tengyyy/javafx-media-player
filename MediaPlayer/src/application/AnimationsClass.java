@@ -446,7 +446,7 @@ public class AnimationsClass {
 		translateTransition.setInterpolator(Interpolator.LINEAR);
 		translateTransition.play();
 		translateTransition.setOnFinished((e) -> {
-			controlBarController.setControlBarOpen(true);
+			controlBarController.controlBarOpen = true;
 
 		});
 		
@@ -464,7 +464,7 @@ public class AnimationsClass {
 		translateTransition.play();
 		
 		translateTransition.setOnFinished((e) -> {
-			controlBarController.setControlBarOpen(false);
+			controlBarController.controlBarOpen = false;
 			controlBarController.mouseEventTracker.mouseMoving.set(false);
 		});
 		

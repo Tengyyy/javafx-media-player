@@ -143,7 +143,7 @@ public class Main extends Application {
 						primaryStage.setFullScreen(false);	
 						
 						if(!mainController.captionsOpen && !settingsController.settingsOpen)
-							controlBarController.fullScreen = new ControlTooltip("Full screen (f)", controlBarController.fullScreenButton, false);
+							controlBarController.fullScreen = new ControlTooltip("Full screen (f)", controlBarController.fullScreenButton, false, controlBarController.controlBar);
 
 					}
 					break;

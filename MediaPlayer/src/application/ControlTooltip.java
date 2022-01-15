@@ -4,6 +4,7 @@ package application;
 import javafx.geometry.Bounds;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 public class ControlTooltip extends Tooltip{
@@ -19,16 +20,18 @@ public class ControlTooltip extends Tooltip{
 	
 	boolean menuTooltip;
 	
-	ControlTooltip(String tooltipText, Button tooltipParent, boolean menuTooltip){
+	VBox controlBar;
+	
+	ControlTooltip(String tooltipText, Button tooltipParent, boolean menuTooltip, VBox controlBar){
 		
 		this.tooltipText = tooltipText;
 		this.tooltipParent = tooltipParent;
 		this.menuTooltip = menuTooltip;
+		this.controlBar = controlBar;
 		
 		this.setText(tooltipText);
 		this.setShowDelay(Duration.ZERO);
 		
-		//tooltipParent.setTooltip(this);
 		
 		this.show(tooltipParent, 0, 0);
 		tooltipMiddle = (this.getWidth() - 18) / 2;
@@ -40,8 +43,11 @@ public class ControlTooltip extends Tooltip{
 			nodeMiddleX = tooltipParent.getWidth() / 2;
 			nodeMiddleY = tooltipParent.getHeight() / 2;
 			
-			if(!menuTooltip)
-				this.show(tooltipParent, bounds.getMinX() + nodeMiddleX - tooltipMiddle, bounds.getMinY() - tooltipHeight);
+			
+			
+			if(!menuTooltip) {
+				this.show(tooltipParent, bounds.getMinX() + nodeMiddleX - tooltipMiddle, bounds.getMinY() - tooltipHeight - controlBar.getTranslateY()); 
+			}
 			else
 				this.show(tooltipParent, bounds.getMaxX() + 10, bounds.getMinY() + nodeMiddleY - ((tooltipHeight-18)/2));
 		});
@@ -59,7 +65,7 @@ public class ControlTooltip extends Tooltip{
 		nodeMiddleY = tooltipParent.getHeight() / 2;
 		
 		if(!menuTooltip)
-			this.show(tooltipParent, bounds.getMinX() + nodeMiddleX - tooltipMiddle, bounds.getMinY() - tooltipHeight);
+			this.show(tooltipParent, bounds.getMinX() + nodeMiddleX - tooltipMiddle, bounds.getMinY() - tooltipHeight - controlBar.getTranslateY());
 		else
 			this.show(tooltipParent, bounds.getMaxX() + 10, bounds.getMinY() + nodeMiddleY - ((tooltipHeight-18)/2));
 	}

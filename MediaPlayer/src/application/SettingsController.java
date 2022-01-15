@@ -552,44 +552,44 @@ public class SettingsController implements Initializable{
 
 		
 		if(controlBarController.settingsButtonHover) {
-			controlBarController.settings = new ControlTooltip("Settings (s)", controlBarController.settingsButton, false);
+			controlBarController.settings = new ControlTooltip("Settings (s)", controlBarController.settingsButton, false, controlBarController.controlBar);
 			controlBarController.settings.showTooltip();
 			
-			controlBarController.captions = new ControlTooltip("Subtitles/closed captions (c)", controlBarController.captionsButton, false);
+			controlBarController.captions = new ControlTooltip("Subtitles/closed captions (c)", controlBarController.captionsButton, false, controlBarController.controlBar);
 			
-			if(Main.fullScreen) controlBarController.exitFullScreen = new ControlTooltip("Exit full screen (f)", controlBarController.fullScreenButton, false);
-			else controlBarController.fullScreen = new ControlTooltip("Full screen (f)", controlBarController.fullScreenButton, false);
+			if(Main.fullScreen) controlBarController.exitFullScreen = new ControlTooltip("Exit full screen (f)", controlBarController.fullScreenButton, false, controlBarController.controlBar);
+			else controlBarController.fullScreen = new ControlTooltip("Full screen (f)", controlBarController.fullScreenButton, false, controlBarController.controlBar);
 		}
 		else if(controlBarController.captionsButtonHover) {
-				controlBarController.captions = new ControlTooltip("Subtitles/closed captions (c)", controlBarController.captionsButton, false);
+				controlBarController.captions = new ControlTooltip("Subtitles/closed captions (c)", controlBarController.captionsButton, false, controlBarController.controlBar);
 				controlBarController.captions.showTooltip();
 				
-				controlBarController.settings = new ControlTooltip("Settings (s)", controlBarController.settingsButton, false);
+				controlBarController.settings = new ControlTooltip("Settings (s)", controlBarController.settingsButton, false, controlBarController.controlBar);
 				
-				if(Main.fullScreen) controlBarController.exitFullScreen = new ControlTooltip("Exit full screen (f)", controlBarController.fullScreenButton, false);
-				else controlBarController.fullScreen = new ControlTooltip("Full screen (f)", controlBarController.fullScreenButton, false);
+				if(Main.fullScreen) controlBarController.exitFullScreen = new ControlTooltip("Exit full screen (f)", controlBarController.fullScreenButton, false, controlBarController.controlBar);
+				else controlBarController.fullScreen = new ControlTooltip("Full screen (f)", controlBarController.fullScreenButton, false, controlBarController.controlBar);
 		}
 		else if(controlBarController.fullScreenButtonHover){
 			 if(Main.fullScreen) {
-				 controlBarController.exitFullScreen = new ControlTooltip("Exit full screen (f)", controlBarController.fullScreenButton, false);
+				 controlBarController.exitFullScreen = new ControlTooltip("Exit full screen (f)", controlBarController.fullScreenButton, false, controlBarController.controlBar);
 				 controlBarController.exitFullScreen.showTooltip();
 			 }
 			 else {
-				 controlBarController.fullScreen = new ControlTooltip("Full screen (f)", controlBarController.fullScreenButton, false);
+				 controlBarController.fullScreen = new ControlTooltip("Full screen (f)", controlBarController.fullScreenButton, false, controlBarController.controlBar);
 				 controlBarController.fullScreen.showTooltip();
 			 }
 			 
-				controlBarController.captions = new ControlTooltip("Subtitles/closed captions (c)", controlBarController.captionsButton, false);
+				controlBarController.captions = new ControlTooltip("Subtitles/closed captions (c)", controlBarController.captionsButton, false, controlBarController.controlBar);
 
-				controlBarController.settings = new ControlTooltip("Settings (s)", controlBarController.settingsButton, false);
+				controlBarController.settings = new ControlTooltip("Settings (s)", controlBarController.settingsButton, false, controlBarController.controlBar);
 		}
 		else {
-			controlBarController.captions = new ControlTooltip("Subtitles/closed captions (c)", controlBarController.captionsButton, false);
+			controlBarController.captions = new ControlTooltip("Subtitles/closed captions (c)", controlBarController.captionsButton, false, controlBarController.controlBar);
 
-			controlBarController.settings = new ControlTooltip("Settings (s)", controlBarController.settingsButton, false);
+			controlBarController.settings = new ControlTooltip("Settings (s)", controlBarController.settingsButton, false, controlBarController.controlBar);
 
-			if(Main.fullScreen) controlBarController.exitFullScreen = new ControlTooltip("Exit full screen (f)", controlBarController.fullScreenButton, false);
-			else controlBarController.fullScreen = new ControlTooltip("Full screen (f)", controlBarController.fullScreenButton, false);
+			if(Main.fullScreen) controlBarController.exitFullScreen = new ControlTooltip("Exit full screen (f)", controlBarController.fullScreenButton, false, controlBarController.controlBar);
+			else controlBarController.fullScreen = new ControlTooltip("Full screen (f)", controlBarController.fullScreenButton, false, controlBarController.controlBar);
 		}
 			
 		
@@ -635,16 +635,13 @@ public class SettingsController implements Initializable{
 		settingsHomeOpen = true;
 
 		AnimationsClass.closePlaybackSpeed(settingsBackgroundPane, playbackSpeedScroll, bufferPane);
-
 	}
-	
 	
 	public void openCustomSpeed() {
 		customSpeedOpen = true;
 		playbackSpeedOpen = false;
 
 		AnimationsClass.openCustomSpeed(settingsBackgroundPane, customSpeedBuffer, playbackSpeedScroll);
-
 	}
 
 	public void closeCustomSpeed() {
@@ -725,9 +722,19 @@ public class SettingsController implements Initializable{
 		
 		playbackSpeedTracker = trackerValue;
 		
+		int scrollValue = 0;
+		if(trackerValue > 1) {
+			scrollValue = 50 + 60*trackerValue;
+		}
+		
 		if(playbackCustom != null) {
+			if(trackerValue == 1) scrollValue = 150;
+			else				  scrollValue += 60;
+			
 			playbackCustom.playbackCustomCheck.setGraphic(null);
 		}
+		
+		playbackSpeedScroll.setVvalue(scrollValue / playbackSpeedPage.getHeight());
 		
 		for(Label checkBox : playbackSpeedCheckBoxesArray) {
 			checkBox.setGraphic(null);
