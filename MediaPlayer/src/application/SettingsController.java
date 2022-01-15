@@ -3,6 +3,7 @@ package application;
 import java.io.File;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -95,13 +96,12 @@ public class SettingsController implements Initializable{
 	
 	
 	
-	private MainController mainController;
-	private ControlBarController controlBarController;
+	MainController mainController;
+	ControlBarController controlBarController;
 	
 	
-	HBox playbackCustom;
-	Label playbackCustomCheck;
-	Label playbackCustomText;
+	CustomSpeedTab playbackCustom;
+
 	
 	// variables to keep track of playback option toggles:
 	 boolean shuffleOn = false;
@@ -119,13 +119,15 @@ public class SettingsController implements Initializable{
 	double formattedValue;
 	double formattedValue2;
 	
-	DecimalFormat df;
+	DecimalFormat df = new DecimalFormat("#.##"); // makes it so that only the minimal amount of digits wil be displayed, e.g. 2 not 2.00
 	
 	FileChooser fileChooser;
 	
 
 	// counter to keep track of which playback speed field is selected in the settings menu
-	int playbackSpeedTracker = 4;
+	int playbackSpeedTracker = 4; // 0 == custom speed tab, 1-8 default selections
+	
+	
 	
 	public boolean settingsOpen = false;
 	public  boolean settingsHomeOpen = false;
@@ -133,16 +135,15 @@ public class SettingsController implements Initializable{
 	boolean playbackOptionsOpen = false;
 	boolean customSpeedOpen = false;
 	
+	boolean loadCustomSpeed = false; // if true the custom speed value pane needs to be rendered when entering the speed selection menu
+	boolean isDefaultValue = false;
+	
 	private File rightArrowFile, leftArrowFile, checkFile;	
 	
 	
-	HBox[] playbackSpeedBoxesArray; // array containing playback speed selection fields
-	Label[] playbackSpeedCheckBoxesArray; // array containing checkmark fields inside playback speed tab
+	HBox[] playbackSpeedBoxesArray; // array containing playback speed selection tabs
+	Label[] playbackSpeedCheckBoxesArray; // array containing checkmark fields inside playback speed tabs
 	
-	BooleanProperty settingsClosingFinished = new SimpleBooleanProperty(false);
-	
-	Timer tooltipTimer;
-	TimerTask tooltipTimerTask;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -314,417 +315,55 @@ public class SettingsController implements Initializable{
 					autoplayOn = false;
 				}
 			}
-
 		});
-		
 		
 		customSpeedTrack.setProgress(0.75 / 1.75);
 
+		
+		customSpeedSlider.setOnMousePressed((e) -> {
+			customSpeedSlider.setValueChanging(true);
+		});
+		customSpeedSlider.setOnMouseReleased((e) -> {
+			customSpeedSlider.setValueChanging(false);
+		});	
+		
+		customSpeedSlider.valueChangingProperty().addListener(new ChangeListener<Boolean>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				if(!newValue) {
+					mainController.mediaPlayer.setRate(formattedValue);
+				}
+			}
+		});
+		
 		customSpeedSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 
-				formattedValue = Math.floor(newValue.doubleValue() * 20) / 20; // floors the new slider value to 2
-																				// decimal points with the last decimal
-																				// being only 5 or 0.
-
-				mainController.mediaPlayer.setRate(formattedValue);
+				
+				
+				formattedValue = Math.floor(newValue.doubleValue() * 20) / 20; // floors it to .05 precision
 
 				double progress = (newValue.doubleValue() - 0.25) * 1 / 1.75; // adjust the slider scale ( 0.25 - 2 ) to
-																				// match with the progress bar scale ( 0
-																				// - 1 )
-
+																				// match with the progress bar scale ( 0 - 1 )
+				
 				customSpeedTrack.setProgress(progress);
 
-				df = new DecimalFormat("#.##"); // makes it so that only the minimal amount of digits wil be displayed,
-												// eg. 2 not 2.00
-
 				customSpeedLabel.setText(df.format(formattedValue) + "x");
+				
+				isDefaultValue = true;
+				
+				if(formattedValue * 4 != Math.round(formattedValue * 4)) { // filters out all default playback speed values that could be selected from the selection pane (0.25, 0.75, 1.5 etc), so that this int could only be an actual customly selected value
+					formattedValue2 = formattedValue;
 
-				if (playbackCustom == null) {
-
-					switch (df.format(formattedValue)) {
-					case "0.25": {
-						playbackSpeedTracker = 1;
-						checkBox2.setGraphic(null);
-						checkBox3.setGraphic(null);
-						checkBox4.setGraphic(null);
-						checkBox5.setGraphic(null);
-						checkBox6.setGraphic(null);
-						checkBox7.setGraphic(null);
-						checkBox8.setGraphic(null);
-						checkBox1.setGraphic(new ImageView(check));
-						playbackSpeedScroll.setVvalue(0);
-
-					}
-						break;
-					case "0.5": {
-						playbackSpeedTracker = 2;
-
-						checkBox1.setGraphic(null);
-						checkBox3.setGraphic(null);
-						checkBox4.setGraphic(null);
-						checkBox5.setGraphic(null);
-						checkBox6.setGraphic(null);
-						checkBox7.setGraphic(null);
-						checkBox8.setGraphic(null);
-						checkBox2.setGraphic(new ImageView(check));
-						playbackSpeedScroll.setVvalue(148 / playbackSpeedPage.getHeight());
-					}
-						break;
-					case "0.75": {
-						playbackSpeedTracker = 3;
-
-						checkBox1.setGraphic(null);
-						checkBox2.setGraphic(null);
-						checkBox4.setGraphic(null);
-						checkBox5.setGraphic(null);
-						checkBox6.setGraphic(null);
-						checkBox7.setGraphic(null);
-						checkBox8.setGraphic(null);
-						checkBox3.setGraphic(new ImageView(check));
-						playbackSpeedScroll.setVvalue(198 / playbackSpeedPage.getHeight());
-					}
-						break;
-					case "1": {
-						playbackSpeedTracker = 4;
-
-						checkBox1.setGraphic(null);
-						checkBox2.setGraphic(null);
-						checkBox3.setGraphic(null);
-						checkBox5.setGraphic(null);
-						checkBox6.setGraphic(null);
-						checkBox7.setGraphic(null);
-						checkBox8.setGraphic(null);
-						checkBox4.setGraphic(new ImageView(check));
-						playbackSpeedScroll.setVvalue(248 / playbackSpeedPage.getHeight());
-					}
-						break;
-					case "1.25": {
-						playbackSpeedTracker = 5;
-
-						checkBox1.setGraphic(null);
-						checkBox2.setGraphic(null);
-						checkBox3.setGraphic(null);
-						checkBox4.setGraphic(null);
-						checkBox6.setGraphic(null);
-						checkBox7.setGraphic(null);
-						checkBox8.setGraphic(null);
-						checkBox5.setGraphic(new ImageView(check));
-						playbackSpeedScroll.setVvalue(298 / playbackSpeedPage.getHeight());
-					}
-						break;
-					case "1.5": {
-						playbackSpeedTracker = 6;
-
-						checkBox1.setGraphic(null);
-						checkBox2.setGraphic(null);
-						checkBox3.setGraphic(null);
-						checkBox4.setGraphic(null);
-						checkBox5.setGraphic(null);
-						checkBox7.setGraphic(null);
-						checkBox8.setGraphic(null);
-						checkBox6.setGraphic(new ImageView(check));
-						playbackSpeedScroll.setVvalue(348 / playbackSpeedPage.getHeight());
-					}
-						break;
-					case "1.75": {
-						playbackSpeedTracker = 7;
-
-						checkBox1.setGraphic(null);
-						checkBox2.setGraphic(null);
-						checkBox3.setGraphic(null);
-						checkBox4.setGraphic(null);
-						checkBox5.setGraphic(null);
-						checkBox6.setGraphic(null);
-						checkBox8.setGraphic(null);
-						checkBox7.setGraphic(new ImageView(check));
-						playbackSpeedScroll.setVvalue(398 / playbackSpeedPage.getHeight());
-					}
-						break;
-					case "2": {
-						playbackSpeedTracker = 8;
-
-						checkBox1.setGraphic(null);
-						checkBox2.setGraphic(null);
-						checkBox3.setGraphic(null);
-						checkBox4.setGraphic(null);
-						checkBox5.setGraphic(null);
-						checkBox6.setGraphic(null);
-						checkBox7.setGraphic(null);
-						checkBox8.setGraphic(new ImageView(check));
-						playbackSpeedScroll.setVvalue(448 / playbackSpeedPage.getHeight());
-					}
-						break;
-					default: {
-
-						formattedValue2 = formattedValue;
-						playbackCustom = new HBox();
-						playbackCustomCheck = new Label();
-						playbackCustomText = new Label();
-
-						playbackCustom.setPrefWidth(235);
-						playbackCustom.setPrefHeight(50);
-						playbackCustom.setPadding(new Insets(0, 10, 0, 10));
-
-						playbackCustomCheck.setPrefHeight(50);
-						playbackCustomCheck.setPrefWidth(29);
-						playbackCustomCheck.setPadding(new Insets(0, 5, 0, 0));
-						playbackCustomCheck.setGraphic(new ImageView(check));
-
-						switch (playbackSpeedTracker) {
-						case 1:
-							checkBox1.setGraphic(null);
-							break;
-						case 2:
-							checkBox2.setGraphic(null);
-							break;
-						case 3:
-							checkBox3.setGraphic(null);
-							break;
-						case 4:
-							checkBox4.setGraphic(null);
-							break;
-						case 5:
-							checkBox5.setGraphic(null);
-							break;
-						case 6:
-							checkBox6.setGraphic(null);
-							break;
-						case 7:
-							checkBox7.setGraphic(null);
-							break;
-						case 8:
-							checkBox8.setGraphic(null);
-							break;
-						default:
-							break;
-						}
-
-						playbackSpeedTracker = 0;
-
-						playbackCustom.setOnMouseClicked((e) -> {
-
-							switch (playbackSpeedTracker) {
-							case 1:
-								checkBox1.setGraphic(null);
-								break;
-							case 2:
-								checkBox2.setGraphic(null);
-								break;
-							case 3:
-								checkBox3.setGraphic(null);
-								break;
-							case 4:
-								checkBox4.setGraphic(null);
-								break;
-							case 5:
-								checkBox5.setGraphic(null);
-								break;
-							case 6:
-								checkBox6.setGraphic(null);
-								break;
-							case 7:
-								checkBox7.setGraphic(null);
-								break;
-							case 8:
-								checkBox8.setGraphic(null);
-								break;
-							default:
-								break;
-							}
-
-							playbackSpeedTracker = 0;
-							playbackCustomCheck.setGraphic(new ImageView(check));
-							mainController.mediaPlayer.setRate(formattedValue2);
-							playbackValueLabel.setText(df.format(formattedValue2));
-						});
-
-						playbackCustom.setOnMouseEntered((e) -> {
-							Utilities.hoverEffectOn(playbackCustom);
-						});
-
-						playbackCustom.setOnMouseExited((e) -> {
-							Utilities.hoverEffectOff(playbackCustom);
-						});
-
-						playbackCustomText.setTextFill(Color.WHITE);
-						playbackCustomText.setFont(new Font(15));
-						playbackCustomText.setPrefHeight(50);
-						playbackCustomText.setPrefWidth(186);
-						playbackCustomText.setText("Custom " + "(" + df.format(formattedValue2) + ")");
-
-						playbackValueLabel.setText(df.format(formattedValue2));
-
-						playbackSpeedScroll.setVvalue(0);
-
-						playbackCustom.getChildren().addAll(playbackCustomCheck, playbackCustomText);
-						playbackSpeedPage.getChildren().add(2, playbackCustom);
-
-					}
-						break;
-					}
-
-				} else if (playbackCustom != null) {
-
-					switch (df.format(formattedValue)) {
-					case "0.25": {
-						playbackCustomCheck.setGraphic(null);
-						playbackSpeedTracker = 1;
-
-						checkBox2.setGraphic(null);
-						checkBox3.setGraphic(null);
-						checkBox4.setGraphic(null);
-						checkBox5.setGraphic(null);
-						checkBox6.setGraphic(null);
-						checkBox7.setGraphic(null);
-						checkBox8.setGraphic(null);
-						checkBox1.setGraphic(new ImageView(check));
-						playbackSpeedScroll.setVvalue(148 / playbackSpeedPage.getHeight());
-						playbackValueLabel.setText(df.format(formattedValue));
-
-					}
-						break;
-					case "0.5": {
-						playbackCustomCheck.setGraphic(null);
-						playbackSpeedTracker = 2;
-
-						checkBox1.setGraphic(null);
-						checkBox3.setGraphic(null);
-						checkBox4.setGraphic(null);
-						checkBox5.setGraphic(null);
-						checkBox6.setGraphic(null);
-						checkBox7.setGraphic(null);
-						checkBox8.setGraphic(null);
-						checkBox2.setGraphic(new ImageView(check));
-						playbackSpeedScroll.setVvalue(198 / playbackSpeedPage.getHeight());
-						playbackValueLabel.setText(df.format(formattedValue));
-					}
-						break;
-					case "0.75": {
-						playbackCustomCheck.setGraphic(null);
-						playbackSpeedTracker = 3;
-
-						checkBox1.setGraphic(null);
-						checkBox2.setGraphic(null);
-						checkBox4.setGraphic(null);
-						checkBox5.setGraphic(null);
-						checkBox6.setGraphic(null);
-						checkBox7.setGraphic(null);
-						checkBox8.setGraphic(null);
-						checkBox3.setGraphic(new ImageView(check));
-						playbackSpeedScroll.setVvalue(248 / playbackSpeedPage.getHeight());
-						playbackValueLabel.setText(df.format(formattedValue));
-					}
-						break;
-					case "1": {
-						playbackCustomCheck.setGraphic(null);
-						playbackSpeedTracker = 4;
-
-						checkBox1.setGraphic(null);
-						checkBox2.setGraphic(null);
-						checkBox3.setGraphic(null);
-						checkBox5.setGraphic(null);
-						checkBox6.setGraphic(null);
-						checkBox7.setGraphic(null);
-						checkBox8.setGraphic(null);
-						checkBox4.setGraphic(new ImageView(check));
-						playbackSpeedScroll.setVvalue(298 / playbackSpeedPage.getHeight());
-						playbackValueLabel.setText("Normal");
-					}
-						break;
-					case "1.25": {
-						playbackCustomCheck.setGraphic(null);
-						playbackSpeedTracker = 5;
-
-						checkBox1.setGraphic(null);
-						checkBox2.setGraphic(null);
-						checkBox3.setGraphic(null);
-						checkBox4.setGraphic(null);
-						checkBox6.setGraphic(null);
-						checkBox7.setGraphic(null);
-						checkBox8.setGraphic(null);
-						checkBox5.setGraphic(new ImageView(check));
-						playbackSpeedScroll.setVvalue(348 / playbackSpeedPage.getHeight());
-						playbackValueLabel.setText(df.format(formattedValue));
-					}
-						break;
-					case "1.5": {
-						playbackCustomCheck.setGraphic(null);
-						playbackSpeedTracker = 6;
-
-						checkBox1.setGraphic(null);
-						checkBox2.setGraphic(null);
-						checkBox3.setGraphic(null);
-						checkBox4.setGraphic(null);
-						checkBox5.setGraphic(null);
-						checkBox7.setGraphic(null);
-						checkBox8.setGraphic(null);
-						checkBox6.setGraphic(new ImageView(check));
-						playbackSpeedScroll.setVvalue(398 / playbackSpeedPage.getHeight());
-						playbackValueLabel.setText(df.format(formattedValue));
-					}
-						break;
-					case "1.75": {
-						playbackCustomCheck.setGraphic(null);
-						playbackSpeedTracker = 7;
-
-						checkBox1.setGraphic(null);
-						checkBox2.setGraphic(null);
-						checkBox3.setGraphic(null);
-						checkBox4.setGraphic(null);
-						checkBox5.setGraphic(null);
-						checkBox6.setGraphic(null);
-						checkBox8.setGraphic(null);
-						checkBox7.setGraphic(new ImageView(check));
-						playbackSpeedScroll.setVvalue(448 / playbackSpeedPage.getHeight());
-						playbackValueLabel.setText(df.format(formattedValue));
-					}
-						break;
-					case "2": {
-						playbackCustomCheck.setGraphic(null);
-						playbackSpeedTracker = 8;
-
-						checkBox1.setGraphic(null);
-						checkBox2.setGraphic(null);
-						checkBox3.setGraphic(null);
-						checkBox4.setGraphic(null);
-						checkBox5.setGraphic(null);
-						checkBox6.setGraphic(null);
-						checkBox7.setGraphic(null);
-						checkBox8.setGraphic(new ImageView(check));
-						playbackSpeedScroll.setVvalue(498 / playbackSpeedPage.getHeight());
-						playbackValueLabel.setText(df.format(formattedValue));
-					}
-						break;
-					default: {
-
-						formattedValue2 = formattedValue;
-
-						checkBox1.setGraphic(null);
-						checkBox2.setGraphic(null);
-						checkBox3.setGraphic(null);
-						checkBox4.setGraphic(null);
-						checkBox5.setGraphic(null);
-						checkBox6.setGraphic(null);
-						checkBox7.setGraphic(null);
-						checkBox8.setGraphic(null);
-
-						playbackCustomCheck.setGraphic(new ImageView(check));
-						playbackSpeedTracker = 0;
-						playbackCustomText.setText("Custom " + "(" + df.format(formattedValue2) + ")");
-						playbackValueLabel.setText(df.format(formattedValue2));
-
-						playbackSpeedScroll.setVvalue(0);
-					}
-						break;
-					}
-
+					
+					loadCustomSpeed = true; // whether the custom speed has to be created/updated or not
+					isDefaultValue = false; // when the user finishes seeking the custom speed slider and isDefaultValue stays true then it means that the slider landed on one of the default values (1,25; 1,5 etc) and therefore the according playback speed tab must be made active
 				}
-
+				
 			}
-
 		});
 		
 		
@@ -840,38 +479,12 @@ public class SettingsController implements Initializable{
 
 				for (int i = 0; i < playbackSpeedBoxesArray.length; i++) {
 
-					final int I = i;
-
+					final double I = i + 1;
 
 					playbackSpeedBoxesArray[i].setOnMouseClicked((e) -> {
-
-						if (playbackCustomCheck != null) {
-							playbackCustomCheck.setGraphic(null);
-						}
-
-						checkBox1.setGraphic(null);
-						checkBox2.setGraphic(null);
-						checkBox3.setGraphic(null);
-						checkBox4.setGraphic(null);
-						checkBox5.setGraphic(null);
-						checkBox6.setGraphic(null);
-						checkBox7.setGraphic(null);
-						checkBox8.setGraphic(null);
-
-						playbackSpeedCheckBoxesArray[I].setGraphic(new ImageView(check));
-
-						playbackSpeedTracker = I + 1;
-
-						double temp = playbackSpeedTracker;
-
-						mainController.mediaPlayer.setRate(temp / 4);
-
-						if (I == 3) {
-							playbackValueLabel.setText("Normal");
-						} else {
-							playbackValueLabel.setText(String.valueOf(temp / 4));
-						}
-
+						updatePlaybackSpeed((int) I, I/4, playbackSpeedCheckBoxesArray[(int) I - 1]);
+						
+						mainController.mediaPlayer.setRate(I/4);
 					});
 				}
 				
@@ -931,6 +544,11 @@ public class SettingsController implements Initializable{
 		controlBarController.settingsIcon.setImage(controlBarController.settingsExit);
 		
 		settingsOpen = false;
+		
+		if(loadCustomSpeed) createCustomSpeedTab();
+		
+		// this part will be run if the custom speed tab doesnt need to be updated but the rest of the tabs do
+		if(isDefaultValue) updatePlaybackSpeed((int) formattedValue * 4, formattedValue, playbackSpeedCheckBoxesArray[(int) (formattedValue * 4 - 1)]);
 
 		
 		if(controlBarController.settingsButtonHover) {
@@ -990,6 +608,8 @@ public class SettingsController implements Initializable{
 		else if(customSpeedOpen) {
 			customSpeedOpen = false;
 			AnimationsClass.closeSettingsFromCustomSpeed(settingsBackgroundPane, playbackSpeedScroll, customSpeedBuffer, bufferPane);
+			
+			// render custom speed tab if necessary
 		}
 	}
 
@@ -1030,6 +650,12 @@ public class SettingsController implements Initializable{
 	public void closeCustomSpeed() {
 		customSpeedOpen = false;
 		playbackSpeedOpen = true;
+		
+		if(loadCustomSpeed) createCustomSpeedTab();
+		
+		if(isDefaultValue) {
+			updatePlaybackSpeed((int) formattedValue * 4, formattedValue, playbackSpeedCheckBoxesArray[(int) (formattedValue * 4 - 1)]);
+		}
 
 		double toHeight;
 		if (playbackCustom != null)
@@ -1038,6 +664,8 @@ public class SettingsController implements Initializable{
 			toHeight = mainController.mediaView.sceneProperty().get().getHeight() < 587 ? mainController.mediaView.sceneProperty().get().getHeight() - 100 : 487;
 		
 		AnimationsClass.closeCustomSpeed(customSpeedBuffer, settingsBackgroundPane, playbackSpeedScroll, toHeight);
+		
+	
 		
 	}
 
@@ -1083,4 +711,33 @@ public class SettingsController implements Initializable{
 
 	}
 	
+	public void createCustomSpeedTab() {
+		loadCustomSpeed = false;
+		
+		if(playbackCustom != null) playbackSpeedPage.getChildren().remove(2);
+
+		playbackCustom = new CustomSpeedTab(this, formattedValue == formattedValue2 ? true : false);
+	}
+	
+	public void updatePlaybackSpeed(int trackerValue, double speedValue, Label activeCheckBox) {
+		
+		isDefaultValue = false;
+		
+		playbackSpeedTracker = trackerValue;
+		
+		if(playbackCustom != null) {
+			playbackCustom.playbackCustomCheck.setGraphic(null);
+		}
+		
+		for(Label checkBox : playbackSpeedCheckBoxesArray) {
+			checkBox.setGraphic(null);
+		}
+		
+		activeCheckBox.setGraphic(new ImageView(check));
+		
+		if(speedValue == 1) playbackValueLabel.setText("Normal");
+		else				playbackValueLabel.setText(df.format(speedValue));
+		
+		// update scroll pane scroll value inside this method
+	}
 }
