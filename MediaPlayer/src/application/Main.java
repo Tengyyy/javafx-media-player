@@ -18,6 +18,8 @@ public class Main extends Application {
 	
 	public static Stage stage;
 	
+	public static Stage menuStage;
+	
 	public EventHandler<KeyEvent> eventHandler;
 	
 	public static boolean fullScreen;
@@ -363,4 +365,5 @@ public class Main extends Application {
 		launch(args);
 	}
 
+	
 }

@@ -5,6 +5,7 @@ module mediaPlayer {
 	requires javafx.media;
 	requires javafx.base;
 	requires com.jfoenix;
+	requires java.logging;
 
 	
 	opens application to javafx.graphics, javafx.fxml;

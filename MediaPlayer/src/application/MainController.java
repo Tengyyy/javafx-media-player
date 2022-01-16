@@ -1,6 +1,7 @@
 package application;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 import java.util.ResourceBundle;
@@ -14,9 +15,13 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 
 import javafx.scene.image.Image;
@@ -33,7 +38,10 @@ import javafx.scene.media.SubtitleTrack;
 
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 public class MainController implements Initializable {
@@ -56,6 +64,8 @@ public class MainController implements Initializable {
 	
 	@FXML
 	private SettingsController settingsController;
+	
+	MenuController menuController;
 
 
 	// custom playback speed selection box that will be created if the user selects a custom speed using the slider
@@ -85,6 +95,8 @@ public class MainController implements Initializable {
 	
 
 	boolean captionsOpen = false;
+	
+	boolean menuOpen = false;
 
 
 	// counter to keep track of the current node that has focus (used for focus traversing with tab and shift+tab)
@@ -93,6 +105,8 @@ public class MainController implements Initializable {
 	SubtitleTrack subtitles;
 	
 	ControlTooltip menuTooltip;
+	
+	Stage menuStage = new Stage();
 
 
 	@Override
@@ -124,6 +138,8 @@ public class MainController implements Initializable {
 
 		menuButton.setBackground(Background.EMPTY);
 		menuButton.setVisible(false);
+		
+		
 		
 		menuIcon.setImage(menuImage);
 		
@@ -450,8 +466,51 @@ public class MainController implements Initializable {
 	}
 	
 	public void openMenu() {
-		System.out.println("OPENING MENU");
+		if(!menuOpen) {
+			Parent root;
+			menuOpen = true;
+        	try {
+        		FXMLLoader loader = new FXMLLoader(getClass().getResource("Resources/Views/Menu.fxml"));
+        		root = loader.load();
+        	
+        		menuController = loader.getController();
+
+        		if(menuStage == null) {
+        			menuStage = new Stage();
+        		}
+        		
+        		menuStage.setTitle("Media Player Menu");
+        		menuStage.setX(10);
+        		menuStage.setY(30);
+        		
+        		Scene menuScene = new Scene(root, 400, 600);
+        		menuScene.getStylesheets().add(getClass().getResource("Resources/Styles/menu.css").toExternalForm());
+        		
+        		menuStage.setScene(menuScene);
+        		menuStage.show();
+        		
+        		menuStage.setOnCloseRequest(new EventHandler<WindowEvent>(){
+
+    				@Override
+    				public void handle(WindowEvent event) {
+    					menuOpen = false;
+    					menuStage = null;
+    				}
+    			});
+        		
+        	}
+        	catch (IOException e) {
+        		e.printStackTrace();
+        	}
+		}
+		else if(!menuStage.isIconified()){ // brings the menu to the front if its behind another window
+			menuStage.requestFocus();
+		}
+		else {
+			menuStage.setIconified(false); // Restores the window if its iconified (hidden)
+		}
 	}
+
 	
 	public SettingsController getSettingsController() {
 		return settingsController;
