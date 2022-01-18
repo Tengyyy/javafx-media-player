@@ -18,6 +18,8 @@ public class MenuItem extends HBox{
 	
 	File videoFile; // the mp4 file that this menu-item is representing
 	
+	BackgroundFill backgroundFill;
+	Background background;
 	
 	MenuItem(ScrollPane menuScroll, File videoFile){
 		
@@ -25,23 +27,28 @@ public class MenuItem extends HBox{
 		this.videoFile = videoFile;
 		
 		this.prefWidthProperty().bind(menuScroll.widthProperty());
-		this.setPrefHeight(100);
+		this.setPrefHeight(80);
+		this.setMinHeight(80);
 
 		
 		 // create a background fill
-        BackgroundFill background_fill = new BackgroundFill(Color.rgb(255, 255, 255, 0.7), 
-                                      CornerRadii.EMPTY, Insets.EMPTY);
-
-        // create Background
-        Background background = new Background(background_fill);
-
-        // set background
-        this.setBackground(background);
+		this.setStyle("-fx-background-color: rgb(40,40,40); -fx-background-radius: 5;");
 		
 		Label label = new Label("SU EMA!!!!!!!");
 		label.setFont(new Font(30));
 		
 		this.getChildren().add(label);
+		
+		
+		this.setOnMouseEntered((e) -> {
+			
+			this.setStyle("-fx-background-color: rgb(50,50,50); -fx-background-radius: 5;");
+
+		});
+		
+		this.setOnMouseExited((e) -> {
+			this.setStyle("-fx-background-color: rgb(40,40,40); -fx-background-radius: 5;");
+		});
 		
 	}
 	
