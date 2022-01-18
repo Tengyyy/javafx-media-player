@@ -124,7 +124,7 @@
                   </StackPane>
                         <Label fx:id="durationLabel" maxHeight="-Infinity" prefHeight="30.0" prefWidth="145.0" styleClass="focusableProperty" textFill="WHITE">
                            <font>
-                              <Font size="18.0" />
+                              <Font name="Roboto Medium" size="18.0" />
                            </font>
                      <cursor>
                         <Cursor fx:constant="HAND" />

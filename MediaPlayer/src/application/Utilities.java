@@ -1,5 +1,6 @@
 package application;
 
+import java.io.File;
 import java.util.concurrent.Callable;
 
 import javafx.beans.binding.Bindings;
@@ -34,17 +35,6 @@ public class Utilities {
 			return String.format("%02d:%02d", minutes, seconds);
 	}
 	
-	// binds the video duration label string to mediaplayers current time value
-	/*public static void bindCurrentTimeLabel(Label durationLabel, MediaPlayer mediaPlayer, Media media) {
-
-		durationLabel.textProperty().bind(Bindings.createStringBinding(new Callable<String>() {
-			@Override
-			public String call() throws Exception {
-
-				return getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration());
-			}
-		}, mediaPlayer.currentTimeProperty()));
-	}*/
 	
 	public static void setCurrentTimeLabel(Label durationLabel, MediaPlayer mediaPlayer, Media media) {
 		durationLabel.setText(getTime(mediaPlayer.getCurrentTime()) + "/" + getTime(media.getDuration()));
@@ -54,16 +44,6 @@ public class Utilities {
 		durationLabel.setText("−" + getTime(media.getDuration().subtract(mediaPlayer.getCurrentTime())) + "/" + getTime(media.getDuration()));
 	}
 
-	/*public static void bindTimeLeftLabel(Label durationLabel, MediaPlayer mediaPlayer, Media media) { // gotta make formatting of this label prettier
-
-		durationLabel.textProperty().bind(Bindings.createStringBinding(new Callable<String>() {
-			@Override
-			public String call() throws Exception {
-
-				return "-" + getTime(media.getDuration().subtract(mediaPlayer.getCurrentTime())) + "/" + getTime(media.getDuration());
-			}
-		}, mediaPlayer.currentTimeProperty()));
-	}*/
 	
 	
 	// makes HBox's background lighter and less transparent on hovering
@@ -74,6 +54,21 @@ public class Utilities {
 	// turns HBox background back to normal
 	public static void hoverEffectOff(HBox setting) {
 		setting.setStyle("-fx-background-color: rgba(83,83,83,0)");
+	}
+	
+	
+	// gets file extension
+	public static String getFileExtension(File file) {
+		String fileName = file.getName();
+		int extensionIndex = fileName.lastIndexOf('.');
+		
+		if(extensionIndex > 0) {
+			return fileName.substring(extensionIndex + 1);
+		}
+		else {
+			return " ";
+		}
+		
 	}
 	
 }

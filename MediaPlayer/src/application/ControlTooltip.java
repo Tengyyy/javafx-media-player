@@ -39,17 +39,20 @@ public class ControlTooltip extends Tooltip{
 		this.hide();
 		
 		tooltipParent.setOnMouseEntered((e) -> {
-			Bounds bounds = tooltipParent.localToScreen(tooltipParent.getBoundsInLocal());
-			nodeMiddleX = tooltipParent.getWidth() / 2;
-			nodeMiddleY = tooltipParent.getHeight() / 2;
+			
+			if(tooltipParent.getScene().getWindow().isFocused()) {
+				Bounds bounds = tooltipParent.localToScreen(tooltipParent.getBoundsInLocal());
+				nodeMiddleX = tooltipParent.getWidth() / 2;
+				nodeMiddleY = tooltipParent.getHeight() / 2;
 			
 			
 			
-			if(!menuTooltip) {
-				this.show(tooltipParent, bounds.getMinX() + nodeMiddleX - tooltipMiddle, bounds.getMinY() - tooltipHeight - controlBar.getTranslateY()); 
+				if(!menuTooltip) {
+					this.show(tooltipParent, bounds.getMinX() + nodeMiddleX - tooltipMiddle, bounds.getMinY() - tooltipHeight - controlBar.getTranslateY()); 
+				}
+				else
+					this.show(tooltipParent, bounds.getMaxX() + 10, bounds.getMinY() + nodeMiddleY - ((tooltipHeight-18)/2));
 			}
-			else
-				this.show(tooltipParent, bounds.getMaxX() + 10, bounds.getMinY() + nodeMiddleY - ((tooltipHeight-18)/2));
 		});
 		
 		tooltipParent.setOnMouseExited((e) -> {

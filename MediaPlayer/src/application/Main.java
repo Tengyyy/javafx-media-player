@@ -1,6 +1,8 @@
 package application;
 	
 
+import java.io.File;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -11,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Font;
 
 
 
@@ -48,9 +51,7 @@ public class Main extends Application {
 			
 			Scene scene = new Scene(root, 600, 400);
 			
-			scene.getStylesheets().add(getClass().getResource("Resources/Styles/application.css").toExternalForm());
-			
-			
+			scene.getStylesheets().add(getClass().getResource("Resources/Styles/application.css").toExternalForm());			
 			
 			//TODO: Continue this bit to make the controlbar hiding logic
 			
